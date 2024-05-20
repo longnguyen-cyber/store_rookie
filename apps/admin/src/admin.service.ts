@@ -26,4 +26,30 @@ export class AdminService {
     const res = await entityService.findAll();
     return res;
   }
+
+  async deleteRes(entityName: EntityNames, id: string) {
+    const entityService = this.getServiceFromEntityName(entityName);
+
+    await entityService.delete(id);
+  }
+
+  async createRes(entityName: EntityNames, data: any) {
+    const entityService = this.getServiceFromEntityName(entityName);
+
+    await entityService.create(data);
+  }
+
+  async updateRes(entityName: EntityNames, id: string, data: any) {
+    const entityService = this.getServiceFromEntityName(entityName);
+
+    const rs = await entityService.update(id, data);
+    return rs;
+  }
+
+  async getRes(entityName: EntityNames, id: string) {
+    const entityService = this.getServiceFromEntityName(entityName);
+
+    const res = await entityService.findOne(id);
+    return res;
+  }
 }

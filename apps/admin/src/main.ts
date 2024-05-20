@@ -3,13 +3,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as hbs from 'hbs';
 import { AdminModule } from './admin.module';
-
+import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AdminModule);
 
   const viewsPath = join(process.cwd(), 'dist', 'apps', 'admin', 'views');
   app.setBaseViewsDir(viewsPath);
 
+  app.use(bodyParser.urlencoded({ extended: true }));
   // Register the partials
   hbs.registerPartials(join(viewsPath, 'partials'));
   hbs.registerHelper('increment', function (value) {

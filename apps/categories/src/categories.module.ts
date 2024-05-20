@@ -17,5 +17,6 @@ import { GraphQLModule } from '@nestjs/graphql';
   ],
   controllers: [],
   providers: [CategoriesService, CategoriesRepository, CategoriesResolver],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

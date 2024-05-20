@@ -11,4 +11,6 @@ export * from './auth.guard';
 
 export * from './enums';
 
+export * from './array';
+
 // export * from './graphql/dto';

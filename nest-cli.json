@@ -19,14 +19,22 @@
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
     },
-
     "auth": {
       "type": "application",
       "root": "apps/auth",
       "entryFile": "main",
       "sourceRoot": "apps/auth/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/auth/tsconfig.app.json",
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
+      }
+    },
+    "admin": {
+      "type": "application",
+      "root": "apps/admin",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin/tsconfig.app.json",
         "assets": [
           {
             "include": "**/*.hbs",

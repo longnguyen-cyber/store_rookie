@@ -11,6 +11,8 @@ async function bootstrap() {
   // Register the partials
   hbs.registerPartials(join(__dirname, 'views/partials'));
   app.setViewEngine('hbs');
-  await app.listen(3000);
+  await app.listen(3001, () => {
+    console.log('Admin app is running on http://localhost:3001');
+  });
 }
 bootstrap();

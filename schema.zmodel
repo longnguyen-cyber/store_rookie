@@ -1,32 +1,27 @@
-generator client {
-  provider = "prisma-client-js"
-}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-
-// E:\assignment\libs\common\src\graphql\schema.gql
-
-generator nestgraphql {
-  // provider = "node node_modules/prisma-nestjs-graphql"
-  // for yarn monorepos
-  provider = "prisma-nestjs-graphql"
-  output = "../apps/api-gateway/src/graphql/@generated"
-  combineScalarFilters = true
-  noAtomicOperations = true
+generator client {
+  provider = "prisma-client-js"
 }
 
+generator nestgraphql {
+  provider             = "prisma-nestjs-graphql"
+  output               = "../libs/common/src/@generated"
+  combineScalarFilters = true
+  noAtomicOperations   = true
+}
 
 model User {
-  id        String   @id @default(cuid()) @map("user_id")
-  username  String   @unique
+  id        String   @id() @default(cuid()) @map("user_id")
+  username  String   @unique()
   password  String
-  email     String   @unique
-  isAdmin   Boolean  @default(false)
-  createdAt DateTime @default(now())
+  email     String   @unique()
+  isAdmin   Boolean  @default(false) @map("is_admin")
+  createdAt DateTime @default(now()) @map("created_at")
   orders    Order[]
   reviews   Review[]
 
@@ -34,7 +29,7 @@ model User {
 }
 
 model Category {
-  id    String @id @default(cuid()) @map("category_id")
+  id    String @id() @default(cuid()) @map("category_id")
   name  String
   books Book[]
 
@@ -42,7 +37,7 @@ model Category {
 }
 
 model Author {
-  id    String       @id @default(cuid()) @map("author_id")
+  id    String       @id() @default(cuid()) @map("author_id")
   name  String
   bio   String?
   books BookAuthor[]
@@ -51,21 +46,21 @@ model Author {
 }
 
 model Publisher {
-  id      String          @id @default(cuid()) @map("publisher_id")
+  id      String          @id() @default(cuid()) @map("publisher_id")
   name    String
-  address String?
+  address String?         @map("address")
   books   BookPublisher[]
 
   @@map("publishers")
 }
 
 model Book {
-  id          String          @id @default(cuid()) @map("book_id")
+  id          String          @id() @default(cuid()) @map("book_id")
   title       String
-  description String?
-  categoryId  String
-  images      Json
-  createdAt   DateTime        @default(now())
+  description String?         @map("description")
+  categoryId  String          @map("category_id")
+  images      Json            @map("images")
+  createdAt   DateTime        @default(now()) @map("created_at")
   category    Category        @relation(fields: [categoryId], references: [id])
   prices      BookPrice[]
   authors     BookAuthor[]
@@ -78,12 +73,12 @@ model Book {
 }
 
 model BookPrice {
-  id        String      @id @default(cuid()) @map("price_id")
-  bookId    String
-  price     Float
-  startDate DateTime
-  endDate   DateTime?
-  createdAt DateTime    @default(now())
+  id        String      @id() @default(cuid()) @map("price_id")
+  bookId    String      @map("book_id")
+  price     Float       @map("price")
+  startDate DateTime    @map("start_date")
+  endDate   DateTime?   @map("end_date")
+  createdAt DateTime    @default(now()) @map("created_at")
   book      Book        @relation(fields: [bookId], references: [id])
   OrderItem OrderItem[]
 
@@ -91,8 +86,8 @@ model BookPrice {
 }
 
 model BookAuthor {
-  bookId   String
-  authorId String
+  bookId   String @map("book_id")
+  authorId String @map("author_id")
   book     Book   @relation(fields: [bookId], references: [id])
   author   Author @relation(fields: [authorId], references: [id])
 
@@ -101,8 +96,8 @@ model BookAuthor {
 }
 
 model BookPublisher {
-  bookId      String
-  publisherId String
+  bookId      String    @map("book_id")
+  publisherId String    @map("publisher_id")
   book        Book      @relation(fields: [bookId], references: [id])
   publisher   Publisher @relation(fields: [publisherId], references: [id])
 
@@ -111,45 +106,49 @@ model BookPublisher {
 }
 
 model Promotion {
-  id            String    @id @default(cuid()) @map("promotion_id")
-  bookId        String
-  promotionType String
-  startDate     DateTime?
-  endDate       DateTime?
+  id            String    @id() @default(cuid()) @map("promotion_id")
+  bookId        String    @map("book_id")
+  promotionType String    @map("promotion_type")
+  startDate     DateTime? @map("start_date")
+  endDate       DateTime? @map("end_date")
   book          Book      @relation(fields: [bookId], references: [id])
+
   @@map("promotions")
 }
 
 model Review {
-  id        String   @id @default(cuid()) @map("review_id")
-  bookId    String
-  userId    String
-  rating    Int
-  comment   String?
-  createdAt DateTime @default(now())
+  id        String   @id() @default(cuid()) @map("review_id")
+  bookId    String   @map("book_id")
+  userId    String   @map("user_id")
+  rating    Int      @map("rating")
+  comment   String?  @map("comment")
+  createdAt DateTime @default(now()) @map("created_at")
   book      Book     @relation(fields: [bookId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
+
   @@map("reviews")
 }
 
 model Order {
-  id        String      @id @default(cuid()) @map("order_id")
-  userId    String
-  orderDate DateTime    @default(now())
-  status    String      @default("Pending")
+  id        String      @id() @default(cuid()) @map("order_id")
+  userId    String      @map("user_id")
+  orderDate DateTime    @default(now()) @map("order_date")
+  status    String      @default("Pending") @map("status")
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
+
   @@map("orders")
 }
 
 model OrderItem {
-  id       String    @id @default(cuid()) @map("order_item_id")
-  orderId  String
-  bookId   String
-  quantity String
-  priceId  String
+  id       String    @id() @default(cuid()) @map("order_item_id")
+  orderId  String    @map("order_id")
+  bookId   String    @map("book_id")
+  quantity String    @map("quantity")
+  priceId  String    @map("price_id")
   order    Order     @relation(fields: [orderId], references: [id])
   book     Book      @relation(fields: [bookId], references: [id])
   price    BookPrice @relation(fields: [priceId], references: [id])
+
   @@map("order_items")
 }

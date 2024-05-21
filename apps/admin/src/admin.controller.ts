@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Render,
   Res,
 } from '@nestjs/common';
@@ -28,11 +29,24 @@ export class AdminController {
   @Get(':entityName')
   async getHello(
     @Param('entityName') entityName: EntityNames,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
     @Res() res: Response,
   ) {
-    console.log('EntityName:', entityName);
-    const data = await this.adminService.listRes(entityName);
-    return res.render(entityName, { data });
+    if (
+      entityName.toString() !== 'login' ||
+      entityName.toString() !== ' favicon.ico'
+    ) {
+      console.log('EntityName:', entityName);
+      const { data, pagination } = await this.adminService.listRes(
+        entityName,
+        page,
+        limit,
+      );
+      console.log('Data:', data);
+      console.log('Pagination:', pagination);
+      return res.render(entityName, { data, pagination, entityName });
+    }
   }
 
   //delete

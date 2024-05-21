@@ -16,6 +16,9 @@ async function bootstrap() {
   hbs.registerHelper('increment', function (value) {
     return parseInt(value) + 1;
   });
+  hbs.registerHelper('eq', function (a, b) {
+    return a === b;
+  });
   app.setViewEngine('hbs');
   app.set('view options', { layout: 'layout' });
   await app.listen(3001, () => {

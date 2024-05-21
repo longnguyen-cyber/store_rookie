@@ -40,12 +40,23 @@ export class AdminService {
   getServiceFromEntityName(entityName: EntityNames): Service {
     return this[`${entityName}Service`] as Service;
   }
-
-  async listRes(entityName: EntityNames) {
+  async listRes(entityName: EntityNames, page: number = 1, limit: number = 5) {
     const entityService = this.getServiceFromEntityName(entityName);
 
-    const res = await entityService.findAll();
-    return res;
+    // Fetch the data for the current page
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const allData = await entityService.findAll();
+    const res = allData.slice(start, end);
+
+    // Count the total number of items
+    const total = allData.length;
+
+    // Generate the pagination links
+    const pagination = this.handlePagination(page, limit, total, entityName);
+    console.log('Pagination:', pagination);
+
+    return { data: res, pagination };
   }
 
   async deleteRes(entityName: EntityNames, id: string) {
@@ -72,5 +83,34 @@ export class AdminService {
 
     const res = await entityService.findOne(id);
     return res;
+  }
+
+  handlePagination(
+    page: number,
+    limit: number,
+    total: number,
+    entityName: EntityNames,
+  ) {
+    const totalPages = Math.ceil(total / limit);
+
+    let nextPage = page + 1;
+    if (nextPage > totalPages) {
+      nextPage = totalPages;
+    }
+
+    let prevPage = page - 1;
+    if (prevPage < 1) {
+      prevPage = 1;
+    }
+
+    // Generate an array of page numbers
+    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    return {
+      nextPage: `/${entityName}?page=${nextPage}&limit=${limit}`,
+      prevPage: `/${entityName}?page=${prevPage}&limit=${limit}`,
+      pages,
+      currentPage: parseInt(page.toString()),
+    };
   }
 }

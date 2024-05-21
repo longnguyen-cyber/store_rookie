@@ -7,6 +7,7 @@
     </tr>
   </thead>
   <tbody>
+
     {{#each data}}
     <tr>
       <td class="border border-slate-700">{{increment @index}}</td>
@@ -21,4 +22,13 @@
     </tr>
     {{/each}}
   </tbody>
+
 </table>
+<div class="pagination">
+  <a href="{{pagination.prevPage}}" class="prev">Previous</a>
+  {{#each pagination.pages}}
+  <a href="/{{../entityName}}?page={{this}}&limit=5"
+    class="{{#if (eq this ../pagination.currentPage)}} bg-red-500 {{/if}} border rounded">{{this}}</a>
+  {{/each}}
+  <a href="{{pagination.nextPage}}" class="next">Next</a>
+</div>

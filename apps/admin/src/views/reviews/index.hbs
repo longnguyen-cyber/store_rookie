@@ -1,0 +1,23 @@
+<table class="w-full">
+  <thead class="bg-blue-600">
+    <tr>
+      <th class="border border-slate-700">STT</th>
+      <th class="border border-slate-700">book_id</th>
+      <th class="border border-slate-700">user_id</th>
+      <th class="border border-slate-700">rating</th>
+      <th class="border border-slate-700">comment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each data}}
+    <tr>
+      <td class="border border-slate-700">{{increment @index}}</td>
+      <td class="border border-slate-700">{{this.book_id}}</td>
+      <td class="border border-slate-700">{{this.user_id}}</td>
+      <td class="border border-slate-700">{{this.rating}}</td>
+      <td class="border border-slate-700">{{this.comment}}</td>
+
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

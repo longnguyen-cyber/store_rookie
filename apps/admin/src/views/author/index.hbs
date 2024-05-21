@@ -1,0 +1,26 @@
+<table class="w-full">
+  <thead class="bg-blue-600">
+    <tr>
+      <th class="border border-slate-700">STT</th>
+      <th class="border border-slate-700">Name</th>
+      <th class="border border-slate-700">Bio</th>
+      <th class="border border-slate-700">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each data}}
+    <tr>
+      <td class="border border-slate-700">{{increment @index}}</td>
+      <td class="border border-slate-700">{{this.name}}</td>
+      <td class="border border-slate-700">{{this.bio}}</td>
+      <td class="border border-slate-700">
+        <a href="edit/author/{{this.id}}" class="text-blue-500 hover:text-blue-800">Edit</a>
+        <form action="delete/author/{{this.id}}" method="POST" class="inline">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="text-red-500 hover:text-red-800">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

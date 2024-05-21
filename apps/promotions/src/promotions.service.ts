@@ -20,4 +20,8 @@ export class PromotionsService {
   async update(id: string, data: any) {
     return await this.promotionRepository.update(id, data);
   }
+
+  async delete(id: string) {
+    return await this.promotionRepository.delete(id);
+  }
 }

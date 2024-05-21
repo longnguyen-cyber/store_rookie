@@ -7,6 +7,7 @@ import { AuthorModule } from 'apps/author/src/author.module';
 import { ReviewsModule } from 'apps/reviews/src/reviews.module';
 import { PublisherModule } from 'apps/publisher/src/publisher.module';
 import { ProcessModule } from 'apps/process/src/process.module';
+import { PromotionsModule } from 'apps/promotions/src/promotions.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ProcessModule } from 'apps/process/src/process.module';
     ReviewsModule,
     PublisherModule,
     ProcessModule,
+    PromotionsModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

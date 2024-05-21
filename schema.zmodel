@@ -58,6 +58,7 @@ model Book {
   title       String
   description String?         @map("description")
   categoryId  String          @map("category_id")
+  genre       String          @map("genre")
   images      Json            @map("images")
   createdAt   DateTime        @default(now()) @map("created_at")
   category    Category        @relation(fields: [categoryId], references: [id])

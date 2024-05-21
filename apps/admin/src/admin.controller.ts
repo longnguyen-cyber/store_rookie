@@ -7,9 +7,11 @@ import {
   Query,
   Render,
   Res,
+  UsePipes,
 } from '@nestjs/common';
 import { AdminService, EntityNames } from './admin.service'; // Import the EntityNames type from the admin.service file
 import { Response } from 'express';
+import { CustomValidationPipe } from '@app/common';
 
 @Controller()
 export class AdminController {
@@ -35,17 +37,19 @@ export class AdminController {
   ) {
     if (
       entityName.toString() !== 'login' ||
-      entityName.toString() !== ' favicon.ico'
+      entityName.toString() !== 'favicon.ico'
     ) {
-      console.log('EntityName:', entityName);
       const { data, pagination } = await this.adminService.listRes(
         entityName,
         page,
         limit,
       );
-      console.log('Data:', data);
-      console.log('Pagination:', pagination);
-      return res.render(entityName, { data, pagination, entityName });
+      return res.render('layout', {
+        content: `./${entityName}/index`,
+        data,
+        pagination,
+        entityName,
+      });
     }
   }
 
@@ -68,7 +72,11 @@ export class AdminController {
   ) {
     const data = await this.adminService.getRes(entityName, id);
     console.log('Data:', data);
-    return res.render(`${entityName}/edit`, { data });
+    return res.render('layout', {
+      content: `./${entityName}/edit`,
+      data,
+      error: '',
+    });
   }
 
   @Post('edit/:entityName/:id')
@@ -87,6 +95,37 @@ export class AdminController {
     } else {
       return res.render(`${entityName}/edit`, {
         data: { ...body, id },
+        error: 'Error',
+      });
+    }
+  }
+
+  //create
+  @Get('create/:entityName')
+  async getCreate(
+    @Param('entityName') entityName: EntityNames,
+    @Res() res: Response,
+  ) {
+    return res.render('layout', {
+      content: `./${entityName}/create`,
+      data: {},
+      error: '',
+    });
+  }
+
+  @Post('create/:entityName')
+  @UsePipes(new CustomValidationPipe())
+  async postCreate(
+    @Param('entityName') entityName: EntityNames,
+    @Body() body: any,
+    @Res() res: Response,
+  ) {
+    const data = await this.adminService.createRes(entityName, body);
+    if (data) {
+      return res.redirect(`/${entityName}`);
+    } else {
+      return res.render(`${entityName}/create`, {
+        data: { ...body },
         error: 'Error',
       });
     }

@@ -37,7 +37,7 @@
         "tsConfigPath": "apps/admin/tsconfig.app.json",
         "assets": [
           {
-            "include": "**/*.hbs",
+            "include": "**/*.ejs",
             "watchAssets": true
           }
         ]

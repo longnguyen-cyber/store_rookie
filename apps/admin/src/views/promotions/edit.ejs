@@ -1,0 +1,24 @@
+<h1>Edit Name</h1>
+<form class="max-w-sm mx-auto" action="/edit/publisher/<%= data.id %>" method="POST">
+  <div class="mb-5">
+    <label for="book_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">book_id</label>
+    <input type="text" id="book_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required value="<%= data.book_id %>" name="book_id" />
+  </div>
+
+  <div class="mb-5">
+    <label for="promotion_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">promotion_type</label>
+    <input type="text" id="promotion_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required value="<%= data.promotion_type %>" name="promotion_type" />
+  </div>
+
+  <div class="mb-5">
+    <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">start_date</label>
+    <input type="text" id="start_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required value="<%= data.start_date %>" name="start_date" />
+  </div>
+
+  <div class="mb-5">
+    <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">end_date</label>
+    <input type="text" id="end_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required value="<%= data.end_date %>" name="end_date" />
+  </div>
+
+  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+</form>

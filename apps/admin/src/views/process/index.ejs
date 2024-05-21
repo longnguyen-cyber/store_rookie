@@ -10,21 +10,21 @@
     </tr>
   </thead>
   <tbody>
-    {{#each data}}
+    <% data.forEach(function(item, index) { %>
     <tr>
-      <td class="border border-slate-700">{{increment @index}}</td>
-      <td class="border border-slate-700">{{this.book_id}}</td>
-      <td class="border border-slate-700">{{this.user_id}}</td>
-      <td class="border border-slate-700">{{this.rating}}</td>
-      <td class="border border-slate-700">{{this.comment}}</td>
+      <td class="border border-slate-700"><%= index + 1 %></td>
+      <td class="border border-slate-700"><%= item.book_id %></td>
+      <td class="border border-slate-700"><%= item.user_id %></td>
+      <td class="border border-slate-700"><%= item.rating %></td>
+      <td class="border border-slate-700"><%= item.comment %></td>
       <td class="border border-slate-700">
-        <a href="edit/review/{{this.id}}" class="text-blue-500 hover:text-blue-800">Edit</a>
-        <form action="delete/review/{{this.id}}" method="POST" class="inline">
+        <a href="edit/review/<%= item.id %>" class="text-blue-500 hover:text-blue-800">Edit</a>
+        <form action="delete/review/<%= item.id %>" method="POST" class="inline">
           <input type="hidden" name="_method" value="DELETE">
           <button type="submit" class="text-red-500 hover:text-red-800">Delete</button>
         </form>
       </td>
     </tr>
-    {{/each}}
+    <% }); %>
   </tbody>
 </table>

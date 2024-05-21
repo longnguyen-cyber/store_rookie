@@ -35,17 +35,33 @@ VALUES
 
 -- Authors
 INSERT INTO
-  "authors" ("author_id", "name")
+  "authors" ("author_id", "name", "bio")
 VALUES
-  ('1', 'George Orwell'),
-  ('2', 'J.K. Rowling');
+  (
+    '1',
+    'George Orwell',
+    'George Orwell was an English novelist, essayist, journalist, and critic. He is best known for his dystopian novels "1984" and "Animal Farm".'
+  ),
+  (
+    '2',
+    'J.K. Rowling',
+    'J.K. Rowling is a British author, best known for writing the Harry Potter fantasy series.'
+  );
 
 -- Publishers
 INSERT INTO
-  "publishers" ("publisher_id", "name")
+  "publishers" ("publisher_id", "name", "address")
 VALUES
-  ('1', 'Penguin Random House'),
-  ('2', 'HarperCollins');
+  (
+    '1',
+    'Penguin Random House',
+    '1745 Broadway, New York, NY 10019, USA'
+  ),
+  (
+    '2',
+    'HarperCollins',
+    '195 Broadway, New York, NY 10007, USA'
+  );
 
 -- Books
 INSERT INTO

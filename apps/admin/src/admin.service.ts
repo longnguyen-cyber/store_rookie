@@ -54,7 +54,6 @@ export class AdminService {
 
     // Generate the pagination links
     const pagination = this.handlePagination(page, limit, total, entityName);
-    console.log('Pagination:', pagination);
 
     return { data: res, pagination };
   }
@@ -68,7 +67,8 @@ export class AdminService {
   async createRes(entityName: EntityNames, data: any) {
     const entityService = this.getServiceFromEntityName(entityName);
 
-    await entityService.create(data);
+    const rs = await entityService.create(data);
+    return rs;
   }
 
   async updateRes(entityName: EntityNames, id: string, data: any) {
@@ -86,13 +86,13 @@ export class AdminService {
   }
 
   handlePagination(
-    page: number,
+    pageStr: number,
     limit: number,
     total: number,
     entityName: EntityNames,
   ) {
+    const page = parseInt(pageStr.toString());
     const totalPages = Math.ceil(total / limit);
-
     let nextPage = page + 1;
     if (nextPage > totalPages) {
       nextPage = totalPages;
@@ -110,7 +110,7 @@ export class AdminService {
       nextPage: `/${entityName}?page=${nextPage}&limit=${limit}`,
       prevPage: `/${entityName}?page=${prevPage}&limit=${limit}`,
       pages,
-      currentPage: parseInt(page.toString()),
+      currentPage: page,
     };
   }
 }

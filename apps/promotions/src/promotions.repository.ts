@@ -5,7 +5,19 @@ import { Injectable } from '@nestjs/common';
 export class PromotionRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findAll() {
-    const promotions = await this.prisma.promotion.findMany();
+    const promotions = await this.prisma.promotion.findMany({
+      include: {
+        book: {
+          include: {
+            authors: {
+              select: {
+                author: true,
+              },
+            },
+          },
+        },
+      },
+    });
     return promotions;
   }
 

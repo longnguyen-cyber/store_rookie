@@ -1,3 +1,4 @@
+import { CustomValidationPipe } from '@app/common';
 import {
   Body,
   Controller,
@@ -9,9 +10,8 @@ import {
   Res,
   UsePipes,
 } from '@nestjs/common';
-import { AdminService, EntityNames } from './admin.service'; // Import the EntityNames type from the admin.service file
 import { Response } from 'express';
-import { CustomValidationPipe } from '@app/common';
+import { AdminService, EntityNames } from './admin.service'; // Import the EntityNames type from the admin.service file
 
 @Controller()
 export class AdminController {
@@ -44,6 +44,7 @@ export class AdminController {
         page,
         limit,
       );
+      console.log('Data:', data);
       return res.render('layout', {
         content: `./${entityName}/index`,
         data,
@@ -106,6 +107,14 @@ export class AdminController {
     @Param('entityName') entityName: EntityNames,
     @Res() res: Response,
   ) {
+    if (entityName.toString() === 'promotions') {
+      const genres = await this.adminService.getAllGerne();
+      return res.render('layout', {
+        content: `./${entityName}/create`,
+        data: { genres },
+        error: '',
+      });
+    }
     return res.render('layout', {
       content: `./${entityName}/create`,
       data: {},

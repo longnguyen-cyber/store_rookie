@@ -12,6 +12,7 @@ async function bootstrap() {
   app.setBaseViewsDir(viewsPath);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.setViewEngine('ejs');
+  app.enableCors();
 
   app.use(bodyParser.urlencoded({ extended: true }));
   await app.listen(3001, () => {

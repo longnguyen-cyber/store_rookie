@@ -9,6 +9,24 @@ export class BookRepository {
     return books;
   }
 
+  async getAllGerne() {
+    const genres = await this.prisma.book.findMany({
+      select: {
+        genre: true,
+      },
+    });
+    return genres;
+  }
+
+  async getBookByGenre(genre: string) {
+    const books = await this.prisma.book.findMany({
+      where: {
+        genre: genre,
+      },
+    });
+    return books;
+  }
+
   async findOne(id: string) {
     const book = await this.prisma.book.findUnique({
       where: {

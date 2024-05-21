@@ -66,9 +66,25 @@ export class AdminService {
 
   async createRes(entityName: EntityNames, data: any) {
     const entityService = this.getServiceFromEntityName(entityName);
-
-    const rs = await entityService.create(data);
-    return rs;
+    if (entityName === 'promotions') {
+      data.startDate = new Date(data.startDate);
+      data.endDate = new Date(data.endDate);
+      const books = await this.booksService.getBookByGenre(data.genre);
+      delete data.genre;
+      await Promise.all(
+        books.map(async (book) => {
+          await entityService.create({
+            ...data,
+            bookId: book.id,
+            promotionType: 'discount',
+          });
+        }),
+      );
+      return true;
+    } else {
+      const rs = await entityService.create(data);
+      return rs;
+    }
   }
 
   async updateRes(entityName: EntityNames, id: string, data: any) {
@@ -85,7 +101,13 @@ export class AdminService {
     return res;
   }
 
-  handlePagination(
+  async getAllGerne() {
+    const genres = await this.booksService.getAllGerne();
+    console.log('Genres:', genres);
+    return genres;
+  }
+
+  private handlePagination(
     pageStr: number,
     limit: number,
     total: number,

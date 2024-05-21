@@ -29,4 +29,14 @@ export class BookService {
     const category = await this.bookRepository.delete(id);
     return category;
   }
+
+  async getAllGerne() {
+    const genres = await this.bookRepository.getAllGerne();
+    return [...new Set(genres.map((genre) => genre.genre))];
+  }
+
+  async getBookByGenre(genre: string) {
+    const books = await this.bookRepository.getBookByGenre(genre);
+    return books;
+  }
 }

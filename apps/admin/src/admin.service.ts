@@ -1,20 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { AuthorService } from 'apps/author/src/author.service';
+import { BookService } from 'apps/books/src/books.service';
 import { CategoriesService } from 'apps/categories/src/categories.service';
+import { ProcessService } from 'apps/process/src/process.service';
+import { PublisherService } from 'apps/publisher/src/publisher.service';
+import { ReviewsService } from 'apps/reviews/src/reviews.service';
 
-type Service = CategoriesService;
+type Service =
+  | CategoriesService
+  | AuthorService
+  | ProcessService
+  | BookService
+  | PublisherService
+  | ReviewsService;
 
 export type EntityNames =
-  | 'authors'
+  | 'author'
   | 'categories'
-  | 'customers'
-  | 'orders'
-  | 'products'
-  | 'publishers'
-  | 'feedbacks';
+  | 'process'
+  | 'book'
+  | 'publisher'
+  | 'review';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly categoriesService: CategoriesService,
+    private readonly authorService: AuthorService,
+    private readonly processService: ProcessService,
+    private readonly bookService: BookService,
+    private readonly publisherService: PublisherService,
+    private readonly reviewService: ReviewsService,
+  ) {}
 
   getServiceFromEntityName(entityName: EntityNames): Service {
     return this[`${entityName}Service`] as Service;

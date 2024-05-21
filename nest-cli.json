@@ -60,6 +60,60 @@
       "compilerOptions": {
         "tsConfigPath": "apps/categories/tsconfig.app.json"
       }
+    },
+    "books": {
+      "type": "application",
+      "root": "apps/books",
+      "entryFile": "main",
+      "sourceRoot": "apps/books/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/books/tsconfig.app.json"
+      }
+    },
+    "promotions": {
+      "type": "application",
+      "root": "apps/promotions",
+      "entryFile": "main",
+      "sourceRoot": "apps/promotions/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/promotions/tsconfig.app.json"
+      }
+    },
+    "reviews": {
+      "type": "application",
+      "root": "apps/reviews",
+      "entryFile": "main",
+      "sourceRoot": "apps/reviews/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/reviews/tsconfig.app.json"
+      }
+    },
+    "process": {
+      "type": "application",
+      "root": "apps/process",
+      "entryFile": "main",
+      "sourceRoot": "apps/process/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/process/tsconfig.app.json"
+      }
+    },
+    "author": {
+      "type": "application",
+      "root": "apps/author",
+      "entryFile": "main",
+      "sourceRoot": "apps/author/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/author/tsconfig.app.json"
+      }
+    },
+    "publisher": {
+      "type": "application",
+      "root": "apps/publisher",
+      "entryFile": "main",
+      "sourceRoot": "apps/publisher/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/publisher/tsconfig.app.json"
+      }
     }
   }
 }

@@ -8,6 +8,7 @@ import { ReviewsModule } from 'apps/reviews/src/reviews.module';
 import { PublisherModule } from 'apps/publisher/src/publisher.module';
 import { ProcessModule } from 'apps/process/src/process.module';
 import { PromotionsModule } from 'apps/promotions/src/promotions.module';
+import { CloudinaryModule } from '@app/common';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PromotionsModule } from 'apps/promotions/src/promotions.module';
     PublisherModule,
     ProcessModule,
     PromotionsModule,
+    CloudinaryModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

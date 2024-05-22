@@ -1,21 +1,34 @@
-<table class="w-full">
-  <thead class="bg-blue-600">
+<button type='submit' id='submit'
+  class='text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+  <a href="create/books" class="px-4">
+    Add new book
+  </a>
+</button>
+
+<table class="w-3/4 mx-auto text-sm text-left rtl:text-right">
+  <thead class="ext-xl text-gray-700 uppercase bg-gray-50">
     <tr>
-      <th class="border border-slate-700">STT</th>
-      <th class="border border-slate-700">Title</th>
-      <th class="border border-slate-700">Description</th>
-      <th class="border border-slate-700">Image</th>
-      <th class="border border-slate-700">Action</th>
+      <th class="border border-slate-700 pl-4">STT</th>
+      <th class="border border-slate-700 pl-4">Title</th>
+      <th class="border border-slate-700 pl-4">Genre</th>
+      <th class="border border-slate-700 pl-4">Rating</th>
+      <th class="border border-slate-700 pl-4">Price</th>
+      <th class="border border-slate-700 pl-4">Description</th>
+      <th class="border border-slate-700 pl-4">Image</th>
+      <th class="border border-slate-700 pl-4">Action</th>
     </tr>
   </thead>
   <tbody>
     <% data.forEach(function(item, index) { %>
     <tr>
-      <td class="border border-slate-700"><%= index + 1 %></td>
-      <td class="border border-slate-700"><%= item.title %></td>
-      <td class="border border-slate-700"><%= item.description %></td>
-      <td class="border border-slate-700"><%= item.image %></td>
-      <td class="border border-slate-700">
+      <td class="border border-slate-700 pl-4"><%= index + 1 %></td>
+      <td class="border border-slate-700 pl-4"><%= item.title %></td>
+      <td class="border border-slate-700 pl-4"><%= item.genre %></td>
+      <td class="border border-slate-700 pl-4"><%= item.rating %></td>
+      <td class="border border-slate-700 pl-4"><%= item.prices[0].originalPrice %></td>
+      <td class="border border-slate-700 pl-4"><%= item.description %></td>
+      <td class="border border-slate-700 pl-4"><img width="50" src="<%= item.images[0] %>" alt=""></td>
+      <td class="border border-slate-700 pl-4">
         <a href="edit/books/<%= item.id %>" class="text-blue-500 hover:text-blue-800">Edit</a>
         <form action="delete/books/<%= item.id %>" method="POST" class="inline">
           <input type="hidden" name="_method" value="DELETE">
@@ -26,3 +39,19 @@
     <% }); %>
   </tbody>
 </table>
+
+<br>
+<div class="">
+  <a href="<%= pagination.prevPage %>" class="px-4">
+    <i class="fa-solid fa-angle-left"></i>
+  </a>
+  <% pagination.pages.forEach(function(page) { %>
+    <a href="/<%= entityName %>?page=<%= page %>&limit=5"
+      class="<%= (page === pagination.currentPage) ? 'bg-red-500 text-white' : '' %> border rounded p-2 mr-2">
+      <%= page %>
+    </a>
+    <% }); %>
+      <a href="<%= pagination.nextPage %>" class="px-4">
+        <i class="fa-solid fa-angle-right"></i>
+      </a>
+</div>

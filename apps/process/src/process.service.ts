@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProcessRepository } from './books.repository';
+import { ProcessRepository } from './process.repository';
 
 @Injectable()
 export class ProcessService {

@@ -3,7 +3,7 @@ import { ProcessService } from './process.service';
 import { PrismaModule } from '@app/common';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ProcessRepository } from './books.repository';
+import { ProcessRepository } from './process.repository';
 import { ProcessResolver } from './process.resolver';
 
 @Module({

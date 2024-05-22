@@ -81,6 +81,19 @@ export class AdminService {
         }),
       );
       return true;
+    } else if (entityName === 'books') {
+      if (data.genre.length > 1) {
+        data.genre = data.genre[1];
+      }
+      data.originalPrice = parseFloat(data.price);
+
+      // images: '["http://res.cloudinary.com/dkh1ozkvt/image/upload/v1716347203/tkf8doawuqxfnllc8btx.png"]'
+      //parse images string to array
+      data.images = JSON.parse(data.images);
+
+      delete data.price;
+      const rs = await entityService.create(data);
+      return rs;
     } else {
       const rs = await entityService.create(data);
       return rs;
@@ -103,8 +116,22 @@ export class AdminService {
 
   async getAllGerne() {
     const genres = await this.booksService.getAllGerne();
-    console.log('Genres:', genres);
     return genres;
+  }
+
+  async getAllAuthors() {
+    const authors = await this.authorService.findAll();
+    return authors;
+  }
+
+  async getAllCategories() {
+    const categories = await this.categoriesService.findAll();
+    return categories;
+  }
+
+  async getAllPublishers() {
+    const publishers = await this.publisherService.findAll();
+    return publishers;
   }
 
   private handlePagination(

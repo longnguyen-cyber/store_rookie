@@ -5,7 +5,19 @@ import { Injectable } from '@nestjs/common';
 export class BookRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findAll() {
-    const books = await this.prisma.book.findMany();
+    const books = await this.prisma.book.findMany({
+      include: {
+        prices: true,
+
+        category: true,
+        publishers: {
+          select: {
+            publisher: true,
+          },
+        },
+      },
+    });
+
     return books;
   }
 
@@ -37,9 +49,35 @@ export class BookRepository {
   }
 
   async create(data: any) {
+    console.log(data);
     const book = await this.prisma.book.create({
       data: {
-        ...data,
+        category: {
+          connect: {
+            id: data.category,
+          },
+        },
+        publishers: {
+          create: {
+            publisherId: data.publisher,
+          },
+        },
+        authors: {
+          create: {
+            authorId: data.author,
+          },
+        },
+        title: data.title,
+        genre: data.genre,
+        description: data.description,
+        prices: {
+          create: {
+            originalPrice: data.originalPrice,
+            startDate: new Date(),
+            discountPrice: 0,
+          },
+        },
+        images: data.images,
       },
     });
     return book;

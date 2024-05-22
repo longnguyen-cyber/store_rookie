@@ -1,4 +1,4 @@
-import { CustomValidationPipe } from '@app/common';
+import { CloudinaryService, CustomValidationPipe } from '@app/common';
 import {
   Body,
   Controller,
@@ -8,14 +8,20 @@ import {
   Query,
   Render,
   Res,
+  UploadedFiles,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { AdminService, EntityNames } from './admin.service'; // Import the EntityNames type from the admin.service file
 
 @Controller()
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Get()
   @Render('index')
@@ -114,6 +120,16 @@ export class AdminController {
         data: { genres },
         error: '',
       });
+    } else if (entityName.toString() === 'books') {
+      const authors = await this.adminService.getAllAuthors();
+      const categories = await this.adminService.getAllCategories();
+      const genres = await this.adminService.getAllGerne();
+      const publishers = await this.adminService.getAllPublishers();
+      return res.render('layout', {
+        content: `./${entityName}/create`,
+        data: { authors, categories, genres, publishers },
+        error: '',
+      });
     }
     return res.render('layout', {
       content: `./${entityName}/create`,
@@ -138,5 +154,15 @@ export class AdminController {
         error: 'Error',
       });
     }
+  }
+
+  @Post('uploads')
+  @UseInterceptors(FilesInterceptor('file[]', 5))
+  async uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
+    const rs = await Promise.all(
+      files.map((file) => this.cloudinaryService.uploadFile(file)),
+    );
+
+    return rs.map((r) => r.url);
   }
 }

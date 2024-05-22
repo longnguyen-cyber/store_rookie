@@ -73,10 +73,16 @@ export class AdminService {
       delete data.genre;
       await Promise.all(
         books.map(async (book) => {
+          await this.booksService.createBookPrice({
+            bookId: book.id,
+            originalPrice: book.prices[0].originalPrice,
+            old_price_id: book.prices[0].id,
+          });
+
           await entityService.create({
             ...data,
             bookId: book.id,
-            promotionType: 'discount',
+            promotionType: 'percent',
           });
         }),
       );
@@ -86,12 +92,7 @@ export class AdminService {
         data.genre = data.genre[1];
       }
       data.originalPrice = parseFloat(data.price);
-
-      // images: '["http://res.cloudinary.com/dkh1ozkvt/image/upload/v1716347203/tkf8doawuqxfnllc8btx.png"]'
-      //parse images string to array
       data.images = JSON.parse(data.images);
-
-      delete data.price;
       const rs = await entityService.create(data);
       return rs;
     } else {

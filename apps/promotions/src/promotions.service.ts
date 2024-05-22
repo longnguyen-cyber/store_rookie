@@ -17,7 +17,6 @@ export class PromotionsService {
         endDate: this.formatTimeVi(item.endDate),
       };
     });
-    console.log(rs);
 
     return final;
   }

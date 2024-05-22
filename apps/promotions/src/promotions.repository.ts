@@ -9,6 +9,11 @@ export class PromotionRepository {
       include: {
         book: {
           include: {
+            prices: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+            },
             authors: {
               select: {
                 author: true,

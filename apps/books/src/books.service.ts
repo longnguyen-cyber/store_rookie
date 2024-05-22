@@ -7,9 +7,8 @@ export class BookService {
 
   async findAll() {
     const books = await this.bookRepository.findAll();
-
     const final = books.map((book) => {
-      const lastedPrice = this.lastedPrice(book.prices);
+      const lastedPrice = book.prices[0];
       return {
         ...book,
         prices: [lastedPrice],
@@ -19,13 +18,9 @@ export class BookService {
     return final;
   }
 
-  private lastedPrice(prices: any[]) {
-    return prices.reduce((acc, cur) => {
-      if (acc.createdAt < cur.createdAt) {
-        return cur;
-      }
-      return acc;
-    });
+  async createBookPrice(data: any) {
+    const price = await this.bookRepository.createBookPrice(data);
+    return price;
   }
 
   async findOne(id: string) {

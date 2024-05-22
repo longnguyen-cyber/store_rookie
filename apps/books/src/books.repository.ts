@@ -7,7 +7,11 @@ export class BookRepository {
   async findAll() {
     const books = await this.prisma.book.findMany({
       include: {
-        prices: true,
+        prices: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
 
         category: true,
         publishers: {
@@ -35,6 +39,13 @@ export class BookRepository {
       where: {
         genre: genre,
       },
+      include: {
+        prices: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
     });
     return books;
   }
@@ -49,7 +60,6 @@ export class BookRepository {
   }
 
   async create(data: any) {
-    console.log(data);
     const book = await this.prisma.book.create({
       data: {
         category: {
@@ -81,6 +91,39 @@ export class BookRepository {
       },
     });
     return book;
+  }
+
+  async createBookPrice(data: any) {
+    const bookPrice = await this.prisma.bookPrice.create({
+      data: {
+        book: {
+          connect: {
+            id: data.bookId,
+          },
+        },
+        originalPrice: data.originalPrice,
+        discountPrice: data.originalPrice * 0.9,
+        startDate: new Date(),
+      },
+    });
+    if (bookPrice) {
+      this.updateOldPrice(data.old_price_id);
+      return bookPrice;
+    }
+    return false;
+  }
+
+  private async updateOldPrice(id: string) {
+    const bookPrice = await this.prisma.bookPrice.update({
+      where: {
+        id: id,
+      },
+      data: {
+        endDate: new Date(),
+      },
+    });
+    console.log(bookPrice);
+    return bookPrice;
   }
 
   async update(id: string, data: any) {

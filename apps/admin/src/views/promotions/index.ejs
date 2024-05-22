@@ -6,14 +6,15 @@
 </button>
 
 <table class="w-3/4 mx-auto text-sm text-left rtl:text-right ">
-  <thead class="bg-blue-600">
+  <thead class="bg-blue-600 text-center">
     <tr>
-      <th class="border border-slate-700 pl-4">STT</th>
-      <th class="border border-slate-700 pl-4">book title</th>
-      <th class="border border-slate-700 pl-4">type</th>
-      <th class="border border-slate-700 pl-4">start_date</th>
-      <th class="border border-slate-700 pl-4">end_date</th>
-      <th class="border border-slate-700 pl-4">Action</th>
+      <th class="border border-slate-700">STT</th>
+      <th class="border border-slate-700 w-96">book</th>
+      <th class="border border-slate-700">promotion type</th>
+      <th class="border border-slate-700">Price</th>
+      <th class="border border-slate-700">start date</th>
+      <th class="border border-slate-700">end date</th>
+      <th class="border border-slate-700">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -22,17 +23,17 @@
         <td class="border border-slate-700 pl-4">
           <%= index + 1 %>
         </td>
-        <td class="flex border border-slate-700 pl-4">
+        <td class="border border-slate-700 pl-4 flex w-96 py-1">
           <img width="50" src="<%= item.book.images[0] %>" alt="">
           <div class="ml-3">
             <%= item.book.title %>
           <br>
             <% item.book.authors.forEach(element=> { %>
               <p>
-                Author: <%= element.author.name %>
+                Author: <strong><i><%= element.author.name %></i></strong>
               </p>
               <p>
-                Bio: <%= element.author.bio %>
+                Bio: <small><%= element.author.bio %></small>
 
               </p>
               <% }) %>
@@ -40,6 +41,10 @@
         </td>
         <td class="border border-slate-700 pl-4">
           <%= item.promotionType %>
+        </td>
+        <td class="border border-slate-700 pl-4 text-center ">
+          <span class="line-through p-2 bg-gray-400 rounded"><%= item.book.prices[0].originalPrice %>$</span>
+          <span class="p-2 bg-green-400 rounded"><%= item.book.prices[0].discountPrice.toFixed(2) %>$</span>
         </td>
         <td class="border border-slate-700 pl-4">
           <%= item.startDate %>

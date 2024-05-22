@@ -26,7 +26,6 @@ export class AdminController {
   @Get()
   @Render('index')
   dashboard() {
-    console.log('Dashboard');
     return { data: 'Hello World!' };
   }
 
@@ -78,7 +77,6 @@ export class AdminController {
     @Res() res: Response,
   ) {
     const data = await this.adminService.getRes(entityName, id);
-    console.log('Data:', data);
     return res.render('layout', {
       content: `./${entityName}/edit`,
       data,

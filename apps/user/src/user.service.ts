@@ -1,19 +1,19 @@
+import { CACHE_SERVICE } from '@app/cache';
 import { CommonService, HttpExceptionCustom } from '@app/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { LoginInput } from '@app/common/user';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from 'apps/auth/src/auth.service';
 import { Cache } from 'cache-manager';
 import { UserCheck } from './user.check';
 import { UserRepository } from './user.repository';
-import { LoginInput } from '@app/common/user';
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private userCheck: UserCheck,
     private authService: AuthService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_SERVICE) private cacheManager: Cache,
     private readonly configService: ConfigService,
     private readonly commonService: CommonService,
   ) {}

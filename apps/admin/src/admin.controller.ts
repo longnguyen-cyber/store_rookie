@@ -1,4 +1,8 @@
-import { CloudinaryService, CustomValidationPipe } from '@app/common';
+import {
+  AuthGuard,
+  CloudinaryService,
+  CustomValidationPipe,
+} from '@app/common';
 import {
   Body,
   Controller,
@@ -7,8 +11,10 @@ import {
   Post,
   Query,
   Render,
+  Req,
   Res,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -24,9 +30,15 @@ export class AdminController {
   ) {}
 
   @Get()
-  @Render('index')
-  dashboard() {
-    return { data: 'Hello World!' };
+  @UseGuards(AuthGuard)
+  dashboard(@Res() res: Response, @Req() req: any) {
+    console.log('request:', req);
+
+    // return res.render('layout', {
+    //   content: './dashboard',
+    //   data: {},
+    // });
+    // return { data: 'Hello World!' };
   }
   @Post('login')
   async postLogin(@Body() body: any, @Res() res: Response) {

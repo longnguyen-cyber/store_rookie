@@ -1,4 +1,4 @@
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_SERVICE } from '@app/cache';
 import {
   CanActivate,
   ExecutionContext,
@@ -14,7 +14,7 @@ import { Cache } from 'cache-manager';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_SERVICE) private cacheManager: Cache,
     private readonly authService: AuthService,
   ) {}
 

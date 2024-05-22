@@ -1,22 +1,21 @@
+import { CommonModule, LoggerService, PrismaModule } from '@app/common';
+import { SecurityMiddleware } from '@app/common/middleware/security.middleware';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import {
   forwardRef,
   MiddlewareConsumer,
   Module,
   NestModule,
 } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { UserRepository } from './user.repository';
-import { CommonModule, LoggerService, PrismaModule } from '@app/common';
-import { SecurityMiddleware } from '@app/common/middleware/security.middleware';
-import { UserCheck } from './user.check';
-import { AuthModule } from 'apps/auth/src/auth.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
-import { UserResolver } from './user.resolver';
+import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { AuthModule } from 'apps/auth/src/auth.module';
+import { UserCheck } from './user.check';
+import { UserController } from './user.controller';
+import { UserRepository } from './user.repository';
+import { UserResolver } from './user.resolver';
+import { UserService } from './user.service';
+import { CacheModule } from '@app/cache';
 
 @Module({
   imports: [
@@ -24,18 +23,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     forwardRef(() => AuthModule),
     ConfigModule,
     CommonModule,
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        isGlobal: true,
-        store: redisStore,
-        host: configService.get<string>('REDIS_HOST'),
-        port: configService.get<number>('REDIS_PORT'),
-        username: configService.get<string>('REDIS_USERNAME'),
-        password: configService.get<string>('REDIS_PASSWORD'),
-      }),
-    }),
+    forwardRef(() => CacheModule.register()),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: '~schema.gql',

@@ -28,6 +28,17 @@ export class AdminController {
   dashboard() {
     return { data: 'Hello World!' };
   }
+  @Post('login')
+  async postLogin(@Body() body: any, @Res() res: Response) {
+    console.log('Body:', body);
+    if (body.username === 'admin' && body.password === 'admin') {
+      return res.redirect('/books');
+    } else {
+      return res.render('auth/login', {
+        error: 'Invalid username or password',
+      });
+    }
+  }
 
   @Get('login')
   @Render('auth/login')

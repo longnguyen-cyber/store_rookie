@@ -1,4 +1,10 @@
-import { OmitType } from '@nestjs/swagger';
-import { UserCreateDto } from './userCreate.dto';
+import { Field, InputType } from '@nestjs/graphql';
 
-export class LoginDTO extends OmitType(UserCreateDto, ['student_name']) {}
+@InputType()
+export class LoginInput {
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+}

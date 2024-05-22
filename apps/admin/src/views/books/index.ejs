@@ -24,8 +24,8 @@
       <td class="border border-slate-700 pl-4"><%= index + 1 %></td>
       <td class="border border-slate-700 pl-4"><%= item.title %></td>
       <td class="border border-slate-700 pl-4"><%= item.genre %></td>
-      <td class="border border-slate-700 pl-4"><%= item.rating %></td>
-      <td class="border border-slate-700 pl-4"><%= item.prices[0].originalPrice %></td>
+      <td class="border border-slate-700 pl-4 text-center"><%= item.rating %><i class="fa-solid fa-star text-yellow-500"></i></td>
+      <td class="border border-slate-700 pl-4"><%= item.prices[0].originalPrice %>$</td>
       <td class="border border-slate-700 pl-4"><%= item.description %></td>
       <td class="border border-slate-700 pl-4"><img width="50" src="<%= item.images[0] %>" alt=""></td>
       <td class="border border-slate-700 pl-4">

@@ -1,9 +1,11 @@
-import { UserCreateDto } from './userCreate.dto'
+import { Field, HideField, ObjectType } from '@nestjs/graphql';
+import { User } from '../@generated/user/user.model';
 
-export class ResUserDto extends UserCreateDto {
-  id: string
-  avatar: string
-  status: string
-  isTwoFactorAuthenticationEnabled: boolean
-  twoFactorAuthenticationSecret: string
+@ObjectType()
+export class ResUserDto extends User {
+  @HideField()
+  password: string;
+
+  @Field()
+  token: string;
 }

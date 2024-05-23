@@ -1,3 +1,4 @@
+import { CommonService } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { AuthorService } from 'apps/author/src/author.service';
 import { BookService } from 'apps/books/src/books.service';
@@ -37,6 +38,7 @@ export class AdminService {
     private readonly promotionsService: PromotionsService,
     private readonly reviewsService: ReviewsService,
     private readonly userService: UserService,
+    private readonly commonService: CommonService,
   ) {}
 
   async login(userLoginDto: any) {
@@ -53,7 +55,9 @@ export class AdminService {
     // Fetch the data for the current page
     const start = (page - 1) * limit;
     const end = page * limit;
-    const allData = await entityService.findAll();
+    const allData = (await entityService.findAll()).map((item) =>
+      this.commonService.deleteField(item, ['']),
+    );
     const res = allData.slice(start, end);
 
     // Count the total number of items

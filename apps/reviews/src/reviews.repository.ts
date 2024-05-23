@@ -5,7 +5,12 @@ import { Injectable } from '@nestjs/common';
 export class ReviewRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findAll() {
-    const reviews = await this.prisma.review.findMany();
+    const reviews = await this.prisma.review.findMany({
+      include: {
+        book: true,
+        user: true,
+      },
+    });
     return reviews;
   }
 

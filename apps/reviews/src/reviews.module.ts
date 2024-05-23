@@ -5,10 +5,14 @@ import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ReviewRepository } from './reviews.repository';
 import { ReviewsResolver } from './reviews.resolver';
+import { CacheModule } from '@app/cache';
+import { AuthModule } from 'apps/auth/src/auth.module';
 
 @Module({
   imports: [
     PrismaModule,
+    CacheModule.register(),
+    AuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: '~schema.gql',

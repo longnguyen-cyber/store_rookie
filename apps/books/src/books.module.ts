@@ -15,6 +15,7 @@ import { AuthorModule } from 'apps/author/src/author.module';
     OrderModule,
     CategoriesModule,
     AuthorModule,
+
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: '~schema.gql',

@@ -2,8 +2,8 @@
   <thead class="bg-blue-600">
     <tr>
       <th class="border border-slate-700">STT</th>
-      <th class="border border-slate-700">book_id</th>
-      <th class="border border-slate-700">user_id</th>
+      <th class="border border-slate-700">book</th>
+      <th class="border border-slate-700">user</th>
       <th class="border border-slate-700">rating</th>
       <th class="border border-slate-700">comment</th>
     </tr>
@@ -12,8 +12,8 @@
     <% data.forEach(function(item, index) { %>
     <tr>
       <td class="border border-slate-700"><%= index + 1 %></td>
-      <td class="border border-slate-700"><%= item.book_id %></td>
-      <td class="border border-slate-700"><%= item.user_id %></td>
+      <td class="border border-slate-700"><%= item.book.title %></td>
+      <td class="border border-slate-700"><%= item.user.username %></td>
       <td class="border border-slate-700"><%= item.rating %></td>
       <td class="border border-slate-700"><%= item.comment %></td>
     </tr>

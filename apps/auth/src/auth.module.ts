@@ -11,7 +11,6 @@ import { AuthService } from './auth.service';
     forwardRef(() => UserModule),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
     }),
   ],
   exports: [AuthService],

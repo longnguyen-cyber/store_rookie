@@ -8,7 +8,7 @@ import { ROLES_KEY } from '../decorator';
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  canActivate(context: ExecutionContext) {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -29,11 +29,13 @@ export class RolesGuard implements CanActivate {
       response.redirect('/login');
       return false;
     }
-    // Check if user is admin
     if (user.isAdmin) {
       return true;
     }
+    if (requiredRoles.includes(Role.User) && !user.isAdmin) {
+      return true;
+    }
 
-    return requiredRoles.some((role) => user.roles?.includes(role));
+    return false;
   }
 }

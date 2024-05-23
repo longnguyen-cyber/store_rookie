@@ -14,7 +14,8 @@ export class ReviewsService {
   }
 
   async create(data: any) {
-    return await this.reviewRepository.create(data);
+    const rs = await this.reviewRepository.create(data);
+    return rs;
   }
 
   async update(id: string, data: any) {

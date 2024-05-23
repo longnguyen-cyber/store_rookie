@@ -6,12 +6,12 @@ import { BooksModule } from 'apps/books/src/books.module';
 import { AuthorModule } from 'apps/author/src/author.module';
 import { ReviewsModule } from 'apps/reviews/src/reviews.module';
 import { PublisherModule } from 'apps/publisher/src/publisher.module';
-import { ProcessModule } from 'apps/orders/src/process.module';
 import { PromotionsModule } from 'apps/promotions/src/promotions.module';
-import { CloudinaryModule } from '@app/common';
+import { CloudinaryModule, CommonModule } from '@app/common';
 import { CacheModule } from '@app/cache';
 import { AuthModule } from 'apps/auth/src/auth.module';
 import { UserModule } from 'apps/user/src/user.module';
+import { OrderModule } from 'apps/orders/src/order.module';
 
 @Module({
   imports: [
@@ -19,11 +19,12 @@ import { UserModule } from 'apps/user/src/user.module';
     BooksModule,
     AuthorModule,
     ReviewsModule,
+    CommonModule,
     CacheModule.register(),
     UserModule,
     AuthModule,
     PublisherModule,
-    ProcessModule,
+    OrderModule,
     PromotionsModule,
     CloudinaryModule,
   ],

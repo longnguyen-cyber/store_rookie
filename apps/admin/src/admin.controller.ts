@@ -81,7 +81,7 @@ export class AdminController {
         page,
         limit,
       );
-      console.log('Data:', data);
+
       return res.render('layout', {
         content: `./${entityName}/index`,
         data,
@@ -144,20 +144,21 @@ export class AdminController {
     @Res() res: Response,
   ) {
     if (entityName.toString() === 'promotions') {
-      const genres = await this.adminService.getAllGerne();
+      const categories = (await this.adminService.getAllCategories()).filter(
+        (category) => category.books.length > 0,
+      );
       return res.render('layout', {
         content: `./${entityName}/create`,
-        data: { genres },
+        data: { categories },
         error: '',
       });
     } else if (entityName.toString() === 'books') {
       const authors = await this.adminService.getAllAuthors();
       const categories = await this.adminService.getAllCategories();
-      const genres = await this.adminService.getAllGerne();
       const publishers = await this.adminService.getAllPublishers();
       return res.render('layout', {
         content: `./${entityName}/create`,
-        data: { authors, categories, genres, publishers },
+        data: { authors, categories, publishers },
         error: '',
       });
     }

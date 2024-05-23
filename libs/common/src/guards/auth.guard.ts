@@ -76,7 +76,6 @@ export class AuthGuard implements CanActivate {
 
     request.token = token;
     request.user = parsedUser;
-    console.log('User:', parsedUser);
     return true;
   }
 

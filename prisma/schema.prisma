@@ -63,7 +63,6 @@ model Book {
   title       String
   description String?         @map("description")
   categoryId  String          @map("category_id")
-  genre       String          @map("genre")
   rating      Float           @default(0) @map("rating")
   images      Json            @map("images")
   createdAt   DateTime        @default(now()) @map("created_at")

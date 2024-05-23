@@ -76,8 +76,11 @@ export class AdminService {
     if (entityName === 'promotions') {
       data.startDate = new Date(data.startDate);
       data.endDate = new Date(data.endDate);
-      const books = await this.booksService.getBookByGenre(data.genre);
-      delete data.genre;
+      console.log('Data:', data);
+      const books = await this.categoriesService.getBookByCategory(
+        data.category,
+      );
+      delete data.category;
       await Promise.all(
         books.map(async (book) => {
           await this.booksService.createBookPrice({
@@ -120,11 +123,6 @@ export class AdminService {
 
     const res = await entityService.findOne(id);
     return res;
-  }
-
-  async getAllGerne() {
-    const genres = await this.booksService.getAllGerne();
-    return genres;
   }
 
   async getAllAuthors() {

@@ -5,8 +5,32 @@ import { Injectable } from '@nestjs/common';
 export class CategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findAll() {
-    const categories = await this.prisma.category.findMany();
+    const categories = await this.prisma.category.findMany({
+      include: {
+        books: true,
+      },
+    });
     return categories;
+  }
+
+  async getBookByCategory(category: string) {
+    const books = await this.prisma.category.findMany({
+      where: {
+        id: category,
+      },
+      select: {
+        books: {
+          include: {
+            prices: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+            },
+          },
+        },
+      },
+    });
+    return books;
   }
 
   async findOne(id: string) {

@@ -7,8 +7,14 @@ export class CategoriesService {
 
   async findAll() {
     const categories = await this.categoriesRepository.findAll();
-    console.log('Categories:', categories);
     return categories;
+  }
+
+  async getBookByCategory(category: string) {
+    const categories =
+      await this.categoriesRepository.getBookByCategory(category);
+    const books = categories.map((category) => category.books);
+    return books.flat();
   }
 
   async findOne(id: string) {

@@ -20,6 +20,16 @@ export class BookRepository {
     return books;
   }
 
+  async getBooksForCron() {
+    const books = await this.prisma.book.findMany({
+      include: {
+        reviews: true,
+      },
+    });
+
+    return books.filter((item) => item.reviews.length > 0);
+  }
+
   async findOne(id: string) {
     const book = await this.prisma.book.findUnique({
       where: {

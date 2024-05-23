@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { BookRepository } from './books.repository';
-import { OrderService } from 'apps/orders/src/order.service';
-import { CategoriesService } from 'apps/categories/src/categories.service';
-import { AuthorService } from 'apps/author/src/author.service';
 import { QUERY_ORDER } from '@app/common';
+import { Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { AuthorService } from 'apps/author/src/author.service';
+import { CategoriesService } from 'apps/categories/src/categories.service';
+import { OrderService } from 'apps/orders/src/order.service';
+import { BookRepository } from './books.repository';
 
 @Injectable()
 export class BookService {
@@ -13,6 +14,29 @@ export class BookService {
     private readonly orderService: OrderService,
     private readonly authorService: AuthorService,
   ) {}
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+    name: 'update book rating',
+  })
+  async handleCron() {
+    const books = await this.bookRepository.getBooksForCron();
+    books.forEach((item) => {
+      const sumReviewOfBook = item.reviews.length;
+      const totalStar = item.reviews.reduce((acc, cur) => acc + cur.rating, 0);
+      const rating = parseFloat((totalStar / sumReviewOfBook).toFixed(1));
+      const ratings = Array(5).fill(0);
+      const reviews = item.reviews;
+      reviews.forEach((review) => {
+        ratings[review.rating - 1]++;
+      });
+
+      this.bookRepository.update(item.id, {
+        rating,
+        ratings,
+      });
+      console.log('update book', item.id);
+    });
+  }
 
   async findAll() {
     const books = await this.bookRepository.findAll();

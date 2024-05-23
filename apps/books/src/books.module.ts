@@ -8,6 +8,7 @@ import { BookResolver } from './books.resolver';
 import { OrderModule } from 'apps/orders/src/order.module';
 import { CategoriesModule } from 'apps/categories/src/categories.module';
 import { AuthorModule } from 'apps/author/src/author.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AuthorModule } from 'apps/author/src/author.module';
     OrderModule,
     CategoriesModule,
     AuthorModule,
-
+    ScheduleModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: '~schema.gql',

@@ -1,20 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Res,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Role, Roles } from '@app/common';
+import { AuthGuard } from '@app/common/guards/auth.guard';
+import { RolesGuard } from '@app/common/guards/roles.guard';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { UserService } from './user.service';
-import { RolesGuard } from '@app/common/guards/roles.guard';
-import { AuthGuard } from '@app/common/guards/auth.guard';
-import { ErrorInterceptor, Role, Roles } from '@app/common';
 
 @Controller()
-@UseInterceptors(ErrorInterceptor)
+// @UseInterceptors(ErrorInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

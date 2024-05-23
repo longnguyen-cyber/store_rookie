@@ -2,6 +2,9 @@ import {
   AuthGuard,
   CloudinaryService,
   CustomValidationPipe,
+  Role,
+  Roles,
+  RolesGuard,
 } from '@app/common';
 import {
   Body,
@@ -11,7 +14,6 @@ import {
   Post,
   Query,
   Render,
-  Req,
   Res,
   UploadedFiles,
   UseGuards,
@@ -30,25 +32,24 @@ export class AdminController {
   ) {}
 
   @Get()
-  @UseGuards(AuthGuard)
-  dashboard(@Res() res: Response, @Req() req: any) {
-    console.log('request:', req);
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Render('index')
+  dashboard() {}
 
-    // return res.render('layout', {
-    //   content: './dashboard',
-    //   data: {},
-    // });
-    // return { data: 'Hello World!' };
-  }
   @Post('login')
   async postLogin(@Body() body: any, @Res() res: Response) {
-    console.log('Body:', body);
-    if (body.username === 'admin' && body.password === 'admin') {
-      return res.redirect('/books');
+    const login = await this.adminService.login(body);
+    res.cookie('token', login.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+    });
+    if (login.isAdmin) {
+      return res.redirect('/');
     } else {
-      return res.render('auth/login', {
-        error: 'Invalid username or password',
-      });
+      return res.redirect('/login');
     }
   }
 
@@ -56,7 +57,15 @@ export class AdminController {
   @Render('auth/login')
   getLogin() {}
 
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('token');
+    return res.redirect('/login');
+  }
+
   @Get(':entityName')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async getHello(
     @Param('entityName') entityName: EntityNames,
     @Query('page') page: number,

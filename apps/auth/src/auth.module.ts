@@ -1,14 +1,8 @@
-import {
-  forwardRef,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
+import { CommonModule, LoggerService, PrismaModule } from '@app/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'apps/user/src/user.module';
 import { AuthService } from './auth.service';
-import { PrismaModule, CommonModule, LoggerService } from '@app/common';
-import { SecurityMiddleware } from '@app/common/middleware/security.middleware';
 @Module({
   providers: [AuthService, LoggerService],
   imports: [
@@ -22,8 +16,4 @@ import { SecurityMiddleware } from '@app/common/middleware/security.middleware';
   ],
   exports: [AuthService],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SecurityMiddleware).forRoutes('*');
-  }
-}
+export class AuthModule {}

@@ -18,7 +18,6 @@ interface StandartErrorResponse {
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-    console.log('in HttpExceptionFilter');
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
@@ -43,6 +42,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       };
     }
 
+    if (status === 401) {
+      return response.redirect('/login');
+    }
     response.status(status).json(responseMessage);
   }
 }

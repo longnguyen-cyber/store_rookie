@@ -22,9 +22,13 @@ export class RolesGuard implements CanActivate {
     const request = isGraphql
       ? gqlContext.getContext().req
       : context.switchToHttp().getRequest();
-
     const { user } = request;
 
+    if (!user) {
+      const response = context.switchToHttp().getResponse();
+      response.redirect('/login');
+      return false;
+    }
     // Check if user is admin
     if (user.isAdmin) {
       return true;

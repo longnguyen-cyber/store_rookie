@@ -1,12 +1,7 @@
+import { CacheModule } from '@app/cache';
 import { CommonModule, LoggerService, PrismaModule } from '@app/common';
-import { SecurityMiddleware } from '@app/common/middleware/security.middleware';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import {
-  forwardRef,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AuthModule } from 'apps/auth/src/auth.module';
@@ -15,7 +10,6 @@ import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
-import { CacheModule } from '@app/cache';
 
 @Module({
   imports: [
@@ -40,8 +34,4 @@ import { CacheModule } from '@app/cache';
   ],
   exports: [UserService],
 })
-export class UserModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SecurityMiddleware).forRoutes('*');
-  }
-}
+export class UserModule {}

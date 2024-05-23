@@ -32,28 +32,42 @@ export class AuthGuard implements CanActivate {
     const request = isGraphql
       ? gqlContext.getContext().req
       : context.switchToHttp().getRequest();
+
     const url = request.url;
-
-    if (url === '/api/users/login') {
-      return true;
-    }
-
     let token = isGraphql
       ? this.getAccessToken(context)
       : request.cookies?.token;
     if (!token) {
       token = request.headers?.authorization?.split(' ')[1];
     }
+    if (url === '/' && !token) {
+      return true;
+    }
 
     if (!token) {
-      this.throwTokenError(request);
+      console.log('Token not found');
+      const response = context.switchToHttp().getResponse();
+      response.redirect('/login');
+      return false;
     }
 
-    const decoded = this.authService.decodeJWT(token);
-    if (!decoded) {
-      this.throwTokenError(request);
-    }
+    // const decoded = this.authService.decodeJWT(token);
+    // if (!decoded) {
+    //   this.throwTokenError(request);
+    // }
 
+    try {
+      const decoded = this.authService.decodeJWT(token);
+      // ... (rest of your guard logic)
+      if (!decoded) {
+        this.throwTokenError(request);
+      }
+    } catch (error) {
+      request.error = error.response;
+      const response = context.switchToHttp().getResponse();
+      response.redirect('/login');
+      return false;
+    }
     const user = await this.cacheManager.get(token);
     const parsedUser = JSON.parse(user as any);
     if (!parsedUser) {
@@ -62,6 +76,7 @@ export class AuthGuard implements CanActivate {
 
     request.token = token;
     request.user = parsedUser;
+    console.log('User:', parsedUser);
     return true;
   }
 

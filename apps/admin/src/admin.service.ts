@@ -6,6 +6,7 @@ import { ProcessService } from 'apps/process/src/process.service';
 import { PromotionsService } from 'apps/promotions/src/promotions.service';
 import { PublisherService } from 'apps/publisher/src/publisher.service';
 import { ReviewsService } from 'apps/reviews/src/reviews.service';
+import { UserService } from 'apps/user/src/user.service';
 
 type Service =
   | CategoriesService
@@ -35,7 +36,13 @@ export class AdminService {
     private readonly publisherService: PublisherService,
     private readonly promotionsService: PromotionsService,
     private readonly reviewsService: ReviewsService,
+    private readonly userService: UserService,
   ) {}
+
+  async login(userLoginDto: any) {
+    const login = await this.userService.login(userLoginDto);
+    return login;
+  }
 
   getServiceFromEntityName(entityName: EntityNames): Service {
     return this[`${entityName}Service`] as Service;

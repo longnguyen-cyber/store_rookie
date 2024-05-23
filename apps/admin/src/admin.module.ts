@@ -9,6 +9,9 @@ import { PublisherModule } from 'apps/publisher/src/publisher.module';
 import { ProcessModule } from 'apps/process/src/process.module';
 import { PromotionsModule } from 'apps/promotions/src/promotions.module';
 import { CloudinaryModule } from '@app/common';
+import { CacheModule } from '@app/cache';
+import { AuthModule } from 'apps/auth/src/auth.module';
+import { UserModule } from 'apps/user/src/user.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { CloudinaryModule } from '@app/common';
     BooksModule,
     AuthorModule,
     ReviewsModule,
+    CacheModule.register(),
+    UserModule,
+    AuthModule,
     PublisherModule,
     ProcessModule,
     PromotionsModule,

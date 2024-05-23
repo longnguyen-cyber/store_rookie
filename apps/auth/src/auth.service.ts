@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { randomBytes, scrypt, timingSafeEqual } from 'crypto';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { Token } from './interface/auth.interface';
+import { TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -91,6 +92,14 @@ export class AuthService {
   }
 
   decodeJWT(ac_token: Token): JwtPayload | string {
-    return verify(ac_token, process.env.JWT_SECRET);
+    try {
+      return verify(ac_token, process.env.JWT_SECRET);
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token expired');
+      } else {
+        throw new UnauthorizedException('Invalid token');
+      }
+    }
   }
 }

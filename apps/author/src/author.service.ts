@@ -24,4 +24,10 @@ export class AuthorService {
   async delete(id: string) {
     return await this.authorRepository.delete(id);
   }
+
+  async getBookByAuthor(author: string) {
+    const books = await this.authorRepository.getBookByAuthor(author);
+
+    return books.flat();
+  }
 }

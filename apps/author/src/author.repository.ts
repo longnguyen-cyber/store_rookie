@@ -18,6 +18,39 @@ export class AuthorRepository {
     return author;
   }
 
+  async getBookByAuthor(author_id: string) {
+    const authors = await this.prisma.author.findMany({
+      where: {
+        id: author_id,
+      },
+      select: {
+        books: {
+          include: {
+            book: {
+              include: {
+                prices: {
+                  orderBy: {
+                    createdAt: 'desc',
+                  },
+                },
+                category: true,
+                publishers: {
+                  select: {
+                    publisher: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const books = authors.flatMap((author) =>
+      author.books.map((book) => book.book),
+    );
+    return books;
+  }
+
   async create(data: any) {
     const author = await this.prisma.author.create({
       data: {

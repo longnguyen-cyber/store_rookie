@@ -21,11 +21,8 @@ export class CategoriesRepository {
       select: {
         books: {
           include: {
-            prices: {
-              orderBy: {
-                createdAt: 'desc',
-              },
-            },
+            prices: true,
+            promotions: true,
           },
         },
       },

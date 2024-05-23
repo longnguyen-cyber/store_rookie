@@ -7,12 +7,7 @@ export class BookRepository {
   async findAll() {
     const books = await this.prisma.book.findMany({
       include: {
-        prices: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-        },
-
+        prices: true,
         category: true,
         publishers: {
           select: {
@@ -73,7 +68,20 @@ export class BookRepository {
       orderBy: {
         rating: 'desc',
       },
+
       take: 200,
+    });
+    return books;
+  }
+
+  async getBookByRating(rating: number) {
+    const books = await this.prisma.book.findMany({
+      where: {
+        rating: {
+          gte: rating,
+          lt: rating + 1,
+        },
+      },
     });
     return books;
   }

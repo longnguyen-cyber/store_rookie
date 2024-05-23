@@ -7,7 +7,7 @@ export class OrderResolver {
   constructor(private readonly orderService: OrderService) {}
 
   @Query(() => [Order])
-  async processes() {
+  async orders() {
     return await this.orderService.findAll();
   }
 }

@@ -17,6 +17,14 @@ export class ReviewRepository {
     });
     return review;
   }
+  async getAllReviewByBookId(bookId: string) {
+    const reviews = await this.prisma.review.findMany({
+      where: {
+        bookId: bookId,
+      },
+    });
+    return reviews;
+  }
 
   async create(data: any) {
     const review = await this.prisma.review.create({

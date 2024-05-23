@@ -5,10 +5,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { BookService } from './books.service';
 import { BookRepository } from './books.repository';
 import { BookResolver } from './books.resolver';
+import { OrderModule } from 'apps/orders/src/order.module';
 
 @Module({
   imports: [
     PrismaModule,
+    OrderModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: '~schema.gql',

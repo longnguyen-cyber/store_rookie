@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { BookRepository } from './books.repository';
+import { OrderService } from 'apps/orders/src/order.service';
 
 @Injectable()
 export class BookService {
-  constructor(private readonly bookRepository: BookRepository) {}
+  constructor(
+    private readonly bookRepository: BookRepository,
+
+    private readonly orderService: OrderService,
+  ) {}
 
   async findAll() {
     const books = await this.bookRepository.findAll();
@@ -21,6 +26,16 @@ export class BookService {
   async createBookPrice(data: any) {
     const price = await this.bookRepository.createBookPrice(data);
     return price;
+  }
+
+  async getRecommendBooks() {
+    const books = await this.bookRepository.getRecommendBooksByRating();
+    return books;
+  }
+
+  async getBookPopular() {
+    const books = await this.orderService.getAllOrderCompletedOfBook();
+    return books;
   }
 
   async findOne(id: string) {

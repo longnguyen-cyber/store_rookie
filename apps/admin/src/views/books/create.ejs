@@ -20,22 +20,6 @@
       placeholder="" required name="price" />
   </div>
 
-  <div class="mb-5">
-    <label for="genre" class="block text-sm font-medium text-gray-900 ">Genre</label>
-    <select id="genre" name="genre"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-      <option selected>Choose genre</option>
-      <% data.genres.forEach(element=> { %>
-        <option value="<%= element %>">
-          <%= element %>
-        </option>
-        <% }) %>
-    </select>
-    <input type="text" id="genre"
-      class="bg-gray-50 mt-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
-      placeholder="Or create new genre" required name="genre" />
-
-  </div>
 
   <div class="mb-5">
     <label for="publisher" class="block text-sm font-medium text-gray-900 ">Publisher</label>

@@ -13,12 +13,22 @@ export class PromotionsService {
 
       return {
         ...item,
-        startDate: this.formatTimeVi(item.startDate),
-        endDate: this.formatTimeVi(item.endDate),
+        // startDate: this.formatTimeVi(item.startDate),
+        // endDate: this.formatTimeVi(item.endDate),
       };
     });
 
     return final;
+  }
+
+  //compare with end date and current date to get books on sale
+  async getOnSaleByCurrentDate() {
+    const booksSale = (await this.findAll()).filter((item) => {
+      const currentDate = new Date();
+      return item.endDate >= currentDate;
+    });
+
+    return booksSale;
   }
 
   private formatTimeVi(time: Date) {

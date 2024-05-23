@@ -2,11 +2,31 @@ import { PrismaService } from '@app/common';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ProcessRepository {
+export class OrderRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findAll() {
-    const processes = await this.prisma.order.findMany();
-    return processes;
+    const orders = await this.prisma.order.findMany();
+    return orders;
+  }
+
+  async getAllOrderCompletedOfBook() {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        status: 'Completed',
+      },
+      include: {
+        items: {
+          select: {
+            book: true,
+          },
+        },
+      },
+      take: 200,
+    });
+    const books = orders.flatMap((order) =>
+      order.items.map((item) => item.book),
+    );
+    return books;
   }
 
   async findOne(id: string) {

@@ -64,6 +64,7 @@ model Book {
   description String?         @map("description")
   categoryId  String          @map("category_id")
   rating      Float           @default(0) @map("rating")
+  ratings     Json            @map("ratings")
   images      Json            @map("images")
   createdAt   DateTime        @default(now()) @map("created_at")
   category    Category        @relation(fields: [categoryId], references: [id])

@@ -52,6 +52,7 @@ export class BookRepository {
             authorId: data.author,
           },
         },
+        ratings: [0, 0, 0, 0, 0],
         title: data.title,
         description: data.description,
         prices: {
@@ -65,6 +66,16 @@ export class BookRepository {
       },
     });
     return book;
+  }
+
+  async getRecommendBooksByRating() {
+    const books = await this.prisma.book.findMany({
+      orderBy: {
+        rating: 'desc',
+      },
+      take: 200,
+    });
+    return books;
   }
 
   async createBookPrice(data: any) {
@@ -96,7 +107,6 @@ export class BookRepository {
         endDate: new Date(),
       },
     });
-    console.log(bookPrice);
     return bookPrice;
   }
 

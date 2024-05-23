@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ProcessService } from './process.service';
+import { OrderService } from './order.service';
 import { PrismaModule } from '@app/common';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ProcessRepository } from './process.repository';
-import { ProcessResolver } from './process.resolver';
+import { OrderRepository } from './order.repository';
+import { OrderResolver } from './order.resolver';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { ProcessResolver } from './process.resolver';
     }),
   ],
   controllers: [],
-  providers: [ProcessService, ProcessRepository, ProcessResolver],
-  exports: [ProcessService],
+  providers: [OrderService, OrderRepository, OrderResolver],
+  exports: [OrderService],
 })
-export class ProcessModule {}
+export class OrderModule {}

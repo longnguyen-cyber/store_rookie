@@ -82,6 +82,7 @@ export class AdminController {
         limit,
       );
 
+      console.log('Data:', data);
       return res.render('layout', {
         content: `./${entityName}/index`,
         data,

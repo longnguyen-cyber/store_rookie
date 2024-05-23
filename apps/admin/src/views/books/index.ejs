@@ -10,7 +10,7 @@
     <tr>
       <th class="border border-slate-700 pl-4">STT</th>
       <th class="border border-slate-700 pl-4">Title</th>
-      <th class="border border-slate-700 pl-4">Genre</th>
+      <th class="border border-slate-700 pl-4">Category</th>
       <th class="border border-slate-700 pl-4">Rating</th>
       <th class="border border-slate-700 pl-4">Price</th>
       <th class="border border-slate-700 pl-4">Description</th>
@@ -23,7 +23,7 @@
     <tr>
       <td class="border border-slate-700 pl-4"><%= index + 1 %></td>
       <td class="border border-slate-700 pl-4"><%= item.title %></td>
-      <td class="border border-slate-700 pl-4"><%= item.genre %></td>
+      <td class="border border-slate-700 pl-4"><%= item.category.name %></td>
       <td class="border border-slate-700 pl-4 text-center"><%= item.rating %><i class="fa-solid fa-star text-yellow-500"></i></td>
       <td class="border border-slate-700 pl-4"><%= item.prices[0].originalPrice %>$</td>
       <td class="border border-slate-700 pl-4"><%= item.description %></td>

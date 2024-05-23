@@ -10,4 +10,14 @@ export class BookResolver {
   async books() {
     return await this.bookService.findAll();
   }
+
+  @Query(() => [Book])
+  async recommendBooks() {
+    return await this.bookService.getRecommendBooks();
+  }
+
+  @Query(() => [Book])
+  async popularBooks() {
+    return await this.bookService.getBookPopular();
+  }
 }

@@ -10,4 +10,9 @@ export class PromotionsResolver {
   async promotions() {
     return await this.promotionsService.findAll();
   }
+
+  @Query(() => [Promotion])
+  async promotionsOnSale() {
+    return await this.promotionsService.getOnSaleByCurrentDate();
+  }
 }

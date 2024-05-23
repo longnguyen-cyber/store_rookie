@@ -24,4 +24,8 @@ export class ReviewsService {
   async delete(id: string) {
     return await this.reviewRepository.delete(id);
   }
+
+  async getAllReviewByBookId(bookId: string) {
+    return await this.reviewRepository.getAllReviewByBookId(bookId);
+  }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthorService } from 'apps/author/src/author.service';
 import { BookService } from 'apps/books/src/books.service';
 import { CategoriesService } from 'apps/categories/src/categories.service';
-import { ProcessService } from 'apps/process/src/process.service';
+import { OrderService } from 'apps/orders/src/order.service';
 import { PromotionsService } from 'apps/promotions/src/promotions.service';
 import { PublisherService } from 'apps/publisher/src/publisher.service';
 import { ReviewsService } from 'apps/reviews/src/reviews.service';
@@ -11,7 +11,7 @@ import { UserService } from 'apps/user/src/user.service';
 type Service =
   | CategoriesService
   | AuthorService
-  | ProcessService
+  | OrderService
   | BookService
   | PublisherService
   | PromotionsService
@@ -20,7 +20,7 @@ type Service =
 export type EntityNames =
   | 'author'
   | 'categories'
-  | 'process'
+  | 'order'
   | 'books'
   | 'publisher'
   | 'promotions'
@@ -31,7 +31,7 @@ export class AdminService {
   constructor(
     private readonly categoriesService: CategoriesService,
     private readonly authorService: AuthorService,
-    private readonly processService: ProcessService,
+    private readonly orderService: OrderService,
     private readonly booksService: BookService,
     private readonly publisherService: PublisherService,
     private readonly promotionsService: PromotionsService,
@@ -98,9 +98,6 @@ export class AdminService {
       );
       return true;
     } else if (entityName === 'books') {
-      if (data.genre.length > 1) {
-        data.genre = data.genre[1];
-      }
       data.originalPrice = parseFloat(data.price);
       data.images = JSON.parse(data.images);
       const rs = await entityService.create(data);

@@ -65,7 +65,7 @@ export class AdminService {
 
     // Generate the pagination links
     const pagination = this.handlePagination(page, limit, total, entityName);
-
+    console.log('data');
     return { data: res, pagination };
   }
 

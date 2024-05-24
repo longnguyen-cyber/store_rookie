@@ -34,8 +34,8 @@ export class BookService {
         rating,
         ratings,
       });
-      console.log('update book', item.id);
     });
+    console.log('Update book rating');
   }
 
   async findAll() {

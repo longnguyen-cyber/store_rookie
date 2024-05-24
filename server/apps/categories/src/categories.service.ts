@@ -7,6 +7,7 @@ export class CategoriesService {
 
   async findAll() {
     const categories = await this.categoriesRepository.findAll();
+    console.log('data');
     return categories;
   }
 

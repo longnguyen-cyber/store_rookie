@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
 
 import { gql } from '../src/__generated__'
-import './App.css'
 
 const test = gql(/* GraphQL */ `
   query HealhCheck {
@@ -12,7 +11,7 @@ const test = gql(/* GraphQL */ `
 function App() {
   const { data } = useQuery(test)
   console.log(data)
-  return <div className="App"></div>
+  return <h1 className="text-3xl font-bold underline">Hello world!</h1>
 }
 
 export default App

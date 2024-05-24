@@ -1,17 +1,20 @@
-import { useQuery } from '@apollo/client'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { gql } from '../src/__generated__'
-
-const test = gql(/* GraphQL */ `
-  query HealhCheck {
-    healhCheck
-  }
-`)
+import Error from './pages/Error'
+import Home from './pages/Home'
+import Shop from './pages/Shop'
 
 function App() {
-  const { data } = useQuery(test)
-  console.log(data)
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="*" element={<Error />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

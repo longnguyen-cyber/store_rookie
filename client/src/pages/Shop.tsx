@@ -4,12 +4,17 @@ import Navbar from '../components/Navbar'
 import { Book } from '../generated/graphql'
 import { GET_BOOKS_RECOMMENED } from '../graphql/queries/book'
 import generateStar from '../utils/generateStart'
+import { CATEGORIES_NAME } from '../graphql/queries/categories'
+import { AUTHOR_NAME } from '../graphql/queries/author'
 const Shop = () => {
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
+  const { data: categories_name } = useQuery(CATEGORIES_NAME)
+  const { data: authors_name } = useQuery(AUTHOR_NAME)
 
   const renderCard = (books: Book[]) => {
     if (books) {
       return books.map((book, index) => {
+        console.log(book)
         return (
           <div
             key={index}
@@ -35,12 +40,20 @@ const Shop = () => {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400 line-through">
-                  ${book.prices && book.prices[0].originalPrice}
-                </span>
-                <span className=" font-bold text-gray-900">
-                  ${book.prices && book.prices[0].discountPrice}{' '}
-                </span>
+                {book.prices && book.prices[0].discountPrice ? (
+                  <>
+                    <span className="text-gray-400 line-through">
+                      ${book.prices[0].originalPrice}
+                    </span>
+                    <span className="font-bold text-white">
+                      ${book.prices[0].discountPrice}{' '}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-bold text-white">
+                    ${book.prices && book.prices[0].originalPrice}{' '}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -55,49 +68,61 @@ const Shop = () => {
       <h1 className="text-2xl ml-20 ">Filter</h1>
 
       <div className="flex mx-20 space-x-4">
-        <div className="w-36">
+        <div className="w-40 space-y-2">
           <div className="rounded border border-black p-3">
             <h1 className="text-lg font-semibold text-gray-900">Categories</h1>
-            <ul className="">
-              <li>
-                <a
-                  href="#"
-                  className="block p-2 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Fiction
-                </a>
+            <select
+              id="categories"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            >
+              {categories_name?.categories.map((category, index) => {
+                return (
+                  <option key={index} value={category.id}>
+                    {category.name}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+          <div className="rounded border border-black p-3">
+            <h1 className="text-lg font-semibold text-gray-900">Authors</h1>
+            <select
+              id="author"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            >
+              {authors_name?.authors.map((author, index) => {
+                return (
+                  <option key={index} value={author.id}>
+                    {author.name}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+          <div className="rounded border border-black p-3">
+            <h1 className="text-lg font-semibold text-gray-900">
+              Rating review
+            </h1>
+            <ul>
+              <li className="space-x-1">
+                <input type="radio" id="rating5" name="rating" value="5" />
+                <label htmlFor="rating5">5 stars</label>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="block p-2 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Non-Fiction
-                </a>
+              <li className="space-x-1">
+                <input type="radio" id="rating4" name="rating" value="4" />
+                <label htmlFor="rating4">4 stars</label>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="block p-2 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Fantasy
-                </a>
+              <li className="space-x-1">
+                <input type="radio" id="rating3" name="rating" value="3" />
+                <label htmlFor="rating3">3 stars</label>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="block p-2 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Mystery
-                </a>
+              <li className="space-x-1">
+                <input type="radio" id="rating2" name="rating" value="2" />
+                <label htmlFor="rating2">2 stars</label>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="block p-2 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Romance
-                </a>
+              <li className="space-x-1">
+                <input type="radio" id="rating1" name="rating" value="1" />
+                <label htmlFor="rating1">1 stars</label>
               </li>
             </ul>
           </div>
@@ -107,7 +132,7 @@ const Shop = () => {
           <form className="max-w-sm">
             <select
               id="sort"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             >
               <option value="sale" selected>
                 Sort by on sale

@@ -45,12 +45,20 @@ const Home = () => {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400 line-through">
-                  ${book.prices && book.prices[0].originalPrice}
-                </span>
-                <span className=" font-bold text-gray-900 dark:text-white">
-                  ${book.prices && book.prices[0].discountPrice}{' '}
-                </span>
+                {book.prices && book.prices[0].discountPrice ? (
+                  <>
+                    <span className="text-gray-400 line-through">
+                      ${book.prices[0].originalPrice}
+                    </span>
+                    <span className="font-bold text-white">
+                      ${book.prices[0].discountPrice}{' '}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-bold text-white">
+                    ${book.prices && book.prices[0].originalPrice}{' '}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -150,6 +158,7 @@ const Home = () => {
             Popular
           </button>
         </div>
+        <br />
         <div className="grid grid-cols-4 gap-3">
           {renderCard(
             isRecommend

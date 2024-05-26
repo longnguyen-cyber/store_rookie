@@ -1,29 +1,32 @@
-import {
-  CreateCategoryInput,
-  PaginatedCategoryResponse,
-} from '@app/common/categories';
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Category } from '@app/common/@generated/category/category.model';
+import { CreateCategoryInput } from '@app/common/categories';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CategoriesService } from './categories.service';
 
 @Resolver()
 export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Query(() => PaginatedCategoryResponse, { name: 'categories' })
-  async categories(
-    @Args('page', { type: () => Int }) page: number,
-    @Args('limit', { type: () => Int }) limit: number,
-  ) {
-    const allData = await this.categoriesService.findAll();
-    const total = allData.length;
+  // @Query(() => PaginatedCategoryResponse, { name: 'categories' })
+  // async categories(
+  //   @Args('page', { type: () => Int }) page: number,
+  //   @Args('limit', { type: () => Int }) limit: number,
+  // ) {
+  //   const allData = await this.categoriesService.findAll();
+  //   const total = allData.length;
 
-    const start = (page - 1) * limit;
-    const end = page * limit;
-    const data = allData.slice(start, end);
+  //   const start = (page - 1) * limit;
+  //   const end = page * limit;
+  //   const data = allData.slice(start, end);
 
-    const pagination = this.handlePagination(page, limit, total, 'category');
+  //   const pagination = this.handlePagination(page, limit, total, 'category');
 
-    return { data, pagination };
+  //   return { data, pagination };
+  // }
+
+  @Query(() => [Category], { name: 'categories' })
+  async categories() {
+    return this.categoriesService.findAll();
   }
 
   private handlePagination(
@@ -54,23 +57,23 @@ export class CategoriesResolver {
       currentPage: page,
     };
   }
-  @Query(() => PaginatedCategoryResponse, { name: 'category' })
-  async category(
-    @Args('id') id: string,
-    @Args('page', { type: () => Int }) page: number,
-    @Args('limit', { type: () => Int }) limit: number,
-  ) {
-    const allData = await this.categoriesService.findAll();
-    const total = allData.length;
+  // @Query(() => PaginatedCategoryResponse, { name: 'category' })
+  // async category(
+  //   @Args('id') id: string,
+  //   @Args('page', { type: () => Int }) page: number,
+  //   @Args('limit', { type: () => Int }) limit: number,
+  // ) {
+  //   const allData = await this.categoriesService.findAll();
+  //   const total = allData.length;
 
-    const start = (page - 1) * limit;
-    const end = page * limit;
-    const data = allData.slice(start, end);
+  //   const start = (page - 1) * limit;
+  //   const end = page * limit;
+  //   const data = allData.slice(start, end);
 
-    const pagination = this.handlePagination(page, limit, total, 'category');
+  //   const pagination = this.handlePagination(page, limit, total, 'category');
 
-    return { data, pagination };
-  }
+  //   return { data, pagination };
+  // }
 
   @Mutation(() => Boolean)
   async createCategory(@Args('data') data: CreateCategoryInput) {

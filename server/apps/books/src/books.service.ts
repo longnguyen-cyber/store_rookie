@@ -64,7 +64,16 @@ export class BookService {
 
   async getRecommendBooks() {
     const books = await this.bookRepository.getRecommendBooksByRating();
-    return books;
+    const final = books.map((item) => {
+      const prices = item.prices.find((price) => price.endDate === null);
+
+      return {
+        ...item,
+        prices: [prices],
+      };
+    });
+
+    return final;
   }
 
   async getBookByPrice(type: QUERY_ORDER) {

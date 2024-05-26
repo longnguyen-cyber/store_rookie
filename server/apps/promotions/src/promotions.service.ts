@@ -10,9 +10,14 @@ export class PromotionsService {
     const final = rs.map((item) => {
       // item.startDate = this.formatTimeVi(item.startDate);
       // item.end_time = this.formatTimeVi(item.end_time);
+      const prices = item.book.prices.find((price) => price.endDate === null);
 
       return {
         ...item,
+        book: {
+          ...item.book,
+          prices: [prices],
+        },
         // startDate: this.formatTimeVi(item.startDate),
         // endDate: this.formatTimeVi(item.endDate),
       };

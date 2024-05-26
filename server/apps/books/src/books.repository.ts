@@ -78,7 +78,9 @@ export class BookRepository {
       orderBy: {
         rating: 'desc',
       },
-
+      include: {
+        prices: true,
+      },
       take: 200,
     });
     return books;

@@ -19,14 +19,21 @@ export class OrderResolver {
   @Mutation(() => Order)
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.User)
-  async createOrder(@Args('data') data: CreateOrderInput, @Context() req: any) {
-    return await this.orderService.create({
-      ...data,
-      user: {
-        connect: {
-          id: req.req.user.id,
+  async createOrder(
+    @Args('data') data: CreateOrderInput,
+    @Args('guestId') guestId: string,
+    @Context() req: any,
+  ) {
+    return await this.orderService.create(
+      {
+        ...data,
+        user: {
+          connect: {
+            id: req.req.user.id,
+          },
         },
       },
-    });
+      guestId,
+    );
   }
 }

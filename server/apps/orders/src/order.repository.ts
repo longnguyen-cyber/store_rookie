@@ -1,4 +1,4 @@
-import { PrismaService } from '@app/common';
+import { ORDER_STATUS, PrismaService, Role } from '@app/common';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -97,12 +97,40 @@ export class OrderRepository {
     return order;
   }
 
-  async create(data: any) {
+  async create(data: any, guestId: string) {
     const order = await this.prisma.order.create({
       data: {
         ...data,
+        status: ORDER_STATUS.COMPLETED,
       },
     });
+    //update info guest->user cart after order
+    const cart = await this.findCart(guestId, Role.GUEST);
+    if (cart.userId == null) {
+      console.log(
+        'update info guest->user cart after order',
+        data.user.connect.id,
+      );
+      await this.prisma.cart.update({
+        where: {
+          id: cart.id,
+        },
+        data: {
+          userId: data.user.connect.id,
+        },
+      });
+      console.log('update info guest->user cart after order');
+    }
+
+    if (order.status === ORDER_STATUS.COMPLETED) {
+      //detete cart item after order
+      await this.prisma.cartItem.deleteMany({
+        where: {
+          cartId: cart.id,
+        },
+      });
+      console.log('delete cart item after order');
+    }
     return order;
   }
 
@@ -125,5 +153,24 @@ export class OrderRepository {
       },
     });
     return order;
+  }
+
+  private async findCart(id: string, type: Role) {
+    let cart = null;
+    if (type === Role.User) {
+      cart = await this.prisma.cart.findFirst({
+        where: {
+          userId: id,
+        },
+      });
+    } else if (type === Role.GUEST) {
+      cart = await this.prisma.cart.findFirst({
+        where: {
+          guestId: id,
+        },
+      });
+    }
+
+    return cart;
   }
 }

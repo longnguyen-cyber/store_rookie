@@ -106,7 +106,16 @@ export class BookService {
 
   async findOne(id: string) {
     const book = await this.bookRepository.findOne(id);
-    return book;
+    const prices = book.prices.find((price) => price.endDate === null);
+    const ratingsReserve = [
+      ...JSON.parse(JSON.stringify(book.ratings)),
+    ].reverse();
+
+    return {
+      ...book,
+      ratings: ratingsReserve,
+      prices: [prices],
+    };
   }
 
   async create(data: any) {

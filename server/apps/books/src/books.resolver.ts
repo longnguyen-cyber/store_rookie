@@ -1,7 +1,7 @@
+import { QUERY_ORDER } from '@app/common';
+import { Book } from '@app/common/@generated/book/book.model';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { BookService } from './books.service';
-import { Book } from '@app/common/@generated/book/book.model';
-import { QUERY_ORDER } from '@app/common';
 
 @Resolver()
 export class BookResolver {
@@ -10,6 +10,11 @@ export class BookResolver {
   @Query(() => [Book])
   async books() {
     return await this.bookService.findAll();
+  }
+
+  @Query(() => Book)
+  async book(@Args('id') id: string) {
+    return await this.bookService.findOne(id);
   }
 
   @Query(() => [Book])

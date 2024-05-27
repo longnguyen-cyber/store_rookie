@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client'
+import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
-import Navbar from '../components/Navbar'
 import { Book } from '../generated/graphql'
-import { GET_BOOKS_RECOMMENED } from '../graphql/queries/book'
-import generateStar from '../utils/generateStart'
-import { CATEGORIES_NAME } from '../graphql/queries/categories'
 import { AUTHOR_NAME } from '../graphql/queries/author'
+import { GET_BOOKS_RECOMMENED } from '../graphql/queries/book'
+import { CATEGORIES_NAME } from '../graphql/queries/categories'
+import generateStar from '../utils/generateStart'
 const Shop = () => {
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
   const { data: categories_name } = useQuery(CATEGORIES_NAME)
@@ -14,19 +14,17 @@ const Shop = () => {
   const renderCard = (books: Book[]) => {
     if (books) {
       return books.map((book, index) => {
-        console.log(book)
         return (
-          <div
+          <Link
+            to={`/book/${book.id}`}
             key={index}
             className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
           >
-            <a href="#">
-              <img
-                className="p-8 rounded-t-lg"
-                src={book.images[0]}
-                alt="product image"
-              />
-            </a>
+            <img
+              className="p-8 rounded-t-lg"
+              src={book.images[0]}
+              alt="product image"
+            />
             <div className="px-5 pb-5">
               <a href="#">
                 <p className="text-xl font-semibold tracking-tight text-gray-900">
@@ -56,14 +54,14 @@ const Shop = () => {
                 )}
               </div>
             </div>
-          </div>
+          </Link>
         )
       })
     }
   }
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <br />
       <h1 className="text-2xl ml-20 ">Filter</h1>
 

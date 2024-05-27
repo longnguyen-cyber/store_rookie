@@ -22,13 +22,34 @@ export class ReviewRepository {
     });
     return review;
   }
-  async getAllReviewByBookId(bookId: string) {
+  async getAllReviewByBookId(bookId: string, skip: number, take: number) {
     const reviews = await this.prisma.review.findMany({
       where: {
         bookId: bookId,
       },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+      orderBy: {
+        rating: 'desc',
+      },
+      skip: skip,
+      take: take,
     });
-    return reviews;
+    const total = await this.prisma.review.count({
+      where: {
+        bookId: bookId,
+      },
+    });
+    const totalPage = Math.ceil(total / take);
+    return {
+      reviews,
+      totalPage,
+    };
   }
 
   async create(data: any) {

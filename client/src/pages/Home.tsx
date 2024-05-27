@@ -1,16 +1,16 @@
 import { useQuery } from '@apollo/client'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import { Book } from '../generated/graphql'
 import {
   GET_BOOK_ONSALE,
   GET_BOOKS_POPULAR,
   GET_BOOKS_RECOMMENED,
 } from '../graphql/queries/book'
 import generateStar from '../utils/generateStart'
-import { useState } from 'react'
-import { Book } from '../generated/graphql'
-import Footer from '../components/Footer'
 const Home = () => {
   const { data: booksSale } = useQuery(GET_BOOK_ONSALE)
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
@@ -21,17 +21,16 @@ const Home = () => {
     if (books) {
       return books.map((book, index) => {
         return (
-          <div
+          <Link
+            to={`/book/${book.id}`}
             key={index}
             className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
           >
-            <a href="#">
-              <img
-                className="p-8 rounded-t-lg"
-                src={book.images[0]}
-                alt="product image"
-              />
-            </a>
+            <img
+              className="p-8 rounded-t-lg"
+              src={book.images[0]}
+              alt="product image"
+            />
             <div className="px-5 pb-5">
               <a href="#">
                 <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
@@ -61,7 +60,7 @@ const Home = () => {
                 )}
               </div>
             </div>
-          </div>
+          </Link>
         )
       })
     }
@@ -69,7 +68,6 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar />
       <br />
       <div className="px-56">
         <div className="flex justify-between">
@@ -98,38 +96,37 @@ const Home = () => {
               } else {
                 description = description.padEnd(100, '')
               }
-              console.log(description.length)
               return (
                 <SwiperSlide key={index}>
                   <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                    <a href="#">
+                    <Link to={`/book/${book.id}`}>
                       <img
                         className="p-8 rounded-t-lg"
                         src={book.images[0]}
                         alt="product image"
                       />
-                    </a>
-                    <div className="px-5 pb-5">
-                      <a href="#">
-                        <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                          {book.title}
-                        </p>
-                        <small className="text-white">{description}</small>
-                      </a>
-                      <div className="flex items-center mt-2.5 mb-5">
-                        <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
-                          {book.rating} {generateStar(book.rating)}
-                        </span>
+                      <div className="px-5 pb-5">
+                        <a href="#">
+                          <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                            {book.title}
+                          </p>
+                          <small className="text-white">{description}</small>
+                        </a>
+                        <div className="flex items-center mt-2.5 mb-5">
+                          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
+                            {book.rating} {generateStar(book.rating)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 line-through">
+                            ${book.prices && book.prices[0].originalPrice}
+                          </span>
+                          <span className=" font-bold text-gray-900 dark:text-white">
+                            ${book.prices && book.prices[0].discountPrice}{' '}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-400 line-through">
-                          ${book.prices && book.prices[0].originalPrice}
-                        </span>
-                        <span className=" font-bold text-gray-900 dark:text-white">
-                          ${book.prices && book.prices[0].discountPrice}{' '}
-                        </span>
-                      </div>
-                    </div>
+                    </Link>
                   </div>
                 </SwiperSlide>
               )

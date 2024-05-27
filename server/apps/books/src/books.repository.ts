@@ -35,6 +35,23 @@ export class BookRepository {
       where: {
         id: id,
       },
+      include: {
+        authors: {
+          select: {
+            author: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        prices: true,
+      },
     });
     return book;
   }

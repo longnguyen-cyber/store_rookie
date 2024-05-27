@@ -78,3 +78,45 @@ export const GET_BOOKS_POPULAR = gql(`
     }
   }
 `)
+
+export const GET_BOOK_BY_ID = gql(`
+  query GetBook($id: String!) {
+    book(id: $id) {
+      id
+      title
+      description
+      rating
+      ratings
+      images
+      prices {
+          originalPrice
+          discountPrice
+      }
+      category {
+        name
+      }
+      authors {
+          author {
+              name
+          }
+      }
+    }
+  }
+`)
+export const GET_REVIEWS_BY_BOOK = gql(`
+  query reviewsByBook($id: String!, $skip: String!, $take: String!) {
+    reviewsByBook(bookId: $id, skip: $skip, take: $take) {
+      totalPage
+        reviews {
+          id
+          rating
+          title
+          content
+          createdAt
+          user {
+            username
+          }
+      }
+    }
+  }
+`)

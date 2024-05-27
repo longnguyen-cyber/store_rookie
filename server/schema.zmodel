@@ -24,6 +24,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   orders    Order[]
   reviews   Review[]
+  Cart      Cart[]
 
   @@map("users")
 }
@@ -53,12 +54,13 @@ model Publisher {
 
   @@map("publishers")
 }
+
 model Book {
-  id          String          @id @default(cuid()) @map("book_id")
+  id          String          @id() @default(cuid()) @map("book_id")
   title       String
   description String?         @map("description")
   categoryId  String          @map("category_id")
-  rating      Float           @map("rating") @default(0)
+  rating      Float           @default(0) @map("rating")
   ratings     Json            @map("ratings")
   images      Json            @map("images")
   createdAt   DateTime        @default(now()) @map("created_at")
@@ -69,12 +71,13 @@ model Book {
   promotions  Promotion[]
   reviews     Review[]
   orderItems  OrderItem[]
+  CartItem    CartItem[]
 
   @@map("books")
 }
 
 model BookPrice {
-  id            String    @id @default(cuid()) @map("price_id")
+  id            String    @id() @default(cuid()) @map("price_id")
   bookId        String    @map("book_id")
   originalPrice Float     @map("original_price")
   discountPrice Float     @map("discount_price")
@@ -87,17 +90,16 @@ model BookPrice {
 }
 
 model OrderItem {
-  id       String @id @default(cuid()) @map("order_item_id")
+  id       String @id() @default(cuid()) @map("order_item_id")
   orderId  String @map("order_id")
   bookId   String @map("book_id")
-  quantity Int    @map("quantity") // Changed to Int
+  quantity Int    @map("quantity")
   priceId  String @map("price_id")
   order    Order  @relation(fields: [orderId], references: [id])
   book     Book   @relation(fields: [bookId], references: [id])
 
   @@map("order_items")
 }
-
 
 model BookAuthor {
   bookId   String @map("book_id")
@@ -136,7 +138,6 @@ model Review {
   userId    String   @map("user_id")
   rating    Int      @map("rating")
   comment   String?  @map("comment")
-
   createdAt DateTime @default(now()) @map("created_at")
   book      Book     @relation(fields: [bookId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
@@ -155,3 +156,24 @@ model Order {
   @@map("orders")
 }
 
+model Cart {
+  id      String     @id() @default(cuid()) @map("cart_id")
+  userId  String     @map("user_id")
+  user    User       @relation(fields: [userId], references: [id])
+  items   CartItem[]
+  guestId String?    @map("guest_id")
+
+  @@map("carts")
+}
+
+model CartItem {
+  id       String @id() @default(cuid()) @map("cart_item_id")
+  cartId   String @map("cart_id")
+  bookId   String @map("book_id")
+  quantity Int    @map("quantity")
+  priceId  String @map("price_id")
+  cart     Cart   @relation(fields: [cartId], references: [id])
+  book     Book   @relation(fields: [bookId], references: [id])
+
+  @@map("cart_items")
+}

@@ -6,9 +6,7 @@ export class OrderService {
   constructor(private readonly orderRepository: OrderRepository) {}
 
   async findAll(userId: string) {
-    const data = await this.orderRepository.findAll(userId);
-    console.log(data);
-    return data;
+    return await this.orderRepository.findAll(userId);
   }
 
   async findOne(id: string) {

@@ -28,6 +28,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   orders    Order[]
   reviews   Review[]
+  Cart      Cart[]
 
   @@map("users")
 }
@@ -74,6 +75,7 @@ model Book {
   promotions  Promotion[]
   reviews     Review[]
   orderItems  OrderItem[]
+  CartItem    CartItem[]
 
   @@map("books")
 }
@@ -156,4 +158,26 @@ model Order {
   items     OrderItem[]
 
   @@map("orders")
+}
+
+model Cart {
+  id      String     @id() @default(cuid()) @map("cart_id")
+  userId  String     @map("user_id")
+  user    User       @relation(fields: [userId], references: [id])
+  items   CartItem[]
+  guestId String?    @map("guest_id")
+
+  @@map("carts")
+}
+
+model CartItem {
+  id       String @id() @default(cuid()) @map("cart_item_id")
+  cartId   String @map("cart_id")
+  bookId   String @map("book_id")
+  quantity Int    @map("quantity")
+  priceId  String @map("price_id")
+  cart     Cart   @relation(fields: [cartId], references: [id])
+  book     Book   @relation(fields: [bookId], references: [id])
+
+  @@map("cart_items")
 }

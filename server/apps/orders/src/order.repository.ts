@@ -4,9 +4,68 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class OrderRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async findAll() {
-    const orders = await this.prisma.order.findMany();
-    return orders;
+  async findAll(userId: string) {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        items: {
+          include: {
+            book: {
+              include: {
+                prices: true,
+                authors: {
+                  include: {
+                    author: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                category: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const final = await Promise.all(
+      orders.map(async (order) => {
+        const items = await Promise.all(
+          order.items.map(async (item) => {
+            const bookPrice = await this.prisma.bookPrice.findUnique({
+              where: {
+                bookId: item.bookId,
+                id: item.priceId,
+              },
+            });
+            return {
+              ...item,
+              book: {
+                ...item.book,
+                prices: [bookPrice],
+              },
+            };
+          }),
+        );
+        const total = items.reduce((acc, item) => {
+          if (item.book.prices[0] && item.book.prices[0].discountPrice) {
+            return acc + item.book.prices[0].discountPrice * item.quantity;
+          } else {
+            return acc + item.book.prices[0].originalPrice * item.quantity;
+          }
+        }, 0);
+        return {
+          ...order,
+          items,
+          total: total.toFixed(2),
+        };
+      }),
+    );
+    return final;
   }
 
   async getAllOrderCompletedOfBook() {
@@ -39,6 +98,7 @@ export class OrderRepository {
   }
 
   async create(data: any) {
+    console.log(data);
     const order = await this.prisma.order.create({
       data: {
         ...data,

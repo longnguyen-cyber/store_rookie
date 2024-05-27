@@ -88,13 +88,13 @@
         "tsConfigPath": "apps/reviews/tsconfig.app.json"
       }
     },
-    "order": {
+    "orders": {
       "type": "application",
-      "root": "apps/order",
+      "root": "apps/orders",
       "entryFile": "main",
-      "sourceRoot": "apps/order/src",
+      "sourceRoot": "apps/orders/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/order/tsconfig.app.json"
+        "tsConfigPath": "apps/orders/tsconfig.app.json"
       }
     },
     "author": {

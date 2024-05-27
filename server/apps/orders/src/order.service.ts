@@ -5,8 +5,10 @@ import { OrderRepository } from './order.repository';
 export class OrderService {
   constructor(private readonly orderRepository: OrderRepository) {}
 
-  async findAll() {
-    return await this.orderRepository.findAll();
+  async findAll(userId: string) {
+    const data = await this.orderRepository.findAll(userId);
+    console.log(data);
+    return data;
   }
 
   async findOne(id: string) {

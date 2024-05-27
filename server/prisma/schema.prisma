@@ -162,8 +162,8 @@ model Order {
 
 model Cart {
   id      String     @id() @default(cuid()) @map("cart_id")
-  userId  String     @map("user_id")
-  user    User       @relation(fields: [userId], references: [id])
+  userId  String?    @map("user_id")
+  user    User?      @relation(fields: [userId], references: [id])
   items   CartItem[]
   guestId String?    @map("guest_id")
 

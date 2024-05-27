@@ -19,10 +19,18 @@
     "noFallthroughCasesInSwitch": false,
     "noUnusedParameters": false,
     "paths": {
-      "@app/common": ["libs/common/src"],
-      "@app/common/*": ["libs/common/src/*"],
-      "@app/cache": ["libs/cache/src"],
-      "@app/cache/*": ["libs/cache/src/*"]
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ],
+      "@app/cache": [
+        "libs/cache/src"
+      ],
+      "@app/cache/*": [
+        "libs/cache/src/*"
+      ]
     }
   }
 }

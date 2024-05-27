@@ -1,13 +1,6 @@
-import {
-  AuthGuard,
-  ResponseCustom,
-  Role,
-  Roles,
-  RolesGuard,
-} from '@app/common';
+import { ResponseCustom } from '@app/common';
 import { LoginInput, ResUserDto } from '@app/common/user';
-import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 
 @Resolver()
@@ -21,12 +14,5 @@ export class UserResolver {
   ): Promise<ResponseCustom> {
     const login = await this.userService.login(userLoginDto);
     return login;
-  }
-
-  @Query(() => String)
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async test() {
-    return 'test';
   }
 }

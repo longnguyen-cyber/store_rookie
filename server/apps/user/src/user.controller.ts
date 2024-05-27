@@ -1,7 +1,4 @@
-import { Role, Roles } from '@app/common';
-import { AuthGuard } from '@app/common/guards/auth.guard';
-import { RolesGuard } from '@app/common/guards/roles.guard';
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { UserService } from './user.service';
 
@@ -23,12 +20,5 @@ export class UserController {
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
     return login;
-  }
-
-  @Get()
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async test() {
-    return 'test';
   }
 }

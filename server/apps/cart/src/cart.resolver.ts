@@ -28,19 +28,14 @@ export class CartResolver {
 
   @Mutation(() => Boolean!)
   async removeItemFromCart(@Args('id') id: string) {
+    console.log('remove item id: ', id);
     return await this.cartService.removeItemFromCart(id);
   }
 
   @Query(() => CartResponseCustom)
   async getCart(@Args('id') id: string) {
-    console.log('id', id);
     return await this.cartService.getCart(id.trim());
   }
-
-  // @Mutation(() => Boolean!)
-  // async createCart(@Args('data') data: CreateCartInput) {
-  //   return await this.cartService.createCart(data);
-  // }
 
   @Mutation(() => Boolean!)
   async updateQuantityOfItem(

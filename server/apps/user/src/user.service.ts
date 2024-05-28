@@ -25,9 +25,10 @@ export class UserService {
     await this.cacheManager.set(token, JSON.stringify(user), {
       ttl: this.configService.get<number>('LOGIN_EXPIRED'),
     }); // 30 days
-    this.commonService.deleteField(user, ['userId']);
+    this.commonService.deleteField(user, ['']);
+    console.log('user', user);
     return {
-      ...user,
+      user,
       token,
     };
   }

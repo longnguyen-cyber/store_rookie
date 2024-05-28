@@ -7,7 +7,6 @@ import { UserService } from './user.service';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  // Note: GraphQL doesn't directly support setting cookies. You would need to handle this on the client side.
   @Mutation(() => ResUserDto)
   async login(
     @Args('userLoginDto') userLoginDto: LoginInput,

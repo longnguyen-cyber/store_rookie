@@ -8,6 +8,7 @@ export const GET_CART = gql(`
 			guestId
 			total
 			items {
+				id
 				quantity
 				priceId
 				book {

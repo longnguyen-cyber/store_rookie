@@ -1,31 +1,64 @@
-import { useQuery } from '@apollo/client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMutation, useQuery } from '@apollo/client'
 import { GET_CART } from '../graphql/queries/cart'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
-import { useState } from 'react'
-import { InputChange } from '../utils/types'
-
+import _ from 'lodash'
+import { useEffect, useState } from 'react'
+import { UPDATE_QUANTITY_OF_ITEM } from '../graphql/mutations/cart'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
+  const [quantities, setQuantities] = useState<Record<string, number>>({})
+  const [total, setTotal] = useState(0)
+  const [updateQuantityOfItemBook] = useMutation(UPDATE_QUANTITY_OF_ITEM, {
+    refetchQueries: [GET_CART, 'GetCart'],
+  })
 
-  const [book, setBook] = useState()
-  const handleChangeQuantityOfBook = (e: InputChange, item) => {
-    const quantity = e.target.value
-    console.log(`Quantity of ${item.book.title}: ${quantity}`)
+  const debouncedUpdateQuantity = _.debounce(
+    (id: string, newQuantity: number) => {
+      updateQuantityOfItemBook({
+        variables: {
+          id,
+          quantity: newQuantity.toString(),
+        },
+      })
+    },
+    5000
+  )
+
+  const handleButtonClick = (increment: number, id: string, item: any) => {
+    const newQuantity = (quantities[id] || item.quantity) + increment
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: newQuantity,
+    }))
+    //update total
+    setTotal((prevTotal) => {
+      const price = item.book.prices[0].discountPrice
+        ? item.book.prices[0].discountPrice
+        : item.book.prices[0].originalPrice
+      return prevTotal + increment * price
+    })
+
+    debouncedUpdateQuantity(id, newQuantity)
   }
-
-  const handleChangeQuantity = (item) => {}
-
   const { data, error, loading } = useQuery(GET_CART, {
     variables: {
       id: guestId || '',
     },
   })
+
+  useEffect(() => {
+    if (data) {
+      setTotal(parseFloat(data.getCart.total))
+    }
+  }, [data])
   if (loading) {
     return <div>Loading...</div>
   }
   if (error) {
     return <div>Error! {error.message}</div>
   }
+
   return (
     <section className="bg-white py-8 antialiased md:py-16">
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -88,21 +121,18 @@ const Cart = () => {
                       <div className="flex items-center">
                         <button
                           type="button"
-                          className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300 "
+                          className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                          onClick={() => handleButtonClick(-1, item.id, item)}
                         >
                           <FaMinus />
                         </button>
-                        <input
-                          type="text"
-                          id="counter-input"
-                          data-input-counter
-                          className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0"
-                          required
-                          value={item.quantity}
-                        />
+                        <span className="text-center w-10 shrink-0 border-0 bg-transparent text-sm font-medium text-gray-900 focus:outline-none focus:ring-0">
+                          {quantities[item.id] || item.quantity}
+                        </span>
                         <button
                           type="button"
-                          className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300 "
+                          className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                          onClick={() => handleButtonClick(1, item.id, item)}
                         >
                           <FaPlus />
                         </button>
@@ -147,7 +177,7 @@ const Cart = () => {
                 <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                   <dt className="text-base font-bold text-gray-900">Total</dt>
                   <dd className="text-base font-bold text-gray-900">
-                    ${data?.getCart.total}
+                    ${total.toFixed(2)}
                   </dd>
                 </dl>
               </div>

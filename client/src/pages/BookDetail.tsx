@@ -1,20 +1,44 @@
 import { useLazyQuery } from '@apollo/client'
 import { format, parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { GET_BOOK_BY_ID, GET_REVIEWS_BY_BOOK } from '../graphql/queries/book'
+import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+
+  const updateUrl = (page: number) => {
+    if (page > 0) {
+      navigate(`/book/${id}?page=${page + 1}&limit=2`)
+    } else {
+      navigate(`/book/${id}`)
+    }
+  }
 
   const [page, setPage] = useState(0)
 
   const [getBook, { data: bookData }] = useLazyQuery(GET_BOOK_BY_ID, {
     variables: { id: id ?? '' },
   })
-  const [getReviews, { data: reviews }] = useLazyQuery(GET_REVIEWS_BY_BOOK, {
-    variables: { id: id ?? '', skip: page + '', take: '2' },
-  })
+  const [getReviews, { data: reviews, loading }] = useLazyQuery(
+    GET_REVIEWS_BY_BOOK,
+    {
+      variables: { id: id ?? '', skip: page * 2 + '', take: '2' },
+    }
+  )
+  const nextPage = () => {
+    setPage(page + 1)
+    updateUrl(page + 1)
+  }
+
+  const prevPage = () => {
+    if (page > 0) {
+      setPage(page - 1)
+      updateUrl(page - 1)
+    }
+  }
 
   useEffect(() => {
     getBook()
@@ -23,9 +47,15 @@ const BookDetail = () => {
   useEffect(() => {
     getReviews()
   }, [page])
-  console.log(reviews)
-
   const [quantity, setQuantity] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+
+  useEffect(() => {
+    if (!loading) {
+      setTotalPages(reviews?.reviewsByBook.totalPage ?? 0)
+    }
+  }, [loading, reviews])
+
   return (
     <div className="mx-72 mt-10 space-y-4">
       <div className="grid grid-cols-12 space-x-4 ">
@@ -145,9 +175,9 @@ const BookDetail = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 space-x-4 ">
-        <div className="col-span-7 rounded overflow-hidden space-x-6 border">
-          <h1>
+      <div className="grid grid-cols-12 space-x-4">
+        <div className="col-span-7 rounded overflow-hidden p-4 space-x-6 border">
+          <h1 className="ml-6">
             Reviews
             <small className="text-gray-300">(Filter by 5 star)</small>
           </h1>
@@ -190,6 +220,42 @@ const BookDetail = () => {
                 </div>
               )
             })}
+            <div className="flex items-center space-x-2 mt-2">
+              <button
+                onClick={prevPage}
+                disabled={page === 0}
+                className={`${
+                  page === 0 ? 'cursor-not-allowed text-gray-300' : ''
+                } p-2 border rounded`}
+              >
+                <MdArrowBackIos />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  className={`mx-1 px-2 py-1 border rounded ${
+                    page === i ? 'bg-blue-500 text-white font-bold' : ''
+                  }`}
+                  key={i}
+                  onClick={() => {
+                    setPage(i)
+                    updateUrl(i)
+                  }}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={nextPage}
+                disabled={page >= Math.ceil(totalPages) - 1}
+                className={`${
+                  page >= Math.ceil(totalPages) - 1
+                    ? 'cursor-not-allowed text-gray-300'
+                    : ''
+                } p-2 border rounded`}
+              >
+                <MdArrowForwardIos />
+              </button>
+            </div>
           </div>
         </div>
         <div className="col-span-5 rounded border h-fit">

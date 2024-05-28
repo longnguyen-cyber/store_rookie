@@ -11,11 +11,16 @@ import {
   GET_BOOKS_RECOMMENED,
 } from '../graphql/queries/book'
 import generateStar from '../utils/generateStart'
+import Loading from '../components/Loading'
 const Home = () => {
   const { data: booksSale } = useQuery(GET_BOOK_ONSALE)
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
   const { data: booksPopular } = useQuery(GET_BOOKS_POPULAR)
   const [isRecommend, setIsRecommend] = useState(true)
+
+  if (!booksSale || !booksRecommend || !booksPopular) {
+    return <Loading />
+  }
 
   const renderCard = (books: Book[]) => {
     if (books) {

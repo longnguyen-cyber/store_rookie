@@ -7,6 +7,7 @@ import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { ADD_ITEM_TO_CART } from '../graphql/mutations/cart'
 import { GET_CART } from '../graphql/queries/cart'
+import Loading from '../components/Loading'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -101,6 +102,10 @@ const BookDetail = () => {
         },
       })
     }
+  }
+
+  if (!bookData || loading) {
+    return <Loading />
   }
 
   return (

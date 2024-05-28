@@ -5,6 +5,7 @@ import { FaMinus, FaPlus } from 'react-icons/fa6'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { UPDATE_QUANTITY_OF_ITEM } from '../graphql/mutations/cart'
+import Loading from '../components/Loading'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
   const [quantities, setQuantities] = useState<Record<string, number>>({})
@@ -41,7 +42,7 @@ const Cart = () => {
 
     debouncedUpdateQuantity(id, newQuantity)
   }
-  const { data, error, loading } = useQuery(GET_CART, {
+  const { data } = useQuery(GET_CART, {
     variables: {
       id: guestId || '',
     },
@@ -52,12 +53,8 @@ const Cart = () => {
       setTotal(parseFloat(data.getCart.total))
     }
   }, [data])
-  if (loading) {
-    return <div>Loading...</div>
-  }
-  if (error) {
-    return <div>Error! {error.message}</div>
-  }
+
+  if (!data) return <Loading />
 
   return (
     <section className="bg-white py-8 antialiased md:py-16">

@@ -6,6 +6,7 @@ import { AUTHOR_NAME } from '../graphql/queries/author'
 import { GET_BOOKS_RECOMMENED } from '../graphql/queries/book'
 import { CATEGORIES_NAME } from '../graphql/queries/categories'
 import generateStar from '../utils/generateStart'
+import Loading from '../components/Loading'
 const Shop = () => {
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
   const { data: categories_name } = useQuery(CATEGORIES_NAME)
@@ -59,6 +60,11 @@ const Shop = () => {
       })
     }
   }
+
+  if (!booksRecommend || !categories_name || !authors_name) {
+    return <Loading />
+  }
+
   return (
     <div>
       {/* <Navbar /> */}

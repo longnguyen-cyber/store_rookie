@@ -5,18 +5,12 @@ import { GET_CART } from '../graphql/queries/cart'
 
 const Navbar = () => {
   const guestId = localStorage.getItem('guestId')
-  const { data, error, loading } = useQuery(GET_CART, {
+  const { data } = useQuery(GET_CART, {
     variables: {
       id: guestId || '',
     },
   })
-  console.log(data)
-  if (loading) {
-    return <div>Loading...</div>
-  }
-  if (error) {
-    return <div>Error! {error.message}</div>
-  }
+
   return (
     <div>
       <nav className="bg-white border-gray-200 dark:bg-gray-900">

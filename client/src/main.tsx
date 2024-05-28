@@ -10,10 +10,16 @@ import 'swiper/css/autoplay'
 import 'swiper/css/free-mode'
 import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
+import AuthProvider from './provider/auth-provider.tsx'
+import { BrowserRouter } from 'react-router-dom'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RootProvider>
-      <App />
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
     </RootProvider>
   </React.StrictMode>
 )

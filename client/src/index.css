@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+.section-with-bg {
+  position: relative;
+}
+
+.section-with-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url('./assets/bg-login.jpeg');
+  filter: blur(10px);
+  z-index: -1;
+}
+
 .group-loading {
   position: fixed;
   width: 100%;

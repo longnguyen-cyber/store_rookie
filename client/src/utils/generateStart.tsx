@@ -2,16 +2,15 @@ import { FaRegStar, FaStar, FaStarHalf } from 'react-icons/fa6'
 
 const generateStar = (star: number) => {
   const stars = []
-
   for (let i = 1; i <= 5; i++) {
     if (i <= Math.floor(star)) {
-      stars.push(<FaStar />)
+      stars.push(<FaStar key={i} />)
     } else if (i === Math.floor(star) + 1 && star % 1 >= 0.5) {
-      stars.push(<FaStar />)
+      stars.push(<FaStar key={i} />)
     } else if (i === Math.floor(star) + 1 && star % 1 < 0.5 && star % 1 > 0) {
-      stars.push(<FaStarHalf />)
+      stars.push(<FaStarHalf key={i} />)
     } else {
-      stars.push(<FaRegStar />)
+      stars.push(<FaRegStar key={i} />)
     }
   }
 

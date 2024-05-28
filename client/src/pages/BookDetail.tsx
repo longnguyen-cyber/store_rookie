@@ -71,22 +71,8 @@ const BookDetail = () => {
       console.log(error)
     },
     refetchQueries: [GET_CART, 'GetCart'],
-    // update: (cache, { data: { addItemToCart } }) => {
-    //   // Read the data from our cache for this query.
-    //   const data = cache.readQuery({ query: GET_CART_ITEMS })
-
-    //   // Add our comment from the mutation to the end.
-    //   data.cart.items.push(addItemToCart)
-
-    //   // Write our data back to the cache.
-    //   cache.writeQuery({ query: GET_CART_ITEMS, data })
-    // },
   })
-  //   addItemToCart(
-  //     items: { quantity: 10, priceId: "2", book: { connect: { id: "2" } }, cart: {  } }
-  //     userId: "daab75f8-c495-4d84-af0d-6843c6bc78d0"
-  //     type: "guest"
-  // )
+
   const handleAddToCart = () => {
     if (bookData?.book.prices && guestId) {
       addItemToCart({

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import Footer from '../components/Footer'
+import Loading from '../components/Loading'
 import { Book } from '../generated/graphql'
 import {
   GET_BOOK_ONSALE,
@@ -11,13 +12,11 @@ import {
   GET_BOOKS_RECOMMENED,
 } from '../graphql/queries/book'
 import generateStar from '../utils/generateStart'
-import Loading from '../components/Loading'
 const Home = () => {
   const { data: booksSale } = useQuery(GET_BOOK_ONSALE)
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
   const { data: booksPopular } = useQuery(GET_BOOKS_POPULAR)
   const [isRecommend, setIsRecommend] = useState(true)
-
   if (!booksSale || !booksRecommend || !booksPopular) {
     return <Loading />
   }
@@ -37,12 +36,10 @@ const Home = () => {
               alt="product image"
             />
             <div className="px-5 pb-5">
-              <a href="#">
-                <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                  {book.title}
-                </p>
-                <small className="text-white">{book.description}</small>
-              </a>
+              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                {book.title}
+              </p>
+              <small className="text-white">{book.description}</small>
               <div className="flex items-center mt-2.5 mb-5">
                 <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
                   {book.rating} {generateStar(book.rating)}
@@ -111,12 +108,10 @@ const Home = () => {
                         alt="product image"
                       />
                       <div className="px-5 pb-5">
-                        <a href="#">
-                          <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                            {book.title}
-                          </p>
-                          <small className="text-white">{description}</small>
-                        </a>
+                        <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                          {book.title}
+                        </p>
+                        <small className="text-white">{description}</small>
                         <div className="flex items-center mt-2.5 mb-5">
                           <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
                             {book.rating} {generateStar(book.rating)}

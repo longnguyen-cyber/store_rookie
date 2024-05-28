@@ -16,6 +16,7 @@ const documents = {
     "\n  mutation AddItemToCart($items: CartItemCreateInput!, $userId: String!, $type: String!) {\n    addItemToCart(items: $items, userId: $userId, type: $type)\n  }\n": types.AddItemToCartDocument,
     "\n  mutation UpdateQuantityOfItem($id: String!, $quantity: String!) {\n    updateQuantityOfItem(id: $id, quantity: $quantity)\n  }\n": types.UpdateQuantityOfItemDocument,
     "\n  mutation RemoveItemFromCart($id: String!) {\n    removeItemFromCart(id: $id)\n  }\n": types.RemoveItemFromCartDocument,
+    "\n  mutation Login( $userLoginDto: LoginInput!) {\n    login(userLoginDto: $userLoginDto) {\n      user {\n        id\n        username\n        email\n        isAdmin\n      }\n      token\n    }\n  }\n": types.LoginDocument,
     "\n  query Authors {\n    authors {\n        id\n        name\n    }\n  }\n": types.AuthorsDocument,
     "\n  query PromotionsOnSale {\n    promotionsOnSale {\n        id\n        bookId\n        promotionType\n        startDate\n        endDate\n        book {\n            id\n            title\n            description\n            categoryId\n            rating\n            ratings\n            images\n            createdAt\n            prices {\n                id\n                bookId\n                originalPrice\n                discountPrice\n                startDate\n                endDate\n                createdAt\n            }\n        }\n    }\n  }\n": types.PromotionsOnSaleDocument,
     "\n  query RecommendBooks {\n    recommendBooks {\n        id\n        title\n        description\n        categoryId\n        rating\n        ratings\n        images\n        createdAt\n        prices {\n            id\n            bookId\n            originalPrice\n            discountPrice\n            startDate\n            endDate\n            createdAt\n        }\n    }\n  }\n": types.RecommendBooksDocument,
@@ -52,6 +53,10 @@ export function gql(source: "\n  mutation UpdateQuantityOfItem($id: String!, $qu
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation RemoveItemFromCart($id: String!) {\n    removeItemFromCart(id: $id)\n  }\n"): (typeof documents)["\n  mutation RemoveItemFromCart($id: String!) {\n    removeItemFromCart(id: $id)\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation Login( $userLoginDto: LoginInput!) {\n    login(userLoginDto: $userLoginDto) {\n      user {\n        id\n        username\n        email\n        isAdmin\n      }\n      token\n    }\n  }\n"): (typeof documents)["\n  mutation Login( $userLoginDto: LoginInput!) {\n    login(userLoginDto: $userLoginDto) {\n      user {\n        id\n        username\n        email\n        isAdmin\n      }\n      token\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

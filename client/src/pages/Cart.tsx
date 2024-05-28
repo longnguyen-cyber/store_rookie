@@ -4,7 +4,10 @@ import { GET_CART } from '../graphql/queries/cart'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import { UPDATE_QUANTITY_OF_ITEM } from '../graphql/mutations/cart'
+import {
+  REMOVE_ITEM_FROM_CART,
+  UPDATE_QUANTITY_OF_ITEM,
+} from '../graphql/mutations/cart'
 import Loading from '../components/Loading'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
@@ -13,6 +16,18 @@ const Cart = () => {
   const [updateQuantityOfItemBook] = useMutation(UPDATE_QUANTITY_OF_ITEM, {
     refetchQueries: [GET_CART, 'GetCart'],
   })
+
+  const [deleteItem] = useMutation(REMOVE_ITEM_FROM_CART, {
+    refetchQueries: [GET_CART, 'GetCart'],
+  })
+
+  const handleDeleteItem = (id: string) => {
+    deleteItem({
+      variables: {
+        id,
+      },
+    })
+  }
 
   const debouncedUpdateQuantity = _.debounce(
     (id: string, newQuantity: number) => {
@@ -92,6 +107,7 @@ const Cart = () => {
                         <div className="flex items-center gap-4">
                           <button
                             type="button"
+                            onClick={() => handleDeleteItem(item.id)}
                             className="inline-flex items-center text-sm font-medium text-red-600 hover:underline"
                           >
                             <svg

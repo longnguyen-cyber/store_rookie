@@ -1,13 +1,17 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { format, parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { GET_BOOK_BY_ID, GET_REVIEWS_BY_BOOK } from '../graphql/queries/book'
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { ADD_ITEM_TO_CART } from '../graphql/mutations/cart'
+import { GET_CART } from '../graphql/queries/cart'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
+  const guestId = localStorage.getItem('guestId')
+  const userId = localStorage.getItem('userId')
   const navigate = useNavigate()
 
   const updateUrl = (page: number) => {
@@ -56,6 +60,48 @@ const BookDetail = () => {
       setTotalPages(reviews?.reviewsByBook.totalPage ?? 0)
     }
   }, [loading, reviews])
+
+  const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
+    onCompleted: () => {
+      // navigate('/cart')
+      alert('Added to cart successfully')
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+    refetchQueries: [GET_CART, 'GetCart'],
+    // update: (cache, { data: { addItemToCart } }) => {
+    //   // Read the data from our cache for this query.
+    //   const data = cache.readQuery({ query: GET_CART_ITEMS })
+
+    //   // Add our comment from the mutation to the end.
+    //   data.cart.items.push(addItemToCart)
+
+    //   // Write our data back to the cache.
+    //   cache.writeQuery({ query: GET_CART_ITEMS, data })
+    // },
+  })
+  //   addItemToCart(
+  //     items: { quantity: 10, priceId: "2", book: { connect: { id: "2" } }, cart: {  } }
+  //     userId: "daab75f8-c495-4d84-af0d-6843c6bc78d0"
+  //     type: "guest"
+  // )
+  const handleAddToCart = () => {
+    if (bookData?.book.prices && guestId) {
+      addItemToCart({
+        variables: {
+          items: {
+            quantity,
+            priceId: bookData?.book.prices[0]?.id,
+            book: { connect: { id: bookData?.book.id } },
+            cart: {},
+          },
+          userId: userId ?? guestId,
+          type: userId ? 'user' : 'guest',
+        },
+      })
+    }
+  }
 
   return (
     <div className="mx-72 mt-10 space-y-4">
@@ -140,6 +186,7 @@ const BookDetail = () => {
             </div>
             <button
               type="button"
+              onClick={handleAddToCart}
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  focus:outline-none w-full py-2 mt-2"
             >
               Add to cart

@@ -6,8 +6,13 @@ import Shop from './pages/Shop'
 import BookDetail from './pages/BookDetail'
 import Navbar from './components/Navbar'
 import Cart from './pages/Cart'
-
+import { v4 as uuidv4 } from 'uuid'
 function App() {
+  const guestId = localStorage.getItem('guestId')
+  if (!guestId) {
+    localStorage.setItem('guestId', uuidv4())
+  }
+
   return (
     <BrowserRouter>
       <Routes>

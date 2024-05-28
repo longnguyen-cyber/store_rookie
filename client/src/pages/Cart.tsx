@@ -103,7 +103,7 @@ const Cart = () => {
                             {item?.book.prices &&
                             item?.book.prices[0].discountPrice !== 0 ? (
                               <>
-                                <span className="font-bold text-black text-3xl">
+                                <span className="font-bold text-black text-xl">
                                   $
                                   {item?.book.prices[0].discountPrice.toFixed(
                                     2

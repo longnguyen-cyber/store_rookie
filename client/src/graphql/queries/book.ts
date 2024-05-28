@@ -89,16 +89,17 @@ export const GET_BOOK_BY_ID = gql(`
       ratings
       images
       prices {
-          originalPrice
-          discountPrice
+        id
+        originalPrice
+        discountPrice
       }
       category {
         name
       }
       authors {
-          author {
-              name
-          }
+        author {
+            name
+        }
       }
     }
   }

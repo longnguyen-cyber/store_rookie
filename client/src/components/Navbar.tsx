@@ -10,13 +10,13 @@ const Navbar = () => {
       id: guestId || '',
     },
   })
+  console.log(data)
   if (loading) {
     return <div>Loading...</div>
   }
   if (error) {
     return <div>Error! {error.message}</div>
   }
-  console.log(data)
   return (
     <div>
       <nav className="bg-white border-gray-200 dark:bg-gray-900">

@@ -72,6 +72,19 @@ export class CartRepository {
     return cart ? true : false;
   }
 
+  async updateQuantityOfItem(id: string, quantity: number) {
+    const cart = await this.prisma.cartItem.update({
+      where: {
+        id: id,
+      },
+      data: {
+        quantity: quantity,
+      },
+    });
+
+    return cart ? true : false;
+  }
+
   async getCart(id: string) {
     const cart = await this.prisma.cart.findFirst({
       where: {

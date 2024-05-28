@@ -41,4 +41,12 @@ export class CartResolver {
   // async createCart(@Args('data') data: CreateCartInput) {
   //   return await this.cartService.createCart(data);
   // }
+
+  @Mutation(() => Boolean!)
+  async updateQuantityOfItem(
+    @Args('id') id: string,
+    @Args('quantity') quantity: string,
+  ) {
+    return await this.cartService.updateQuantityOfItem(id, Number(quantity));
+  }
 }

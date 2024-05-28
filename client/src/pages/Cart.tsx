@@ -1,9 +1,20 @@
 import { useQuery } from '@apollo/client'
 import { GET_CART } from '../graphql/queries/cart'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { useState } from 'react'
+import { InputChange } from '../utils/types'
 
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
+
+  const [book, setBook] = useState()
+  const handleChangeQuantityOfBook = (e: InputChange, item) => {
+    const quantity = e.target.value
+    console.log(`Quantity of ${item.book.title}: ${quantity}`)
+  }
+
+  const handleChangeQuantity = (item) => {}
+
   const { data, error, loading } = useQuery(GET_CART, {
     variables: {
       id: guestId || '',
@@ -88,7 +99,6 @@ const Cart = () => {
                           className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0"
                           required
                           value={item.quantity}
-                          onChange={(e) => console.log(e.target.value)}
                         />
                         <button
                           type="button"

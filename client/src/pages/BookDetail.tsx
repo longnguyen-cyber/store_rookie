@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { GET_BOOK_BY_ID, GET_REVIEWS_BY_BOOK } from '../graphql/queries/book'
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
+import { FaMinus, FaPlus } from 'react-icons/fa6'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -112,21 +113,7 @@ const BookDetail = () => {
                 disabled={quantity === 1}
                 onClick={() => setQuantity(quantity - 1)}
               >
-                <svg
-                  className="w-3 h-3 text-gray-900"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 2"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M1 1h16"
-                  />
-                </svg>
+                <FaMinus />
               </button>
               <input
                 type="text"
@@ -148,21 +135,7 @@ const BookDetail = () => {
                 onClick={() => setQuantity(quantity + 1)}
                 disabled={quantity === 99}
               >
-                <svg
-                  className="w-3 h-3 text-gray-900"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
+                <FaPlus />
               </button>
             </div>
             <button

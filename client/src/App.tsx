@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Shop from './pages/Shop'
 import BookDetail from './pages/BookDetail'
 import Navbar from './components/Navbar'
+import Cart from './pages/Cart'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/about" element={<Home />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/book/:id" element={<BookDetail />} />
           <Route path="*" element={<Error />} />
         </Route>

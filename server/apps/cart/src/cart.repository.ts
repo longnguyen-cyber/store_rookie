@@ -6,11 +6,24 @@ export class CartRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   //create only when click add item, if checkout cart and add more item will get old cart and create new item cart
-  async createCart(data: any) {
-    const cart = await this.prisma.cart.create({
-      data: {
-        ...data,
+  private async createCart(dataRaw: any) {
+    const data = {
+      guestId: dataRaw.guestId,
+      items: {
+        createMany: {
+          data: dataRaw.items.map((item: any) => {
+            const bookId = item.book.connect.id;
+            delete item.book;
+            return {
+              ...item,
+              bookId,
+            };
+          }),
+        },
       },
+    };
+    const cart = await this.prisma.cart.create({
+      data,
     });
 
     return cart ? true : false;
@@ -20,15 +33,29 @@ export class CartRepository {
     const cartExist = await this.findCart(userId, type);
 
     if (cartExist) {
+      const db = {
+        ...data,
+        cart: {
+          connect: {
+            id: cartExist.id,
+          },
+        },
+      };
+
       const cart = await this.prisma.cartItem.create({
         data: {
-          ...data,
+          ...db,
         },
       });
 
       return cart ? true : false;
     } else {
-      const cart = await this.createCart(data);
+      delete data.cart;
+      const dataCart = {
+        guestId: userId,
+        items: [data],
+      };
+      const cart = await this.createCart(dataCart);
       return cart ? true : false;
     }
   }

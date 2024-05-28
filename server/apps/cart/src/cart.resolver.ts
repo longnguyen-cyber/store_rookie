@@ -1,6 +1,6 @@
 import { Role } from '@app/common';
 import { CartItemCreateInput } from '@app/common/@generated/cart-item/cart-item-create.input';
-import { CartResponseCustom, CreateCartInput } from '@app/common/cart';
+import { CartResponseCustom } from '@app/common/cart';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CartService } from './cart.service';
 
@@ -33,8 +33,8 @@ export class CartResolver {
     return await this.cartService.getCart(id);
   }
 
-  @Mutation(() => Boolean!)
-  async createCart(@Args('data') data: CreateCartInput) {
-    return await this.cartService.createCart(data);
-  }
+  // @Mutation(() => Boolean!)
+  // async createCart(@Args('data') data: CreateCartInput) {
+  //   return await this.cartService.createCart(data);
+  // }
 }

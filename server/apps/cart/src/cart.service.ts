@@ -17,8 +17,4 @@ export class CartService {
   async getCart(id: string) {
     return await this.cartRepository.getCart(id);
   }
-
-  async createCart(data: any) {
-    return await this.cartRepository.createCart(data);
-  }
 }

@@ -82,17 +82,17 @@ const BookDetail = () => {
             {bookData?.book.prices && bookData?.book.prices[0].discountPrice ? (
               <>
                 <small className="text-gray-400 line-through">
-                  ${bookData?.book.prices[0].originalPrice}
+                  ${bookData?.book.prices[0].originalPrice.toFixed(2)}
                 </small>
                 <span className="font-bold text-black text-3xl">
-                  ${bookData?.book.prices[0].discountPrice}{' '}
+                  ${bookData?.book.prices[0].discountPrice.toFixed(2)}{' '}
                 </span>
               </>
             ) : (
               <span className="font-bold text-black text-xl">
                 $
                 {bookData?.book.prices &&
-                  bookData?.book.prices[0].originalPrice}{' '}
+                  bookData?.book.prices[0].originalPrice.toFixed(2)}{' '}
               </span>
             )}
           </p>

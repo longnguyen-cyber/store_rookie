@@ -14,6 +14,9 @@ export class CartResolver {
     @Args('userId') userId: string,
     @Args('type') type: string,
   ) {
+    console.log('data', data);
+    console.log('userId', userId);
+    console.log('type', type);
     return await this.cartService.addItemToCart(
       {
         ...data,
@@ -30,7 +33,8 @@ export class CartResolver {
 
   @Query(() => CartResponseCustom)
   async getCart(@Args('id') id: string) {
-    return await this.cartService.getCart(id);
+    console.log('id', id);
+    return await this.cartService.getCart(id.trim());
   }
 
   // @Mutation(() => Boolean!)

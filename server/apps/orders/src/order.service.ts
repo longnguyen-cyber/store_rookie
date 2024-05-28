@@ -5,7 +5,7 @@ import { OrderRepository } from './order.repository';
 export class OrderService {
   constructor(private readonly orderRepository: OrderRepository) {}
 
-  async findAll(userId: string) {
+  async findAll(userId?: string) {
     return await this.orderRepository.findAll(userId);
   }
 
@@ -13,7 +13,7 @@ export class OrderService {
     return await this.orderRepository.findOne(id);
   }
 
-  async create(data: any, guestId: string) {
+  async create(data: any, guestId?: string) {
     return await this.orderRepository.create(data, guestId);
   }
 

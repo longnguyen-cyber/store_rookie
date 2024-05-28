@@ -82,7 +82,6 @@ export class AdminController {
         limit,
       );
 
-      console.log('Data:', data);
       return res.render('layout', {
         content: `./${entityName}/index`,
         data,
@@ -124,9 +123,6 @@ export class AdminController {
     @Body() body: any,
     @Res() res: Response,
   ) {
-    console.log('Body:', body);
-    console.log('EntityName:', entityName);
-    console.log('Id:', id);
     const data = await this.adminService.updateRes(entityName, id, body);
     if (data) {
       return res.redirect(`/${entityName}`);

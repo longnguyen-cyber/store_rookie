@@ -42,7 +42,6 @@ export class BookService {
     const books = await this.bookRepository.findAll();
     const final = books.map((book) => {
       const lastedPrice = book.prices.find((p) => p.endDate === null);
-      console.log(lastedPrice);
       return {
         ...book,
         prices: [lastedPrice],

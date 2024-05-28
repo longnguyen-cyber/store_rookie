@@ -49,6 +49,8 @@ export class CartRepository {
       });
 
       return cart ? true : false;
+      // console.log('db', db);
+      // return false;
     } else {
       delete data.cart;
       const dataCart = {

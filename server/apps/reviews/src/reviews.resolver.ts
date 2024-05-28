@@ -26,7 +26,6 @@ export class ReviewsResolver {
       parseInt(skip),
       parseInt(take),
     );
-    console.log(rs);
     return rs;
   }
 

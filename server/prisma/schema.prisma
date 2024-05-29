@@ -155,6 +155,8 @@ model Order {
   userId    String      @map("user_id")
   orderDate DateTime    @default(now()) @map("order_date")
   status    String      @default("Pending") @map("status")
+  payment   String      @default("cash") @map("payment")
+  address   String      @map("address")
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
 

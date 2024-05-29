@@ -87,7 +87,7 @@ export class AuthService {
 
   generateJWT(email: any): string {
     return sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: process.env.LOGIN_EXPIRED,
+      expiresIn: '30d',
     });
   }
 

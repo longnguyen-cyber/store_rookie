@@ -137,7 +137,7 @@ model Review {
   bookId    String   @map("book_id")
   userId    String   @map("user_id")
   rating    Int      @map("rating")
-  title     String  @map("title")
+  title     String   @map("title")
   content   String?  @map("content")
   createdAt DateTime @default(now()) @map("created_at")
   book      Book     @relation(fields: [bookId], references: [id])
@@ -151,6 +151,8 @@ model Order {
   userId    String      @map("user_id")
   orderDate DateTime    @default(now()) @map("order_date")
   status    String      @default("Pending") @map("status")
+  pacdyment String      @map("payment") @default("cash")
+  address   String      @map("address")
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
 

@@ -13,8 +13,8 @@ export class OrderService {
     return await this.orderRepository.findOne(id);
   }
 
-  async create(data: any, guestId?: string) {
-    return await this.orderRepository.create(data, guestId);
+  async create(data: any, id?: string) {
+    return await this.orderRepository.create(data, id);
   }
 
   async update(id: string, data: any) {

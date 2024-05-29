@@ -37,6 +37,7 @@ export class AuthGuard implements CanActivate {
     let token = isGraphql
       ? this.getAccessToken(context)
       : request.cookies?.token;
+    console.log('Token:', token);
     if (!token) {
       token = request.headers?.authorization?.split(' ')[1];
     }

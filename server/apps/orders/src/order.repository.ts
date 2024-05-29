@@ -80,7 +80,6 @@ export class OrderRepository {
           },
         },
       },
-      take: 200,
     });
     const books = orders.flatMap((order) =>
       order.items.map((item) => item.book),

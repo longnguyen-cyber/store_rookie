@@ -1,4 +1,5 @@
-import { PrismaService } from '@app/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { PrismaService, QUERY_SORT } from '@app/common';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -98,19 +99,6 @@ export class BookRepository {
       include: {
         prices: true,
       },
-      take: 200,
-    });
-    return books;
-  }
-
-  async getBookByRating(rating: number) {
-    const books = await this.prisma.book.findMany({
-      where: {
-        rating: {
-          gte: rating,
-          lt: rating + 1,
-        },
-      },
     });
     return books;
   }
@@ -166,5 +154,67 @@ export class BookRepository {
       },
     });
     return book;
+  }
+
+  async getBookByCategory(category: string) {
+    const books = await this.prisma.category.findMany({
+      where: {
+        id: category,
+      },
+      select: {
+        books: {
+          include: {
+            prices: true,
+            promotions: true,
+          },
+        },
+      },
+    });
+    return books;
+  }
+  async getBookByAuthor(author_id: string) {
+    const authors = await this.prisma.author.findMany({
+      where: {
+        id: author_id,
+      },
+      select: {
+        books: {
+          include: {
+            book: {
+              include: {
+                prices: true,
+                promotions: true,
+                category: true,
+                publishers: {
+                  select: {
+                    publisher: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const books = authors.flatMap((author) =>
+      author.books.map((book) => book.book),
+    );
+    return books;
+  }
+
+  async getBookByRating(rating: number) {
+    const books = await this.prisma.book.findMany({
+      where: {
+        rating: {
+          gte: rating,
+          lt: rating + 1,
+        },
+      },
+      include: {
+        prices: true,
+        promotions: true,
+      },
+    });
+    return books;
   }
 }

@@ -22,6 +22,9 @@ export class PromotionRepository {
           },
         },
       },
+      orderBy: {
+        endDate: 'desc',
+      },
     });
     return promotions;
   }

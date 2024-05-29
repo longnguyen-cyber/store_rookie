@@ -1,4 +1,4 @@
-import { QUERY_ORDER } from '@app/common';
+import { QUERY_SORT } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthorService } from 'apps/author/src/author.service';
@@ -51,11 +51,6 @@ export class BookService {
     return final;
   }
 
-  async getBookByCategory(category_id: string) {
-    const books = await this.categoriesService.getBookByCategory(category_id);
-    return books;
-  }
-
   async createBookPrice(data: any) {
     const price = await this.bookRepository.createBookPrice(data);
     return price;
@@ -75,9 +70,13 @@ export class BookService {
     return final;
   }
 
-  async getBookByPrice(type: QUERY_ORDER) {
-    const books = await this.findAll();
-    if (type === QUERY_ORDER.ASC) {
+  async getBookPopular() {
+    const books = await this.orderService.getAllOrderCompletedOfBook();
+    return books;
+  }
+
+  private sortByPrice(books: any, type: QUERY_SORT) {
+    if (type === QUERY_SORT.ASC) {
       return books.sort(
         (a, b) => a.prices[0].originalPrice - b.prices[0].originalPrice,
       );
@@ -87,20 +86,56 @@ export class BookService {
       );
     }
   }
+  private cleanData = (data: any) => {
+    const final = data.map((book) => {
+      const lastedPrice = book.prices.find((p) => p.endDate === null);
+      const lastPromotion = book.promotions.sort(
+        (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime(),
+      )[0];
+      return {
+        ...book,
+        prices: [lastedPrice],
+        createdAt: lastedPrice.createdAt,
+        promotions: lastPromotion ? [lastPromotion] : [],
+      };
+    });
 
-  async getBookByRating(star: number) {
+    return final;
+  };
+
+  sortOrFilterBooks(books: any, type: QUERY_SORT) {
+    const cleanData = this.cleanData(books);
+    switch (type) {
+      case QUERY_SORT.ASC:
+      case QUERY_SORT.DESC:
+        return this.sortByPrice(cleanData, type);
+      case QUERY_SORT.SALE:
+        return cleanData.filter((book) => book.promotions.length > 0);
+      case QUERY_SORT.POPULAR:
+      default:
+        return cleanData;
+    }
+  }
+
+  //shop page
+  async getBookByRating(star: number, type: QUERY_SORT) {
     const books = await this.bookRepository.getBookByRating(star);
-    return books;
+    return this.sortOrFilterBooks(books, type);
   }
 
-  async getBookPopular() {
-    const books = await this.orderService.getAllOrderCompletedOfBook();
-    return books;
+  async getBookByAuthor(author_id: string, type: QUERY_SORT) {
+    const books = await this.bookRepository.getBookByAuthor(author_id);
+
+    return this.sortOrFilterBooks(books, type);
   }
 
-  async getBookByAuthor(author_id: string) {
-    const books = await this.authorService.getBookByAuthor(author_id);
-    return books;
+  async getBookByCategory(category_id: string, type: QUERY_SORT) {
+    const books = await this.bookRepository
+      .getBookByCategory(category_id)
+      .then((data) => {
+        return data.map((item) => item.books).flat();
+      });
+    return this.sortOrFilterBooks(books, type);
   }
 
   async findOne(id: string) {

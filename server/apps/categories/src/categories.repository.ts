@@ -13,23 +13,6 @@ export class CategoriesRepository {
     return categories;
   }
 
-  async getBookByCategory(category: string) {
-    const books = await this.prisma.category.findMany({
-      where: {
-        id: category,
-      },
-      select: {
-        books: {
-          include: {
-            prices: true,
-            promotions: true,
-          },
-        },
-      },
-    });
-    return books;
-  }
-
   async findOne(id: string) {
     const category = await this.prisma.category.findUnique({
       where: {

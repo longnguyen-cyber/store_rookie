@@ -10,6 +10,7 @@ import 'swiper/css/autoplay'
 import 'swiper/css/free-mode'
 import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
+import 'react-toastify/dist/ReactToastify.css'
 import AuthProvider from './provider/auth-provider.tsx'
 import { BrowserRouter } from 'react-router-dom'
 ReactDOM.createRoot(document.getElementById('root')!).render(

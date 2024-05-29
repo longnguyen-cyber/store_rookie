@@ -5,16 +5,66 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { GET_BOOK_BY_ID, GET_REVIEWS_BY_BOOK } from '../graphql/queries/book'
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
-import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { FaMinus, FaPlus, FaStar } from 'react-icons/fa6'
 import { ADD_ITEM_TO_CART } from '../graphql/mutations/cart'
 import { GET_CART } from '../graphql/queries/cart'
 import Loading from '../components/Loading'
+import { toast, ToastContainer } from 'react-toastify'
+import { CREATE_REVIEW } from '../graphql/mutations/review'
+import { FormSubmit, InputChange } from '../utils/types'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
   const guestId = localStorage.getItem('guestId')
   const userId = localStorage.getItem('userId')
   const navigate = useNavigate()
+  const [review, setReview] = useState({
+    title: '',
+    content: '',
+    rating: 0,
+  })
+  const [rating, setRating] = useState(0)
+
+  const handleStarHover = (index: number) => {
+    setRating(index)
+    setReview({ ...review, rating: index })
+  }
+  const [createReview] = useMutation(CREATE_REVIEW, {
+    onCompleted: () => {
+      toast.success('Review created successfully')
+      setReview({ title: '', content: '', rating: 0 })
+      setRating(0)
+    },
+    refetchQueries: [
+      { query: GET_REVIEWS_BY_BOOK, variables: { bookId: id } },
+      { query: GET_BOOK_BY_ID, variables: { bookId: id } },
+      'GetReviewsByBook',
+      'GetBookDetails',
+    ],
+    onError: (error) => {
+      setReview({ title: '', content: '', rating: 0 })
+      setRating(0)
+      toast.error(error.message)
+    },
+  })
+
+  const handleChangeInput = (e: InputChange) => {
+    setReview({ ...review, [e.target.name]: e.target.value })
+  }
+  const handleSumitReview = (e: FormSubmit) => {
+    e.preventDefault()
+    const data = {
+      data: {
+        book: { connect: { id: id } },
+        title: review.title,
+        content: review.content,
+        rating: review.rating,
+      },
+    }
+    createReview({
+      variables: data,
+    })
+  }
 
   const updateUrl = (page: number) => {
     if (page > 0) {
@@ -97,6 +147,7 @@ const BookDetail = () => {
 
   return (
     <div className="mx-72 mt-10 space-y-4">
+      <ToastContainer />
       <div className="grid grid-cols-12 space-x-4 ">
         <div className="col-span-7 rounded overflow-hidden space-x-6 border flex">
           <div>
@@ -274,40 +325,60 @@ const BookDetail = () => {
           <h1 className="font-bold text-xl text-center border-b py-3">
             Write review
           </h1>
-          <form className="max-w mx-8 py-5">
+          <form className="max-w mx-8 py-5" onSubmit={handleSumitReview}>
             <div className="mb-5">
               <label
-                htmlFor="email"
+                htmlFor="title"
                 className="block mb-2 text-sm font-medium text-gray-900 "
               >
                 Title
               </label>
               <input
-                type="email"
-                id="email"
+                type="text"
+                id="title"
+                name="title"
+                value={review.title}
+                onChange={handleChangeInput}
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 placeholder="Your title"
                 required
               />
             </div>
             <label
-              htmlFor="message"
+              htmlFor="content"
               className="block mb-2 text-sm font-medium text-gray-900 "
             >
-              Your message
+              Your content
             </label>
             <textarea
-              id="message"
+              id="content"
+              name="content"
+              value={review.content}
+              onChange={handleChangeInput}
               rows={5}
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
               placeholder="Write a content..."
-              defaultValue={''}
             />
+
+            <div className="flex space-x-4 items-center justify-center h-4 my-4">
+              {[1, 2, 3, 4, 5].map((index) => (
+                <span
+                  key={index}
+                  onMouseEnter={() => handleStarHover(index)}
+                  className={`${
+                    rating >= index ? 'text-yellow-500' : 'text-gray-400'
+                  } cursor-pointer
+          `}
+                >
+                  <FaStar />
+                </span>
+              ))}
+            </div>
             <button
               type="submit"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  focus:outline-none w-2/3 py-2 mt-2 mx-auto flex justify-center"
             >
-              Submit
+              Submit review
             </button>
           </form>
         </div>

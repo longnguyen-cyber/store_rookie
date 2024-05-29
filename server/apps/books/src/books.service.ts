@@ -103,7 +103,8 @@ export class BookService {
     return final;
   };
 
-  sortOrFilterBooks(books: any, type: QUERY_SORT) {
+  async sortOrFilterBooks(books: any, type: QUERY_SORT) {
+    console.log('type', type);
     const cleanData = this.cleanData(books);
     switch (type) {
       case QUERY_SORT.ASC:
@@ -112,6 +113,20 @@ export class BookService {
       case QUERY_SORT.SALE:
         return cleanData.filter((book) => book.promotions.length > 0);
       case QUERY_SORT.POPULAR:
+        const popularBooks = await this.getBookPopular();
+        if (!popularBooks.length) {
+          return [];
+        }
+
+        const final = popularBooks
+          .map((book) => {
+            const b = cleanData.find((b) => b.id === book.id);
+            return b;
+          })
+          .filter(Boolean);
+        console.log('final', final);
+        return final;
+
       default:
         return cleanData;
     }

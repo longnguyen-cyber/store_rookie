@@ -1,5 +1,29 @@
 import { gql } from '../../generated'
 
+export const GET_BOOKS = gql(`
+  query Books {
+    books {
+        id
+        title
+        description
+        categoryId
+        rating
+        ratings
+        images
+        createdAt
+        prices {
+            id
+            bookId
+            originalPrice
+            discountPrice
+            startDate
+            endDate
+            createdAt
+        }
+    }
+  }
+`)
+
 export const GET_BOOK_ONSALE = gql(`
   query PromotionsOnSale {
     promotionsOnSale {

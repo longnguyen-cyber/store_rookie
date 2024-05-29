@@ -53,6 +53,11 @@ const BookDetail = () => {
   }
   const handleSumitReview = (e: FormSubmit) => {
     e.preventDefault()
+    if (!review.title || !review.content) {
+      return toast.error('Please fill all fields')
+    } else if (rating === 0) {
+      return toast.error('Please select rating')
+    }
     const data = {
       data: {
         book: { connect: { id: id } },

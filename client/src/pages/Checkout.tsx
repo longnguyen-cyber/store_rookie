@@ -85,6 +85,8 @@ const Checkout = () => {
 
   if (auth?.token === null) {
     navigate('/login')
+  } else if (data?.getCart.items && data?.getCart.items.length === 0) {
+    navigate('/')
   }
 
   return (

@@ -2,12 +2,14 @@ import { useQuery } from '@apollo/client'
 import { IoMdCart } from 'react-icons/io'
 import { Outlet } from 'react-router-dom'
 import { GET_CART } from '../graphql/queries/cart'
+import { useAuth } from '../provider/auth-provider'
 
 const Navbar = () => {
   const guestId = localStorage.getItem('guestId')
+  const auth = useAuth()
   const { data } = useQuery(GET_CART, {
     variables: {
-      id: guestId || '',
+      id: auth?.user?.id || guestId || '',
     },
   })
 
@@ -84,9 +86,11 @@ const Navbar = () => {
                   className="relative block py-2 text-white rounded hover:text-blue-500 text-2xl "
                 >
                   <IoMdCart />
-                  <span className="absolute top-[2px] -right-2 inline-block w-4 h-4 text-xs text-center text-white bg-blue-500 rounded-full">
-                    {data?.getCart.items?.length}
-                  </span>
+                  {data?.getCart.items && data.getCart.items?.length > 0 && (
+                    <span className="absolute top-[2px] -right-2 inline-block w-4 h-4 text-xs text-center text-white bg-blue-500 rounded-full">
+                      {data?.getCart.items?.length}
+                    </span>
+                  )}
                 </a>
               </li>
             </ul>

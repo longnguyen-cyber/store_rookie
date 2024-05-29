@@ -9,8 +9,11 @@ import {
   UPDATE_QUANTITY_OF_ITEM,
 } from '../graphql/mutations/cart'
 import { GET_CART } from '../graphql/queries/cart'
+import { useAuth } from '../provider/auth-provider'
+import { Link } from 'react-router-dom'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
+  const auth = useAuth()
 
   const [quantities, setQuantities] = useState<Record<string, number>>({})
   const [total, setTotal] = useState(0)
@@ -60,7 +63,7 @@ const Cart = () => {
   }
   const { data } = useQuery(GET_CART, {
     variables: {
-      id: guestId || '',
+      id: auth?.user?.id || guestId || '',
     },
   })
 
@@ -197,12 +200,21 @@ const Cart = () => {
                   </dd>
                 </dl>
               </div>
-              <a
-                href="/checkout"
-                className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black focus:outline-none focus:ring-4"
-              >
-                Proceed to Checkout
-              </a>
+              {data?.getCart.items && data?.getCart.items.length > 0 ? (
+                <Link
+                  to="/checkout"
+                  className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black focus:outline-none focus:ring-4"
+                >
+                  Proceed to Checkout
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white opacity-50 cursor-not-allowed"
+                >
+                  Proceed to Checkout
+                </button>
+              )}
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                   {' '}

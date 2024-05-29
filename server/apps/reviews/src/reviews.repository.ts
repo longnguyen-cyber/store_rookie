@@ -53,6 +53,22 @@ export class ReviewRepository {
   }
 
   async create(data: any) {
+    console.log(data);
+    const haveBuy = await this.prisma.orderItem.findFirst({
+      where: {
+        bookId: data.book.connect.id,
+      },
+    });
+    console.log(haveBuy);
+    if (!haveBuy) throw new Error('You must buy this book to review it');
+    const reviewExist = await this.prisma.review.findFirst({
+      where: {
+        bookId: data.book.connect.id,
+        userId: data.user.connect.id,
+      },
+    });
+    if (reviewExist) throw new Error('You have reviewed this book');
+
     const review = await this.prisma.review.create({
       data: {
         ...data,

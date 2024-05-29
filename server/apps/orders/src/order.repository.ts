@@ -100,41 +100,36 @@ export class OrderRepository {
   async create(data: any, guestId: string) {
     console.log('data', data);
     console.log('guestId', guestId);
-    return true;
-    // const order = await this.prisma.order.create({
-    //   data: {
-    //     ...data,
-    //     status: ORDER_STATUS.COMPLETED,
-    //   },
-    // });
-    // //update info guest->user cart after order
-    // const cart = await this.findCart(guestId, Role.GUEST);
-    // if (cart.userId == null) {
-    //   console.log(
-    //     'update info guest->user cart after order',
-    //     data.user.connect.id,
-    //   );
-    //   await this.prisma.cart.update({
-    //     where: {
-    //       id: cart.id,
-    //     },
-    //     data: {
-    //       userId: data.user.connect.id,
-    //     },
-    //   });
-    //   console.log('update info guest->user cart after order');
-    // }
+    const order = await this.prisma.order.create({
+      data: {
+        ...data,
+        status: ORDER_STATUS.COMPLETED,
+      },
+    });
+    //update info guest->user cart after order
+    const cart = await this.findCart(guestId, Role.GUEST);
+    if (cart.userId == null) {
+      await this.prisma.cart.update({
+        where: {
+          id: cart.id,
+        },
+        data: {
+          userId: data.user.connect.id,
+        },
+      });
+      console.log('update info guest->user cart after order');
+    }
 
-    // if (order.status === ORDER_STATUS.COMPLETED) {
-    //   //detete cart item after order
-    //   await this.prisma.cartItem.deleteMany({
-    //     where: {
-    //       cartId: cart.id,
-    //     },
-    //   });
-    //   console.log('delete cart item after order');
-    // }
-    // return order;
+    if (order.status === ORDER_STATUS.COMPLETED) {
+      //detete cart item after order
+      await this.prisma.cartItem.deleteMany({
+        where: {
+          cartId: cart.id,
+        },
+      });
+      console.log('delete cart item after order');
+    }
+    return order;
   }
 
   async update(id: string, data: any) {

@@ -157,6 +157,7 @@ model Order {
   status    String      @default("Pending") @map("status")
   payment   String      @default("cash") @map("payment")
   address   String      @map("address")
+  shipping  Float       @map("shipping")
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
 

@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Navigation } from 'swiper/modules'
+import { Autoplay, Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
@@ -79,15 +79,20 @@ const Home = () => {
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           >
-            View all
+            <Link to={'/shop'}>View all</Link>
           </button>
         </div>
         <>
           <Swiper
             slidesPerView={4}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
             spaceBetween={10}
             navigation={true}
-            modules={[Navigation]}
+            loop={true}
+            modules={[Navigation, Autoplay]}
             className="mySwiper"
           >
             {booksSale?.promotionsOnSale.map((promotion, index) => {

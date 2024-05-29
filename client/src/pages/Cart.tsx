@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@apollo/client'
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import Loading from '../components/Loading'
 import {
@@ -33,25 +33,27 @@ const Cart = () => {
     })
   }
 
-  const debouncedUpdateQuantity = _.debounce(
-    (id: string, newQuantity: number) => {
+  const debouncedUpdateQuantity = useCallback(
+    _.debounce((id: string, newQuantity: number) => {
       updateQuantityOfItemBook({
         variables: {
           id,
           quantity: newQuantity.toString(),
         },
       })
-    },
-    5000
+    }, 5000),
+    []
   )
-
   const handleChangeQuantity = (increment: number, id: string, item: any) => {
     const newQuantity = (quantities[id] || item.quantity) + increment
+
+    // Update the state immediately for UI changes
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
       [id]: newQuantity,
     }))
-    //update total
+
+    // Update total
     setTotal((prevTotal) => {
       const price = item.book.prices[0].discountPrice
         ? item.book.prices[0].discountPrice
@@ -59,6 +61,7 @@ const Cart = () => {
       return prevTotal + increment * price
     })
 
+    // Call the debounced function to delay the actual update operation
     debouncedUpdateQuantity(id, newQuantity)
   }
   const { data } = useQuery(GET_CART, {
@@ -139,9 +142,9 @@ const Cart = () => {
                         <button
                           type="button"
                           className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                          onClick={() =>
+                          onClick={() => {
                             handleChangeQuantity(-1, item.id, item)
-                          }
+                          }}
                         >
                           <FaMinus />
                         </button>
@@ -151,7 +154,9 @@ const Cart = () => {
                         <button
                           type="button"
                           className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                          onClick={() => handleChangeQuantity(1, item.id, item)}
+                          onClick={() => {
+                            handleChangeQuantity(1, item.id, item)
+                          }}
                         >
                           <FaPlus />
                         </button>

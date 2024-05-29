@@ -12,11 +12,11 @@ import Loading from '../components/Loading'
 import { toast, ToastContainer } from 'react-toastify'
 import { CREATE_REVIEW } from '../graphql/mutations/review'
 import { FormSubmit, InputChange } from '../utils/types'
+import { useAuth } from '../provider/auth-provider'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
   const guestId = localStorage.getItem('guestId')
-  const userId = localStorage.getItem('userId')
   const navigate = useNavigate()
   const [review, setReview] = useState({
     title: '',
@@ -120,7 +120,6 @@ const BookDetail = () => {
 
   const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
     onCompleted: () => {
-      // navigate('/cart')
       alert('Added to cart successfully')
     },
     onError: (error) => {
@@ -128,7 +127,7 @@ const BookDetail = () => {
     },
     refetchQueries: [GET_CART, 'GetCart'],
   })
-
+  const auth = useAuth()
   const handleAddToCart = () => {
     if (bookData?.book.prices && guestId) {
       addItemToCart({
@@ -139,8 +138,8 @@ const BookDetail = () => {
             book: { connect: { id: bookData?.book.id } },
             cart: {},
           },
-          userId: userId ?? guestId,
-          type: userId ? 'user' : 'guest',
+          userId: auth?.user?.id ?? guestId,
+          type: auth?.user?.id ? 'user' : 'guest',
         },
       })
     }

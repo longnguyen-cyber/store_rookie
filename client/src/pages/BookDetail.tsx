@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { format, parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'

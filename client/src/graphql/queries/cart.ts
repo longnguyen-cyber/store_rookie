@@ -18,6 +18,7 @@ export const GET_CART = gql(`
 					rating
 					images
 					prices {
+						id
 						originalPrice
 						discountPrice
 						startDate

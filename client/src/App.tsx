@@ -8,6 +8,7 @@ import Error from './pages/Error'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Login from './pages/Login'
+import Checkout from './pages/Checkout'
 function App() {
   const guestId = localStorage.getItem('guestId')
   if (!guestId) {
@@ -19,6 +20,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Navbar />}>
         <Route index element={<Home />} />
+        <Route path="/checkout" element={<Checkout />} />
 
         <Route path="/home" element={<Home />} />
         <Route path="/shop" element={<Shop />} />

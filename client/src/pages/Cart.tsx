@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@apollo/client'
-import { GET_CART } from '../graphql/queries/cart'
-import { FaMinus, FaPlus } from 'react-icons/fa6'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
+import { FaMinus, FaPlus } from 'react-icons/fa6'
+import Loading from '../components/Loading'
 import {
   REMOVE_ITEM_FROM_CART,
   UPDATE_QUANTITY_OF_ITEM,
 } from '../graphql/mutations/cart'
-import Loading from '../components/Loading'
+import { GET_CART } from '../graphql/queries/cart'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
+
   const [quantities, setQuantities] = useState<Record<string, number>>({})
   const [total, setTotal] = useState(0)
   const [updateQuantityOfItemBook] = useMutation(UPDATE_QUANTITY_OF_ITEM, {
@@ -41,7 +42,7 @@ const Cart = () => {
     5000
   )
 
-  const handleButtonClick = (increment: number, id: string, item: any) => {
+  const handleChangeQuantity = (increment: number, id: string, item: any) => {
     const newQuantity = (quantities[id] || item.quantity) + increment
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
@@ -135,7 +136,9 @@ const Cart = () => {
                         <button
                           type="button"
                           className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                          onClick={() => handleButtonClick(-1, item.id, item)}
+                          onClick={() =>
+                            handleChangeQuantity(-1, item.id, item)
+                          }
                         >
                           <FaMinus />
                         </button>
@@ -145,7 +148,7 @@ const Cart = () => {
                         <button
                           type="button"
                           className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                          onClick={() => handleButtonClick(1, item.id, item)}
+                          onClick={() => handleChangeQuantity(1, item.id, item)}
                         >
                           <FaPlus />
                         </button>
@@ -195,7 +198,7 @@ const Cart = () => {
                 </dl>
               </div>
               <a
-                href="#"
+                href="/checkout"
                 className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black focus:outline-none focus:ring-4"
               >
                 Proceed to Checkout

@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useLazyQuery, useQuery } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
 import { Book } from '../generated/graphql'
+
+import { AUTHOR_NAME } from '../graphql/queries/author'
 import {
   BOOKS_BY_AUTHOR,
   BOOKS_BY_CATEGORY,
   BOOKS_BY_RATING,
-} from '../graphql/mutations/book'
-import { AUTHOR_NAME } from '../graphql/queries/author'
-import { GET_BOOKS } from '../graphql/queries/book'
+  GET_BOOKS,
+} from '../graphql/queries/book'
 import { CATEGORIES_NAME } from '../graphql/queries/categories'
 import generateStar from '../utils/generateStart'
 import { InputChange, QUERY_SORT } from '../utils/types'
@@ -20,9 +23,19 @@ const Shop = () => {
     author: '',
     rating: '',
   }
-  const navigate = useNavigate()
 
-  const { data } = useQuery(GET_BOOKS)
+  const navigate = useNavigate()
+  const [page, setPage] = useState(0)
+
+  const [getBooks, { data }] = useLazyQuery(GET_BOOKS, {
+    variables: {
+      skip: page * 2 + '',
+    },
+  })
+
+  const [disableMore, setDisableMore] = useState(false)
+  const [typeFilter, setTypeFilter] = useState('' as string)
+
   const { data: categories_name } = useQuery(CATEGORIES_NAME)
   const { data: authors_name } = useQuery(AUTHOR_NAME)
 
@@ -40,6 +53,9 @@ const Shop = () => {
     if (e.target.value === '') {
       return
     }
+    setPage(0)
+    setBooks([])
+    setDisableMore(false)
     setFilter((prevFilter) => ({
       ...prevFilter,
       [e.target.name]: e.target.value,
@@ -54,46 +70,68 @@ const Shop = () => {
     )
 
     if (!filterSelected || Object.keys(filterSelected).length === 0) {
+      console.log('getBooks')
+      setDisableMore(true)
       return
     }
 
     const [firstKey, firstValue] = Object.entries(filterSelected)[0] || []
-    console.log(firstKey, firstValue)
     const name = firstValue.toString().split('-')[1] ?? firstValue
     if (firstKey && firstValue) {
       updateUrl(firstKey, name, sort)
     }
-
     if (firstKey === 'rating') {
+      setTypeFilter('rating')
       booksByRating({
         variables: {
           star: name,
           type: sort,
+          skip: '0',
         },
         onCompleted(data) {
-          setBooks(data.booksByRating as Book[])
-          console.log(data)
+          setBooks(data.booksByRating.books as Book[])
+          const newLength =
+            (books?.length ?? 0) + data.booksByRating.books.length
+          if (data?.booksByRating.total === newLength) {
+            setDisableMore(true)
+          }
         },
       })
     } else if (firstKey === 'author') {
+      setTypeFilter('author')
       booksByAuthor({
         variables: {
           author_id: firstValue.toString().split('-')[0],
           type: sort,
+          skip: '0',
         },
         onCompleted(data) {
-          setBooks(data.booksByAuthor as Book[])
+          setBooks(data.booksByAuthor.books as Book[])
+          const newLength =
+            (books?.length ?? 0) + data.booksByAuthor.books.length
+          console.log('newLength', newLength)
+          console.log('data?.booksByAuthor.total', data?.booksByAuthor.total)
+          if (data?.booksByAuthor.total === newLength) {
+            setDisableMore(true)
+          }
         },
       })
     } else {
       if (firstKey === 'categories') {
+        setTypeFilter('categories')
         booksByCategory({
           variables: {
             category_id: firstValue.toString().split('-')[0],
             type: sort,
+            skip: '0',
           },
           onCompleted(data) {
-            setBooks(data.booksByCategory as Book[])
+            setBooks(data.booksByCategory.books as Book[])
+            const newLength =
+              (books?.length ?? 0) + data.booksByCategory.books.length
+            if (data?.booksByCategory.total === newLength) {
+              setDisableMore(true)
+            }
           },
         })
       }
@@ -104,11 +142,95 @@ const Shop = () => {
     navigate(`/shop?${filter}=${name}&sort=${sort}`)
   }
 
-  //check reload page
-
   useEffect(() => {
-    if (data) {
-      setBooks(data.books as Book[])
+    const filterSelected = Object.fromEntries(
+      Object.entries(filter).filter(
+        ([key, value]) =>
+          value !== defaultFilter[key as keyof typeof defaultFilter]
+      )
+    )
+
+    if (!filterSelected || Object.keys(filterSelected).length === 0) {
+      getBooks()
+    } else {
+      const [_, firstValue] = Object.entries(filterSelected)[0] || []
+      const name = firstValue.toString().split('-')[1] ?? firstValue
+      if (typeFilter === 'rating') {
+        booksByRating({
+          variables: {
+            star: name,
+            type: sort,
+            skip: page * 2 + '',
+          },
+          onCompleted(data) {
+            const newBooks = data.booksByRating.books as Book[]
+            console.log('newBooks', newBooks)
+            setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+            const newLength = (books?.length ?? 0) + newBooks.length
+            if (
+              data?.booksByRating.total === newLength ||
+              newBooks.length === 0
+            ) {
+              setDisableMore(true)
+            }
+          },
+        })
+      } else if (typeFilter === 'author') {
+        booksByAuthor({
+          variables: {
+            author_id: firstValue.toString().split('-')[0],
+            type: sort,
+            skip: page * 2 + '',
+          },
+          onCompleted(data) {
+            const newBooks = data.booksByAuthor.books as Book[]
+            console.log('newBooks', newBooks)
+            setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+            const newLength = (books?.length ?? 0) + newBooks.length
+            if (
+              data?.booksByAuthor.total === newLength ||
+              newBooks.length === 0
+            ) {
+              setDisableMore(true)
+            }
+          },
+        })
+      } else if (typeFilter === 'categories') {
+        booksByCategory({
+          variables: {
+            category_id: firstValue.toString().split('-')[0],
+            type: sort,
+            skip: page * 2 + '',
+          },
+          onCompleted(data) {
+            const newBooks = data.booksByCategory.books as Book[]
+            setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+            const newLength = (books?.length ?? 0) + newBooks.length
+            if (data?.booksByCategory.total === newLength) {
+              setDisableMore(true)
+            }
+          },
+        })
+      }
+    }
+  }, [page])
+  useEffect(() => {
+    const filterSelected = Object.fromEntries(
+      Object.entries(filter).filter(
+        ([key, value]) =>
+          value !== defaultFilter[key as keyof typeof defaultFilter]
+      )
+    )
+
+    if (!filterSelected || Object.keys(filterSelected).length === 0) {
+      if (data) {
+        const newBooks = data.books.books as Book[]
+        setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+        const newLength = (books?.length ?? 0) + newBooks.length
+        if (data?.books.total === newLength) {
+          setDisableMore(true)
+        }
+      }
     }
   }, [data])
 
@@ -161,7 +283,7 @@ const Shop = () => {
 
   // console.log()
 
-  if (!data || !categories_name || !authors_name) {
+  if (!categories_name || !authors_name) {
     return <Loading />
   }
 
@@ -279,7 +401,12 @@ const Shop = () => {
               id="sort"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               name="sort"
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => {
+                setSort(e.target.value)
+                setPage(0)
+                setDisableMore(false)
+                setBooks([])
+              }}
             >
               <option value={QUERY_SORT.SALE} defaultValue={QUERY_SORT.SALE}>
                 Sort by on sale
@@ -295,6 +422,15 @@ const Shop = () => {
           </form>
 
           <div className="grid grid-cols-4 gap-4">{renderCard(books!)}</div>
+          {!disableMore && (
+            <button
+              type="button"
+              className={`bg-gray-100  hover:bg-gray-200 border border-gray-300 rounded px-4 py-1 focus:ring-gray-100  focus:ring-2 focus:outline-none w-fit mx-auto mt-5`}
+              onClick={() => setPage(page + 1)}
+            >
+              More
+            </button>
+          )}
         </div>
       </div>
       <Footer />

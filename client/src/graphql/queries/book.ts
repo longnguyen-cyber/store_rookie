@@ -1,8 +1,9 @@
 import { gql } from '../../generated'
 
 export const GET_BOOKS = gql(`
-  query Books {
-    books {
+  query Books($skip:String) {
+    books(skip: $skip) {
+      books {
         id
         title
         description
@@ -12,14 +13,16 @@ export const GET_BOOKS = gql(`
         images
         createdAt
         prices {
-            id
-            bookId
-            originalPrice
-            discountPrice
-            startDate
-            endDate
-            createdAt
+          id
+          bookId
+          originalPrice
+          discountPrice
+          startDate
+          endDate
+          createdAt
         }
+      }
+      total
     }
   }
 `)
@@ -142,6 +145,87 @@ export const GET_REVIEWS_BY_BOOK = gql(`
             username
           }
       }
+    }
+  }
+`)
+
+export const BOOKS_BY_RATING = gql(`
+  query BooksByRating($star: String!, $type: String!, $skip:String) {
+    booksByRating(star: $star, type: $type, skip:$skip) {
+      books {
+        id
+        title
+        description
+        categoryId
+        rating
+        ratings
+        images
+        createdAt
+        prices {
+          id
+          bookId
+          originalPrice
+          discountPrice
+          startDate
+          endDate
+          createdAt
+        }
+      }
+      total
+    }
+  }
+`)
+
+export const BOOKS_BY_CATEGORY = gql(`
+  query BooksByCategory($category_id: String!, $type: String!, $skip:String) {
+    booksByCategory(category_id: $category_id, type: $type, skip:$skip) {
+      books {
+        id
+        title
+        description
+        categoryId
+        rating
+        ratings
+        images
+        createdAt
+        prices {
+          id
+          bookId
+          originalPrice
+          discountPrice
+          startDate
+          endDate
+          createdAt
+        }
+      }
+      total
+    }
+  }
+`)
+
+export const BOOKS_BY_AUTHOR = gql(`
+  query BooksByAuthor($author_id: String!, $type: String!, $skip:String) {
+    booksByAuthor(author_id: $author_id, type: $type, skip:$skip) {
+      books {
+        id
+        title
+        description
+        categoryId
+        rating
+        ratings
+        images
+        createdAt
+        prices {
+          id
+          bookId
+          originalPrice
+          discountPrice
+          startDate
+          endDate
+          createdAt
+        }
+      }
+      total
     }
   }
 `)

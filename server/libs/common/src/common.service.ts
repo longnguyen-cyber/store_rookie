@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { format } from 'date-fns';
 
 @Injectable()
 export class CommonService {
@@ -24,43 +25,6 @@ export class CommonService {
     return entity;
   };
 
-  transferFileToURL(req: any, image: string): string {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    return `${baseUrl}/api/${image}`;
-  }
-
-  limitFileSize(bytes: number): boolean {
-    const fileSize = bytes / 1024 / 1024; // MB
-    if (fileSize <= this.LIMIT_SIZE) {
-      return true;
-    }
-    return false;
-  }
-
-  convertToSize(bytes: number): string {
-    const kb = bytes / 1024;
-    // if kb > 1024 convert to MB
-    if (kb > 1024) {
-      const mb = kb / 1024;
-      // if mb > 1024 convert to GB
-      if (mb > 1024) {
-        const gb = mb / 1024;
-        return `${gb.toFixed(2)} GB`;
-      }
-      return `${mb.toFixed(2)} MB`;
-    } else {
-      return `${kb.toFixed(2)} KB`;
-    }
-  }
-
-  pathUpload(fileName: string): string {
-    return `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${fileName.replace(/ /g, '+')}`;
-  }
-
-  getFileName(url: string): string {
-    const arr = url.split('/');
-    return arr[arr.length - 1];
-  }
   deleteField(obj: any, removeFields: string[], addFields?: string[]): any {
     const fieldDefaultRemove = [
       'password',
@@ -91,11 +55,27 @@ export class CommonService {
     return obj;
   }
 
-  checkDigitScore(digitScore: number) {
-    if (digitScore >= 4) {
-      return true;
-    } else {
-      return false;
+  formatDate(obj: any): any {
+    for (const key in obj) {
+      if (obj[key] instanceof Date) {
+        obj[key] = format(obj[key], 'MM/dd/yyyy');
+      } else if (typeof obj[key] === 'object') {
+        this.formatDate(obj[key]);
+      }
     }
+
+    return obj;
+  }
+
+  convertToDate(obj: any): any {
+    for (const key in obj) {
+      if (typeof obj[key] === 'string' && !isNaN(Date.parse(obj[key]))) {
+        obj[key] = new Date(obj[key]);
+      } else if (typeof obj[key] === 'object') {
+        this.convertToDate(obj[key]);
+      }
+    }
+
+    return obj;
   }
 }

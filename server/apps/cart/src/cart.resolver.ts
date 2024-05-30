@@ -14,9 +14,6 @@ export class CartResolver {
     @Args('userId') userId: string,
     @Args('type') type: string,
   ) {
-    console.log('data', data);
-    console.log('userId', userId);
-    console.log('type', type);
     return await this.cartService.addItemToCart(
       {
         ...data,

@@ -38,9 +38,9 @@ export class BookService {
     console.log('Update book rating');
   }
 
-  async findAll() {
-    const books = await this.bookRepository.findAll();
-    const final = books.map((book) => {
+  async findAll(skip: number) {
+    const books = await this.bookRepository.findAll(skip);
+    const final = books.books.map((book) => {
       const lastedPrice = book.prices.find((p) => p.endDate === null);
       return {
         ...book,
@@ -48,7 +48,10 @@ export class BookService {
         createdAt: lastedPrice.createdAt,
       };
     });
-    return final;
+    return {
+      books: final,
+      total: books.total,
+    };
   }
 
   async createBookPrice(data: any) {
@@ -104,7 +107,6 @@ export class BookService {
   };
 
   async sortOrFilterBooks(books: any, type: QUERY_SORT) {
-    console.log('type', type);
     const cleanData = this.cleanData(books);
     switch (type) {
       case QUERY_SORT.ASC:
@@ -133,24 +135,33 @@ export class BookService {
   }
 
   //shop page
-  async getBookByRating(star: number, type: QUERY_SORT) {
-    const books = await this.bookRepository.getBookByRating(star);
-    return this.sortOrFilterBooks(books, type);
+  async getBookByRating(star: number, type: QUERY_SORT, skip: number) {
+    const books = await this.bookRepository.getBookByRating(star, skip);
+    return {
+      books: this.sortOrFilterBooks(books.books, type),
+      total: books.total,
+    };
   }
 
-  async getBookByAuthor(author_id: string, type: QUERY_SORT) {
-    const books = await this.bookRepository.getBookByAuthor(author_id);
+  async getBookByAuthor(author_id: string, type: QUERY_SORT, skip: number) {
+    const books = await this.bookRepository.getBookByAuthor(author_id, skip);
 
-    return this.sortOrFilterBooks(books, type);
+    return {
+      books: await this.sortOrFilterBooks(books.books, type),
+      total: books.total,
+    };
   }
 
-  async getBookByCategory(category_id: string, type: QUERY_SORT) {
-    const books = await this.bookRepository
-      .getBookByCategory(category_id)
-      .then((data) => {
-        return data.map((item) => item.books).flat();
-      });
-    return this.sortOrFilterBooks(books, type);
+  async getBookByCategory(category_id: string, type: QUERY_SORT, skip: number) {
+    const books = await this.bookRepository.getBookByCategory(
+      category_id,
+      skip,
+    );
+
+    return {
+      books: this.sortOrFilterBooks(books.books, type),
+      total: books.total,
+    };
   }
 
   async findOne(id: string) {

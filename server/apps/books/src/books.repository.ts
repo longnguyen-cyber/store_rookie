@@ -4,8 +4,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class BookRepository {
+  private readonly TAKE = 2;
   constructor(private readonly prisma: PrismaService) {}
-  async findAll() {
+
+  async findAll(skip: number) {
+    const total = await this.prisma.book.count();
     const books = await this.prisma.book.findMany({
       include: {
         prices: true,
@@ -16,9 +19,13 @@ export class BookRepository {
           },
         },
       },
+      skip,
+      take: this.TAKE,
     });
-
-    return books;
+    return {
+      books,
+      total,
+    };
   }
 
   async getBooksForCron() {
@@ -156,8 +163,8 @@ export class BookRepository {
     return book;
   }
 
-  async getBookByCategory(category: string) {
-    const books = await this.prisma.category.findMany({
+  async getBookByCategory(category: string, skip: number) {
+    const booksOfCategory = await this.prisma.category.findFirst({
       where: {
         id: category,
       },
@@ -167,13 +174,27 @@ export class BookRepository {
             prices: true,
             promotions: true,
           },
+          skip,
+          take: this.TAKE,
         },
       },
     });
-    return books;
+    const total = await this.prisma.category.findFirst({
+      where: {
+        id: category,
+      },
+      select: {
+        books: true,
+      },
+    });
+    const books = booksOfCategory.books;
+    return {
+      books,
+      total: total.books.length,
+    };
   }
-  async getBookByAuthor(author_id: string) {
-    const authors = await this.prisma.author.findMany({
+  async getBookByAuthor(author_id: string, skip: number) {
+    const authors = await this.prisma.author.findFirst({
       where: {
         id: author_id,
       },
@@ -193,16 +214,26 @@ export class BookRepository {
               },
             },
           },
+          skip,
+          take: this.TAKE,
         },
       },
     });
-    const books = authors.flatMap((author) =>
-      author.books.map((book) => book.book),
-    );
-    return books;
+    const total = await this.prisma.author.findFirst({
+      where: {
+        id: author_id,
+      },
+      select: {
+        books: true,
+      },
+    });
+    return {
+      books: authors.books.map((item) => item.book),
+      total: total.books.length,
+    };
   }
 
-  async getBookByRating(rating: number) {
+  async getBookByRating(rating: number, skip: number) {
     const books = await this.prisma.book.findMany({
       where: {
         rating: {
@@ -214,7 +245,14 @@ export class BookRepository {
         prices: true,
         promotions: true,
       },
+      skip,
+      take: this.TAKE,
     });
-    return books;
+    const total = await this.prisma.book.count();
+
+    return {
+      books,
+      total,
+    };
   }
 }

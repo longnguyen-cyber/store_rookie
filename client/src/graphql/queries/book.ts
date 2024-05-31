@@ -141,7 +141,9 @@ export const GET_REVIEWS_BY_BOOK = gql(`
           title
           content
           createdAt
+          updatedAt
           user {
+            id
             username
           }
       }

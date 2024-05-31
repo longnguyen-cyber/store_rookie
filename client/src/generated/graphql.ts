@@ -25,8 +25,11 @@ export type Author = {
   _count: AuthorCount;
   bio?: Maybe<Scalars['String']['output']>;
   books?: Maybe<Array<BookAuthor>>;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type AuthorCount = {
@@ -47,8 +50,11 @@ export type AuthorCreateOrConnectWithoutBooksInput = {
 
 export type AuthorCreateWithoutBooksInput = {
   bio?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type AuthorRelationFilter = {
@@ -62,8 +68,11 @@ export type AuthorWhereInput = {
   OR?: InputMaybe<Array<AuthorWhereInput>>;
   bio?: InputMaybe<StringFilter>;
   books?: InputMaybe<BookAuthorListRelationFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type AuthorWhereUniqueInput = {
@@ -72,8 +81,11 @@ export type AuthorWhereUniqueInput = {
   OR?: InputMaybe<Array<AuthorWhereInput>>;
   bio?: InputMaybe<StringFilter>;
   books?: InputMaybe<BookAuthorListRelationFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type Book = {
@@ -84,6 +96,7 @@ export type Book = {
   category: Category;
   categoryId: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   images: Scalars['JSON']['output'];
@@ -95,6 +108,7 @@ export type Book = {
   ratings: Scalars['JSON']['output'];
   reviews?: Maybe<Array<Review>>;
   title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type BookAuthor = {
@@ -103,6 +117,9 @@ export type BookAuthor = {
   authorId: Scalars['String']['output'];
   book: Book;
   bookId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type BookAuthorBookIdAuthorIdCompoundUniqueInput = {
@@ -112,6 +129,9 @@ export type BookAuthorBookIdAuthorIdCompoundUniqueInput = {
 
 export type BookAuthorCreateManyBookInput = {
   authorId: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookAuthorCreateManyBookInputEnvelope = {
@@ -133,6 +153,9 @@ export type BookAuthorCreateOrConnectWithoutBookInput = {
 
 export type BookAuthorCreateWithoutBookInput = {
   author: AuthorCreateNestedOneWithoutBooksInput;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookAuthorListRelationFilter = {
@@ -149,6 +172,9 @@ export type BookAuthorWhereInput = {
   authorId?: InputMaybe<StringFilter>;
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookAuthorWhereUniqueInput = {
@@ -160,6 +186,9 @@ export type BookAuthorWhereUniqueInput = {
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
   bookId_authorId?: InputMaybe<BookAuthorBookIdAuthorIdCompoundUniqueInput>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookCount = {
@@ -210,6 +239,7 @@ export type BookCreateWithoutCartItemInput = {
   authors?: InputMaybe<BookAuthorCreateNestedManyWithoutBookInput>;
   category: CategoryCreateNestedOneWithoutBooksInput;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   images: Scalars['JSON']['input'];
@@ -221,6 +251,7 @@ export type BookCreateWithoutCartItemInput = {
   ratings: Scalars['JSON']['input'];
   reviews?: InputMaybe<ReviewCreateNestedManyWithoutBookInput>;
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookCreateWithoutOrderItemsInput = {
@@ -228,6 +259,7 @@ export type BookCreateWithoutOrderItemsInput = {
   authors?: InputMaybe<BookAuthorCreateNestedManyWithoutBookInput>;
   category: CategoryCreateNestedOneWithoutBooksInput;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   images: Scalars['JSON']['input'];
@@ -238,6 +270,7 @@ export type BookCreateWithoutOrderItemsInput = {
   ratings: Scalars['JSON']['input'];
   reviews?: InputMaybe<ReviewCreateNestedManyWithoutBookInput>;
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookCreateWithoutReviewsInput = {
@@ -245,6 +278,7 @@ export type BookCreateWithoutReviewsInput = {
   authors?: InputMaybe<BookAuthorCreateNestedManyWithoutBookInput>;
   category: CategoryCreateNestedOneWithoutBooksInput;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   images: Scalars['JSON']['input'];
@@ -255,6 +289,7 @@ export type BookCreateWithoutReviewsInput = {
   rating?: InputMaybe<Scalars['Float']['input']>;
   ratings: Scalars['JSON']['input'];
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookListRelationFilter = {
@@ -268,20 +303,24 @@ export type BookPrice = {
   book: Book;
   bookId: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   discountPrice: Scalars['Float']['output'];
   endDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   originalPrice: Scalars['Float']['output'];
   startDate: Scalars['DateTime']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type BookPriceCreateManyBookInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   discountPrice: Scalars['Float']['input'];
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   originalPrice: Scalars['Float']['input'];
   startDate: Scalars['DateTime']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookPriceCreateManyBookInputEnvelope = {
@@ -303,11 +342,13 @@ export type BookPriceCreateOrConnectWithoutBookInput = {
 
 export type BookPriceCreateWithoutBookInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   discountPrice: Scalars['Float']['input'];
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   originalPrice: Scalars['Float']['input'];
   startDate: Scalars['DateTime']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookPriceListRelationFilter = {
@@ -323,11 +364,13 @@ export type BookPriceWhereInput = {
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   discountPrice?: InputMaybe<FloatFilter>;
   endDate?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   originalPrice?: InputMaybe<FloatFilter>;
   startDate?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookPriceWhereUniqueInput = {
@@ -337,19 +380,24 @@ export type BookPriceWhereUniqueInput = {
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   discountPrice?: InputMaybe<FloatFilter>;
   endDate?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   originalPrice?: InputMaybe<FloatFilter>;
   startDate?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookPublisher = {
   __typename?: 'BookPublisher';
   book: Book;
   bookId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   publisher: Publisher;
   publisherId: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type BookPublisherBookIdPublisherIdCompoundUniqueInput = {
@@ -358,7 +406,10 @@ export type BookPublisherBookIdPublisherIdCompoundUniqueInput = {
 };
 
 export type BookPublisherCreateManyBookInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   publisherId: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookPublisherCreateManyBookInputEnvelope = {
@@ -379,7 +430,10 @@ export type BookPublisherCreateOrConnectWithoutBookInput = {
 };
 
 export type BookPublisherCreateWithoutBookInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   publisher: PublisherCreateNestedOneWithoutBooksInput;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type BookPublisherListRelationFilter = {
@@ -394,8 +448,11 @@ export type BookPublisherWhereInput = {
   OR?: InputMaybe<Array<BookPublisherWhereInput>>;
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   publisher?: InputMaybe<PublisherRelationFilter>;
   publisherId?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookPublisherWhereUniqueInput = {
@@ -405,8 +462,11 @@ export type BookPublisherWhereUniqueInput = {
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
   bookId_publisherId?: InputMaybe<BookPublisherBookIdPublisherIdCompoundUniqueInput>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   publisher?: InputMaybe<PublisherRelationFilter>;
   publisherId?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookRelationFilter = {
@@ -429,6 +489,7 @@ export type BookWhereInput = {
   category?: InputMaybe<CategoryRelationFilter>;
   categoryId?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
   images?: InputMaybe<JsonFilter>;
@@ -440,6 +501,7 @@ export type BookWhereInput = {
   ratings?: InputMaybe<JsonFilter>;
   reviews?: InputMaybe<ReviewListRelationFilter>;
   title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BookWhereUniqueInput = {
@@ -451,6 +513,7 @@ export type BookWhereUniqueInput = {
   category?: InputMaybe<CategoryRelationFilter>;
   categoryId?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<JsonFilter>;
@@ -462,6 +525,7 @@ export type BookWhereUniqueInput = {
   ratings?: InputMaybe<JsonFilter>;
   reviews?: InputMaybe<ReviewListRelationFilter>;
   title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type BoolFilter = {
@@ -472,9 +536,12 @@ export type BoolFilter = {
 export type Cart = {
   __typename?: 'Cart';
   _count: CartCount;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   guestId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   items?: Maybe<Array<CartItem>>;
+  updatedAt: Scalars['DateTime']['output'];
   user?: Maybe<User>;
   userId?: Maybe<Scalars['String']['output']>;
 };
@@ -485,8 +552,11 @@ export type CartCount = {
 };
 
 export type CartCreateManyUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   guestId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartCreateManyUserInputEnvelope = {
@@ -518,15 +588,21 @@ export type CartCreateOrConnectWithoutUserInput = {
 };
 
 export type CartCreateWithoutItemsInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   guestId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   user?: InputMaybe<UserCreateNestedOneWithoutCartInput>;
 };
 
 export type CartCreateWithoutUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   guestId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   items?: InputMaybe<CartItemCreateNestedManyWithoutCartInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartItem = {
@@ -535,24 +611,33 @@ export type CartItem = {
   bookId: Scalars['String']['output'];
   cart: Cart;
   cartId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   priceId: Scalars['String']['output'];
   quantity: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type CartItemCreateInput = {
   book: BookCreateNestedOneWithoutCartItemInput;
   cart: CartCreateNestedOneWithoutItemsInput;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartItemCreateManyBookInput = {
   cartId: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartItemCreateManyBookInputEnvelope = {
@@ -562,9 +647,12 @@ export type CartItemCreateManyBookInputEnvelope = {
 
 export type CartItemCreateManyCartInput = {
   bookId: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartItemCreateManyCartInputEnvelope = {
@@ -598,16 +686,22 @@ export type CartItemCreateOrConnectWithoutCartInput = {
 
 export type CartItemCreateWithoutBookInput = {
   cart: CartCreateNestedOneWithoutItemsInput;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartItemCreateWithoutCartInput = {
   book: BookCreateNestedOneWithoutCartItemInput;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CartItemListRelationFilter = {
@@ -624,9 +718,12 @@ export type CartItemWhereInput = {
   bookId?: InputMaybe<StringFilter>;
   cart?: InputMaybe<CartRelationFilter>;
   cartId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   priceId?: InputMaybe<StringFilter>;
   quantity?: InputMaybe<IntFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type CartItemWhereUniqueInput = {
@@ -637,9 +734,12 @@ export type CartItemWhereUniqueInput = {
   bookId?: InputMaybe<StringFilter>;
   cart?: InputMaybe<CartRelationFilter>;
   cartId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId?: InputMaybe<StringFilter>;
   quantity?: InputMaybe<IntFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type CartListRelationFilter = {
@@ -656,10 +756,13 @@ export type CartRelationFilter = {
 export type CartResponseCustom = {
   __typename?: 'CartResponseCustom';
   _count: CartCount;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   guestId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   items?: Maybe<Array<CartItem>>;
   total: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
   user?: Maybe<User>;
   userId?: Maybe<Scalars['String']['output']>;
 };
@@ -668,9 +771,12 @@ export type CartWhereInput = {
   AND?: InputMaybe<Array<CartWhereInput>>;
   NOT?: InputMaybe<Array<CartWhereInput>>;
   OR?: InputMaybe<Array<CartWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   guestId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
   items?: InputMaybe<CartItemListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringFilter>;
 };
@@ -679,9 +785,12 @@ export type CartWhereUniqueInput = {
   AND?: InputMaybe<Array<CartWhereInput>>;
   NOT?: InputMaybe<Array<CartWhereInput>>;
   OR?: InputMaybe<Array<CartWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   guestId?: InputMaybe<StringFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   items?: InputMaybe<CartItemListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringFilter>;
 };
@@ -690,8 +799,11 @@ export type Category = {
   __typename?: 'Category';
   _count: CategoryCount;
   books?: Maybe<Array<Book>>;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type CategoryCount = {
@@ -711,8 +823,11 @@ export type CategoryCreateOrConnectWithoutBooksInput = {
 };
 
 export type CategoryCreateWithoutBooksInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CategoryRelationFilter = {
@@ -725,8 +840,11 @@ export type CategoryWhereInput = {
   NOT?: InputMaybe<Array<CategoryWhereInput>>;
   OR?: InputMaybe<Array<CategoryWhereInput>>;
   books?: InputMaybe<BookListRelationFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type CategoryWhereUniqueInput = {
@@ -734,26 +852,40 @@ export type CategoryWhereUniqueInput = {
   NOT?: InputMaybe<Array<CategoryWhereInput>>;
   OR?: InputMaybe<Array<CategoryWhereInput>>;
   books?: InputMaybe<BookListRelationFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type CreateCategoryInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   name: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CreateOrderInput = {
   address: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  isPayment?: InputMaybe<Scalars['Boolean']['input']>;
   items?: InputMaybe<OrderItemCreateNestedManyWithoutOrderInput>;
   payment?: InputMaybe<Scalars['String']['input']>;
   shipping: Scalars['Float']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type CreateReviewInput = {
   book: BookCreateNestedOneWithoutReviewsInput;
   content?: InputMaybe<Scalars['String']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isEdit: Scalars['Boolean']['input'];
   rating: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type DateTimeFilter = {
@@ -877,12 +1009,16 @@ export type Order = {
   __typename?: 'Order';
   _count: OrderCount;
   address: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  isPayment: Scalars['Boolean']['output'];
   items?: Maybe<Array<OrderItem>>;
   orderDate: Scalars['DateTime']['output'];
   payment: Scalars['String']['output'];
   shipping: Scalars['Float']['output'];
   status: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
   user: User;
   userId: Scalars['String']['output'];
 };
@@ -894,11 +1030,15 @@ export type OrderCount = {
 
 export type OrderCreateManyUserInput = {
   address: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  isPayment?: InputMaybe<Scalars['Boolean']['input']>;
   orderDate?: InputMaybe<Scalars['DateTime']['input']>;
   payment?: InputMaybe<Scalars['String']['input']>;
   shipping: Scalars['Float']['input'];
   status?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type OrderCreateManyUserInputEnvelope = {
@@ -931,40 +1071,54 @@ export type OrderCreateOrConnectWithoutUserInput = {
 
 export type OrderCreateWithoutItemsInput = {
   address: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  isPayment?: InputMaybe<Scalars['Boolean']['input']>;
   orderDate?: InputMaybe<Scalars['DateTime']['input']>;
   payment?: InputMaybe<Scalars['String']['input']>;
   shipping: Scalars['Float']['input'];
   status?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   user: UserCreateNestedOneWithoutOrdersInput;
 };
 
 export type OrderCreateWithoutUserInput = {
   address: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  isPayment?: InputMaybe<Scalars['Boolean']['input']>;
   items?: InputMaybe<OrderItemCreateNestedManyWithoutOrderInput>;
   orderDate?: InputMaybe<Scalars['DateTime']['input']>;
   payment?: InputMaybe<Scalars['String']['input']>;
   shipping: Scalars['Float']['input'];
   status?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type OrderItem = {
   __typename?: 'OrderItem';
   book: Book;
   bookId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   order: Order;
   orderId: Scalars['String']['output'];
   priceId: Scalars['String']['output'];
   quantity: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type OrderItemCreateManyBookInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   orderId: Scalars['String']['input'];
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type OrderItemCreateManyBookInputEnvelope = {
@@ -974,9 +1128,12 @@ export type OrderItemCreateManyBookInputEnvelope = {
 
 export type OrderItemCreateManyOrderInput = {
   bookId: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type OrderItemCreateManyOrderInputEnvelope = {
@@ -1009,17 +1166,23 @@ export type OrderItemCreateOrConnectWithoutOrderInput = {
 };
 
 export type OrderItemCreateWithoutBookInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   order: OrderCreateNestedOneWithoutItemsInput;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type OrderItemCreateWithoutOrderInput = {
   book: BookCreateNestedOneWithoutOrderItemsInput;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   priceId: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type OrderItemListRelationFilter = {
@@ -1034,11 +1197,14 @@ export type OrderItemWhereInput = {
   OR?: InputMaybe<Array<OrderItemWhereInput>>;
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   order?: InputMaybe<OrderRelationFilter>;
   orderId?: InputMaybe<StringFilter>;
   priceId?: InputMaybe<StringFilter>;
   quantity?: InputMaybe<IntFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type OrderItemWhereUniqueInput = {
@@ -1047,11 +1213,14 @@ export type OrderItemWhereUniqueInput = {
   OR?: InputMaybe<Array<OrderItemWhereInput>>;
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<OrderRelationFilter>;
   orderId?: InputMaybe<StringFilter>;
   priceId?: InputMaybe<StringFilter>;
   quantity?: InputMaybe<IntFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type OrderListRelationFilter = {
@@ -1069,13 +1238,17 @@ export type OrderResponseCustom = {
   __typename?: 'OrderResponseCustom';
   _count: OrderCount;
   address: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  isPayment: Scalars['Boolean']['output'];
   items?: Maybe<Array<OrderItem>>;
   orderDate: Scalars['DateTime']['output'];
   payment: Scalars['String']['output'];
   shipping: Scalars['Float']['output'];
   status: Scalars['String']['output'];
   total: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
   user: User;
   userId: Scalars['String']['output'];
 };
@@ -1085,12 +1258,16 @@ export type OrderWhereInput = {
   NOT?: InputMaybe<Array<OrderWhereInput>>;
   OR?: InputMaybe<Array<OrderWhereInput>>;
   address?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
+  isPayment?: InputMaybe<BoolFilter>;
   items?: InputMaybe<OrderItemListRelationFilter>;
   orderDate?: InputMaybe<DateTimeFilter>;
   payment?: InputMaybe<StringFilter>;
   shipping?: InputMaybe<FloatFilter>;
   status?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringFilter>;
 };
@@ -1100,12 +1277,16 @@ export type OrderWhereUniqueInput = {
   NOT?: InputMaybe<Array<OrderWhereInput>>;
   OR?: InputMaybe<Array<OrderWhereInput>>;
   address?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
+  isPayment?: InputMaybe<BoolFilter>;
   items?: InputMaybe<OrderItemListRelationFilter>;
   orderDate?: InputMaybe<DateTimeFilter>;
   payment?: InputMaybe<StringFilter>;
   shipping?: InputMaybe<FloatFilter>;
   status?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringFilter>;
 };
@@ -1122,17 +1303,23 @@ export type Promotion = {
   __typename?: 'Promotion';
   book: Book;
   bookId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   endDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   promotionType: Scalars['String']['output'];
   startDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type PromotionCreateManyBookInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   promotionType: Scalars['String']['input'];
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type PromotionCreateManyBookInputEnvelope = {
@@ -1153,10 +1340,13 @@ export type PromotionCreateOrConnectWithoutBookInput = {
 };
 
 export type PromotionCreateWithoutBookInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   promotionType: Scalars['String']['input'];
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type PromotionListRelationFilter = {
@@ -1171,10 +1361,13 @@ export type PromotionWhereInput = {
   OR?: InputMaybe<Array<PromotionWhereInput>>;
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   endDate?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   promotionType?: InputMaybe<StringFilter>;
   startDate?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type PromotionWhereUniqueInput = {
@@ -1183,10 +1376,13 @@ export type PromotionWhereUniqueInput = {
   OR?: InputMaybe<Array<PromotionWhereInput>>;
   book?: InputMaybe<BookRelationFilter>;
   bookId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   endDate?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   promotionType?: InputMaybe<StringFilter>;
   startDate?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type Publisher = {
@@ -1194,8 +1390,11 @@ export type Publisher = {
   _count: PublisherCount;
   address?: Maybe<Scalars['String']['output']>;
   books?: Maybe<Array<BookPublisher>>;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type PublisherCount = {
@@ -1216,8 +1415,11 @@ export type PublisherCreateOrConnectWithoutBooksInput = {
 
 export type PublisherCreateWithoutBooksInput = {
   address?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type PublisherRelationFilter = {
@@ -1231,8 +1433,11 @@ export type PublisherWhereInput = {
   OR?: InputMaybe<Array<PublisherWhereInput>>;
   address?: InputMaybe<StringFilter>;
   books?: InputMaybe<BookPublisherListRelationFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type PublisherWhereUniqueInput = {
@@ -1241,8 +1446,11 @@ export type PublisherWhereUniqueInput = {
   OR?: InputMaybe<Array<PublisherWhereInput>>;
   address?: InputMaybe<StringFilter>;
   books?: InputMaybe<BookPublisherListRelationFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type Query = {
@@ -1327,9 +1535,11 @@ export type Review = {
   bookId: Scalars['String']['output'];
   content?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   rating: Scalars['Int']['output'];
   title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
   user: User;
   userId: Scalars['String']['output'];
 };
@@ -1337,9 +1547,11 @@ export type Review = {
 export type ReviewCreateManyBookInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   rating: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   userId: Scalars['String']['input'];
 };
 
@@ -1352,9 +1564,11 @@ export type ReviewCreateManyUserInput = {
   bookId: Scalars['String']['input'];
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   rating: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type ReviewCreateManyUserInputEnvelope = {
@@ -1389,9 +1603,11 @@ export type ReviewCreateOrConnectWithoutUserInput = {
 export type ReviewCreateWithoutBookInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   rating: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   user: UserCreateNestedOneWithoutReviewsInput;
 };
 
@@ -1399,9 +1615,11 @@ export type ReviewCreateWithoutUserInput = {
   book: BookCreateNestedOneWithoutReviewsInput;
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   rating: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type ReviewListRelationFilter = {
@@ -1424,9 +1642,11 @@ export type ReviewWhereInput = {
   bookId?: InputMaybe<StringFilter>;
   content?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<StringFilter>;
   rating?: InputMaybe<IntFilter>;
   title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringFilter>;
 };
@@ -1439,9 +1659,11 @@ export type ReviewWhereUniqueInput = {
   bookId?: InputMaybe<StringFilter>;
   content?: InputMaybe<StringFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
   rating?: InputMaybe<IntFilter>;
   title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringFilter>;
 };
@@ -1466,12 +1688,14 @@ export type User = {
   Cart?: Maybe<Array<Cart>>;
   _count: UserCount;
   createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   isAdmin: Scalars['Boolean']['output'];
   orders?: Maybe<Array<Order>>;
   password: Scalars['String']['output'];
   reviews?: Maybe<Array<Review>>;
+  updatedAt: Scalars['DateTime']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -1517,34 +1741,40 @@ export type UserCreateOrConnectWithoutReviewsInput = {
 
 export type UserCreateWithoutCartInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   email: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
   isAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   orders?: InputMaybe<OrderCreateNestedManyWithoutUserInput>;
   password: Scalars['String']['input'];
   reviews?: InputMaybe<ReviewCreateNestedManyWithoutUserInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   username: Scalars['String']['input'];
 };
 
 export type UserCreateWithoutOrdersInput = {
   Cart?: InputMaybe<CartCreateNestedManyWithoutUserInput>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   email: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
   isAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   password: Scalars['String']['input'];
   reviews?: InputMaybe<ReviewCreateNestedManyWithoutUserInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   username: Scalars['String']['input'];
 };
 
 export type UserCreateWithoutReviewsInput = {
   Cart?: InputMaybe<CartCreateNestedManyWithoutUserInput>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   email: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
   isAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   orders?: InputMaybe<OrderCreateNestedManyWithoutUserInput>;
   password: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   username: Scalars['String']['input'];
 };
 
@@ -1559,12 +1789,14 @@ export type UserWhereInput = {
   NOT?: InputMaybe<Array<UserWhereInput>>;
   OR?: InputMaybe<Array<UserWhereInput>>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   email?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
   isAdmin?: InputMaybe<BoolFilter>;
   orders?: InputMaybe<OrderListRelationFilter>;
   password?: InputMaybe<StringFilter>;
   reviews?: InputMaybe<ReviewListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   username?: InputMaybe<StringFilter>;
 };
 
@@ -1574,12 +1806,14 @@ export type UserWhereUniqueInput = {
   NOT?: InputMaybe<Array<UserWhereInput>>;
   OR?: InputMaybe<Array<UserWhereInput>>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  deletedAt?: InputMaybe<DateTimeFilter>;
   email?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   isAdmin?: InputMaybe<BoolFilter>;
   orders?: InputMaybe<OrderListRelationFilter>;
   password?: InputMaybe<StringFilter>;
   reviews?: InputMaybe<ReviewListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
   username?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1670,7 +1904,7 @@ export type ReviewsByBookQueryVariables = Exact<{
 }>;
 
 
-export type ReviewsByBookQuery = { __typename?: 'Query', reviewsByBook: { __typename?: 'ReviewResponseCustom', totalPage: number, reviews: Array<{ __typename?: 'Review', id: string, rating: number, title: string, content?: string | null, createdAt: any, user: { __typename?: 'User', username: string } }> } };
+export type ReviewsByBookQuery = { __typename?: 'Query', reviewsByBook: { __typename?: 'ReviewResponseCustom', totalPage: number, reviews: Array<{ __typename?: 'Review', id: string, rating: number, title: string, content?: string | null, createdAt: any, updatedAt: any, user: { __typename?: 'User', id: string, username: string } }> } };
 
 export type BooksByRatingQueryVariables = Exact<{
   star: Scalars['String']['input'];
@@ -1724,7 +1958,7 @@ export const PromotionsOnSaleDocument = {"kind":"Document","definitions":[{"kind
 export const RecommendBooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RecommendBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recommendBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<RecommendBooksQuery, RecommendBooksQueryVariables>;
 export const PopularBooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PopularBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"popularBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<PopularBooksQuery, PopularBooksQueryVariables>;
 export const GetBookDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBook"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"book"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}}]}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetBookQuery, GetBookQueryVariables>;
-export const ReviewsByBookDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"reviewsByBook"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"take"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reviewsByBook"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"bookId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"take"},"value":{"kind":"Variable","name":{"kind":"Name","value":"take"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalPage"}},{"kind":"Field","name":{"kind":"Name","value":"reviews"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]}}]} as unknown as DocumentNode<ReviewsByBookQuery, ReviewsByBookQueryVariables>;
+export const ReviewsByBookDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"reviewsByBook"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"take"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reviewsByBook"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"bookId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"take"},"value":{"kind":"Variable","name":{"kind":"Name","value":"take"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalPage"}},{"kind":"Field","name":{"kind":"Name","value":"reviews"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]}}]} as unknown as DocumentNode<ReviewsByBookQuery, ReviewsByBookQueryVariables>;
 export const BooksByRatingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksByRating"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"star"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksByRating"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"star"},"value":{"kind":"Variable","name":{"kind":"Name","value":"star"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksByRatingQuery, BooksByRatingQueryVariables>;
 export const BooksByCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksByCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"category_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksByCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"category_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"category_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksByCategoryQuery, BooksByCategoryQueryVariables>;
 export const BooksByAuthorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksByAuthor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"author_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksByAuthor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"author_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"author_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksByAuthorQuery, BooksByAuthorQueryVariables>;

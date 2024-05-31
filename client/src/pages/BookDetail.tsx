@@ -2,17 +2,17 @@
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { format, parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { GET_BOOK_BY_ID, GET_REVIEWS_BY_BOOK } from '../graphql/queries/book'
-import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 import { FaMinus, FaPlus, FaStar } from 'react-icons/fa6'
-import { ADD_ITEM_TO_CART } from '../graphql/mutations/cart'
-import { GET_CART } from '../graphql/queries/cart'
-import Loading from '../components/Loading'
+import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
+import Loading from '../components/Loading'
+import { ADD_ITEM_TO_CART } from '../graphql/mutations/cart'
 import { CREATE_REVIEW } from '../graphql/mutations/review'
-import { FormSubmit, InputChange } from '../utils/types'
+import { GET_BOOK_BY_ID, GET_REVIEWS_BY_BOOK } from '../graphql/queries/book'
+import { GET_CART } from '../graphql/queries/cart'
 import { useAuth } from '../provider/auth-provider'
+import { FormSubmit, InputChange } from '../utils/types'
 
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -22,7 +22,9 @@ const BookDetail = () => {
     title: '',
     content: '',
     rating: 0,
+    id: '',
   })
+  const [isEdit, setIsEdit] = useState(false)
   const [rating, setRating] = useState(0)
 
   const handleStarHover = (index: number) => {
@@ -32,18 +34,19 @@ const BookDetail = () => {
   const [createReview] = useMutation(CREATE_REVIEW, {
     onCompleted: () => {
       toast.success('Review created successfully')
-      setReview({ title: '', content: '', rating: 0 })
+      setReview({ title: '', content: '', rating: 0, id: '' })
       setRating(0)
+      setIsEdit(false)
     },
     refetchQueries: [
       { query: GET_REVIEWS_BY_BOOK, variables: { bookId: id } },
       { query: GET_BOOK_BY_ID, variables: { bookId: id } },
-      'GetReviewsByBook',
-      'GetBookDetails',
+      'reviewsByBook',
+      'GetBook',
     ],
     onError: (error) => {
-      setReview({ title: '', content: '', rating: 0 })
-      setRating(0)
+      // setReview({ title: '', content: '', rating: 0, id: '' })
+      // setRating(0)
       toast.error(error.message)
     },
   })
@@ -64,7 +67,16 @@ const BookDetail = () => {
         title: review.title,
         content: review.content,
         rating: review.rating,
+        id: '',
+        isEdit: false,
       },
+    }
+    if (isEdit) {
+      data.data.id = review.id
+      data.data.isEdit = true
+      console.log('Edit data:', data)
+    } else {
+      console.log('Data:', data)
     }
     createReview({
       variables: data,
@@ -153,12 +165,17 @@ const BookDetail = () => {
     <div className="mx-72 mt-10 space-y-4">
       <ToastContainer />
       <div className="grid grid-cols-12 space-x-4 ">
-        <div className="col-span-7 rounded overflow-hidden space-x-6 border flex">
+        <div className="col-span-8 rounded overflow-hidden space-x-6 border flex items-start">
+          <img
+            src={bookData?.book.images[0]}
+            className="object-contain "
+            width={300}
+            alt=""
+          />
           <div>
-            <img src={bookData?.book.images[0]} width={150} alt="" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-semibold">{bookData?.book.title}</h1>
+            <h1 className="text-4xl mt-2 font-semibold">
+              {bookData?.book.title}
+            </h1>
             <p>
               By(author):{' '}
               {bookData?.book.authors
@@ -171,7 +188,7 @@ const BookDetail = () => {
             <br />
           </div>
         </div>
-        <div className="col-span-5 rounded border">
+        <div className="col-span-4 rounded border h-fit pb-4">
           <p className="px-5 py-2 pl-5 bg-gray-200 text-center">
             {bookData?.book.prices && bookData?.book.prices[0].discountPrice ? (
               <>
@@ -243,7 +260,7 @@ const BookDetail = () => {
       </div>
 
       <div className="grid grid-cols-12 space-x-4">
-        <div className="col-span-7 rounded overflow-hidden p-4 space-x-6 border">
+        <div className="col-span-8 rounded overflow-hidden p-4 space-x-6 border">
           <h1 className="ml-6">
             Reviews
             <small className="text-gray-300">(Filter by 5 star)</small>
@@ -267,22 +284,47 @@ const BookDetail = () => {
           </div>
           <div>
             {reviews?.reviewsByBook.reviews.map((item, index: number) => {
-              const date = parseISO(item.createdAt)
+              const isEdited = item.createdAt !== item.updatedAt
+              const date = parseISO(isEdited ? item.updatedAt : item.createdAt)
               const formattedDate = format(date, 'dd MMMM, yyyy HH:mm:ss')
 
               return (
                 <div key={index} className="border p-4 rounded mt-4">
                   <div className="">
-                    <p>
-                      <strong>
-                        <i>{item.user.username}</i>
-                      </strong>
-                    </p>
+                    <div className="flex justify-between items-center">
+                      <div className="space-x-2">
+                        <strong>
+                          <i>{item.user.username}</i>
+                          {auth?.user?.id === item.user.id && (
+                            <span className="text-red-500"> (You)</span>
+                          )}
+                        </strong>
+                        <span>
+                          {formattedDate} {isEdited && <small>(edited)</small>}
+                        </span>
+                      </div>
+                      {auth?.user?.id === item.user.id && (
+                        <button
+                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  focus:outline-none p-2"
+                          onClick={() => {
+                            setReview({
+                              content: item.content ?? '',
+                              title: item.title,
+                              rating: item.rating,
+                              id: item.id,
+                            })
+                            setRating(item.rating)
+                            setIsEdit(true)
+                          }}
+                        >
+                          Edit review
+                        </button>
+                      )}
+                    </div>
                     <span>
                       {item.title} | {item.rating} star
                     </span>
                     <p>{item.content}</p>
-                    <p>{formattedDate}</p>
                   </div>
                 </div>
               )
@@ -325,7 +367,7 @@ const BookDetail = () => {
             </div>
           </div>
         </div>
-        <div className="col-span-5 rounded border h-fit">
+        <div className="col-span-4 rounded border h-fit">
           <h1 className="font-bold text-xl text-center border-b py-3">
             Write review
           </h1>
@@ -378,12 +420,34 @@ const BookDetail = () => {
                 </span>
               ))}
             </div>
-            <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  focus:outline-none w-2/3 py-2 mt-2 mx-auto flex justify-center"
-            >
-              Submit review
-            </button>
+            {isEdit ? (
+              <div className="flex space-x-3">
+                <button
+                  type="submit"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  focus:outline-none w-2/3 py-2 mt-2 mx-auto flex justify-center"
+                >
+                  Update your review
+                </button>
+                <button
+                  type="reset"
+                  className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm  focus:outline-none w-2/3 py-2 mt-2 mx-auto flex justify-center"
+                  onClick={() => {
+                    setIsEdit(false)
+                    setReview({ title: '', content: '', rating: 0, id: '' })
+                    setRating(0)
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  focus:outline-none w-2/3 py-2 mt-2 mx-auto flex justify-center"
+              >
+                Submit review
+              </button>
+            )}
           </form>
         </div>
       </div>

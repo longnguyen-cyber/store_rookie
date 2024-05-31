@@ -30,6 +30,7 @@ export class ReviewRepository {
       include: {
         user: {
           select: {
+            id: true,
             username: true,
           },
         },
@@ -84,6 +85,7 @@ export class ReviewRepository {
       },
       data: {
         ...data,
+        updatedAt: new Date(),
       },
     });
     return review;

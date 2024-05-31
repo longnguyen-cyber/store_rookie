@@ -26,6 +26,7 @@ export class ReviewsResolver {
       parseInt(skip),
       parseInt(take),
     );
+    console.log(rs, 'rs');
     return rs;
   }
 
@@ -36,15 +37,22 @@ export class ReviewsResolver {
     @Args('data') data: CreateReviewInput,
     @Context() req: any,
   ) {
-    const rs = await this.reviewsService.create({
-      ...data,
-      user: {
-        connect: {
-          id: req.req.user.id,
+    if (data.isEdit) {
+      delete data.isEdit;
+      return !!(await this.reviewsService.update(data.id, data));
+    } else {
+      delete data.id;
+      console.log(data, 'create');
+      const rs = await this.reviewsService.create({
+        ...data,
+        user: {
+          connect: {
+            id: req.req.user.id,
+          },
         },
-      },
-    });
+      });
 
-    return !!rs;
+      return !!rs;
+    }
   }
 }

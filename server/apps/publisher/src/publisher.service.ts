@@ -24,4 +24,7 @@ export class PublisherService {
   async delete(id: string) {
     return await this.publisherRepository.delete(id);
   }
+  async search(q: any) {
+    return await this.publisherRepository.search(q);
+  }
 }

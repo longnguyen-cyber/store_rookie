@@ -27,6 +27,18 @@ export class PublisherRepository {
     return publisher;
   }
 
+  async search(q: string) {
+    const publishers = await this.prisma.publisher.findMany({
+      where: {
+        name: {
+          contains: q,
+          mode: 'insensitive',
+        },
+      },
+    });
+    return publishers;
+  }
+
   async update(id: string, data: any) {
     const publisher = await this.prisma.publisher.update({
       where: {

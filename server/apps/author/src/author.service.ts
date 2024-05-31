@@ -30,4 +30,8 @@ export class AuthorService {
 
   //   return books.flat();
   // }
+
+  async search(q: any) {
+    return await this.authorRepository.search(q);
+  }
 }

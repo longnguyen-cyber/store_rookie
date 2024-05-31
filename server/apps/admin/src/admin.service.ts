@@ -130,6 +130,31 @@ export class AdminService {
     return this.commonService.formatDate(res);
   }
 
+  async searchRes(
+    entityName: EntityNames,
+    q: any,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const entityService = this.getServiceFromEntityName(entityName);
+    // Fetch the data for the current page
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const allData = ((await entityService.search(q)) as Array<any>).map(
+      (item) => {
+        return this.commonService.formatDate(item);
+      },
+    );
+    const res = allData.slice(start, end);
+
+    // Count the total number of items
+    const total = allData.length;
+
+    // Generate the pagination links
+    const pagination = this.handlePagination(page, limit, total, entityName);
+    return { data: res, pagination };
+  }
+
   async getAllAuthors() {
     const authors = await this.authorService.findAll();
     return authors;

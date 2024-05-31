@@ -205,4 +205,17 @@ export class BookService {
     const book = await this.bookRepository.delete(id);
     return book;
   }
+
+  async search(q: any) {
+    const books = await this.bookRepository.search(q);
+    const final = books.map((book) => {
+      const lastedPrice = book.prices.find((p) => p.endDate === null);
+      return {
+        ...book,
+        prices: [lastedPrice],
+        createdAt: lastedPrice.createdAt,
+      };
+    });
+    return final;
+  }
 }

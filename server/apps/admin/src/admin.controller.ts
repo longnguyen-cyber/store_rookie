@@ -153,14 +153,26 @@ export class AdminController {
     }
   }
 
-  // @Get('/search/:entityName')
-  // async searchEntity(
-  //   @Param('entityName') entityName: EntityNames,
-  //   @Query('q') q: string,
-  // ) {
-  //   console.log('EntityName:', entityName);
-  //   console.log('Query:', q);
-  // }
+  @Get('/search/:entityName')
+  async searchEntity(
+    @Param('entityName') entityName: EntityNames,
+    @Query('q') q: string,
+    @Res() res: Response,
+  ) {
+    console.log('EntityName:', entityName);
+    console.log('Q:', q);
+    const { data, pagination } = await this.adminService.searchRes(
+      entityName,
+      q.toLowerCase(),
+    );
+    console.log('Data:', data);
+    return res.render('layout', {
+      content: `./${entityName}/index`,
+      data,
+      pagination,
+      entityName,
+    });
+  }
 
   //create
   @Get('create/:entityName')

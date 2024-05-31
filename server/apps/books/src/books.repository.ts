@@ -179,6 +179,26 @@ export class BookRepository {
     });
     return book;
   }
+  async search(q: string) {
+    const books = await this.prisma.book.findMany({
+      where: {
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+          { description: { contains: q, mode: 'insensitive' } },
+        ],
+      },
+      include: {
+        category: true,
+        prices: true,
+        publishers: {
+          select: {
+            publisher: true,
+          },
+        },
+      },
+    });
+    return books;
+  }
 
   async getBookByCategory(category: string, skip: number) {
     const booksOfCategory = await this.prisma.category.findFirst({

@@ -47,4 +47,10 @@ export class PromotionsService {
   async delete(id: string) {
     return await this.promotionRepository.delete(id);
   }
+
+  async search(q: any) {
+    const startDate = q.startDate;
+    const endDate = q.endDate;
+    return await this.promotionRepository.search(startDate, endDate);
+  }
 }

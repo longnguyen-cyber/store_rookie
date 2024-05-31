@@ -28,4 +28,8 @@ export class OrderService {
   async getAllOrderCompletedOfBook() {
     return await this.orderRepository.getAllOrderCompletedOfBook();
   }
+
+  async search(q: any) {
+    return 'Incomming' + q;
+  }
 }

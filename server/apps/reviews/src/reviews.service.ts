@@ -29,4 +29,8 @@ export class ReviewsService {
   async getAllReviewByBookId(bookId: string, skip: number, take: number) {
     return await this.reviewRepository.getAllReviewByBookId(bookId, skip, take);
   }
+
+  async search(q: any) {
+    return 'Incomming' + q;
+  }
 }

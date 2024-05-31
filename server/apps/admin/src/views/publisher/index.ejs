@@ -75,7 +75,7 @@
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
       const title = event.target.value;
-      fetch(`/search/author?q=${title}`, {
+      fetch(`/search/publisher?q=${title}`, {
         method: 'GET',
       })
         .then(response => response.json())

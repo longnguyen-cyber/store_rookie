@@ -67,4 +67,24 @@ export class PromotionRepository {
     });
     return promotion;
   }
+
+  async search(startDate: Date, endDate: Date) {
+    const promotions = await this.prisma.promotion.findMany({
+      where: {
+        AND: [
+          {
+            startDate: {
+              lte: startDate,
+            },
+          },
+          {
+            endDate: {
+              gte: endDate,
+            },
+          },
+        ],
+      },
+    });
+    return promotions;
+  }
 }

@@ -26,6 +26,27 @@ export class AuthorRepository {
     });
     return author;
   }
+  async search(q: string) {
+    const authors = await this.prisma.author.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: q,
+              mode: 'insensitive',
+            },
+          },
+          {
+            bio: {
+              contains: q,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+    return authors;
+  }
 
   async update(id: string, data: any) {
     const author = await this.prisma.author.update({

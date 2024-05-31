@@ -67,4 +67,16 @@ export class CategoriesRepository {
     });
     return category;
   }
+
+  async search(q: string) {
+    const categories = await this.prisma.category.findMany({
+      where: {
+        name: {
+          contains: q,
+          mode: 'insensitive',
+        },
+      },
+    });
+    return categories;
+  }
 }

@@ -36,4 +36,8 @@ export class CategoriesService {
     const category = await this.categoriesRepository.delete(id);
     return category;
   }
+
+  async search(q: any) {
+    return await this.categoriesRepository.search(q);
+  }
 }

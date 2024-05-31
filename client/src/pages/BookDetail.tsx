@@ -132,9 +132,11 @@ const BookDetail = () => {
 
   const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
     onCompleted: () => {
-      alert('Added to cart successfully')
+      toast.success('Add item to cart successfully')
+      setQuantity(1)
     },
     onError: (error) => {
+      toast.error(error.message)
       console.log(error)
     },
     refetchQueries: [GET_CART, 'GetCart'],

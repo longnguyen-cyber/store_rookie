@@ -11,6 +11,7 @@ import {
 import { GET_CART } from '../graphql/queries/cart'
 import { useAuth } from '../provider/auth-provider'
 import { Link } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
   const auth = useAuth()
@@ -40,6 +41,14 @@ const Cart = () => {
           id,
           quantity: newQuantity.toString(),
         },
+        onError(error) {
+          setQuantities((prevQuantities) => ({
+            ...prevQuantities,
+            [id]: quantities[id],
+          }))
+          toast.error(error.message)
+        },
+        refetchQueries: [GET_CART, 'GetCart'],
       })
     }, 5000),
     []
@@ -47,13 +56,12 @@ const Cart = () => {
   const handleChangeQuantity = (increment: number, id: string, item: any) => {
     const newQuantity = (quantities[id] || item.quantity) + increment
 
-    // Update the state immediately for UI changes
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
       [id]: newQuantity,
     }))
 
-    // Update total
+    // Update total price
     setTotal((prevTotal) => {
       const price = item.book.prices[0].discountPrice
         ? item.book.prices[0].discountPrice
@@ -72,6 +80,7 @@ const Cart = () => {
 
   useEffect(() => {
     if (data) {
+      console.log('data.getCart.total: ', data.getCart.total)
       setTotal(parseFloat(data.getCart.total))
     }
   }, [data])
@@ -80,6 +89,8 @@ const Cart = () => {
 
   return (
     <section className="bg-white py-8 antialiased md:py-16">
+      <ToastContainer />
+
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">
           Shopping Cart

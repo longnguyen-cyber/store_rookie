@@ -1,0 +1,85 @@
+<div class="p-10">
+  <h1 class="text-2xl font-bold mb-3">Static page about us</h1>
+  <div id="editor">
+
+  </div>
+
+  <button id="submit">Submit</button>
+  <div id="prev"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+<script>
+  const toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    ['blockquote', 'code-block'],
+    ['link', 'image', 'video', 'formula'],
+
+    [{ 'header': 1 }, { 'header': 2 }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+    [{ 'script': 'sub' }, { 'script': 'super' }],
+    [{ 'indent': '-1' }, { 'indent': '+1' }],
+    [{ 'direction': 'rtl' }],
+
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'font': [] }],
+    [{ 'align': [] }],
+
+    ['clean']
+  ];
+
+  const quill = new Quill('#editor', {
+    modules: {
+      toolbar: toolbarOptions
+    },
+    theme: 'snow'
+  });
+
+  // Custom image handler
+  quill.getModule('toolbar').addHandler('image', () => {
+    let fileInput = document.createElement('input');
+    fileInput.setAttribute('type', 'file');
+    fileInput.setAttribute('accept', 'image/*');
+    fileInput.click();
+
+    fileInput.addEventListener('change', () => {
+      let file = fileInput.files[0];
+      console.log(file);
+      let formData = new FormData();
+      formData.append('file[]', file);
+
+      fetch('/uploads', {
+        method: 'POST',
+        body: formData
+      }).then(response => response.json())
+        .then(result => {
+          console.log(result);
+          let range = quill.getSelection(true);
+          quill.insertEmbed(range.index, 'image', result.url);
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+    });
+  });
+
+  quill.on('text-change', function() {
+    const content = quill.root.innerHTML;
+    document.getElementById('prev').innerHTML = content;
+  });
+
+  document.getElementById('submit').addEventListener('click', function () {
+    const content = quill.root.innerHTML;
+    fetch('/uploadSPA', {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).catch(error => {
+        console.error('Error:', error);
+      });
+  });
+</script>

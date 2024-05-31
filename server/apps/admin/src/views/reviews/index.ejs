@@ -1,22 +1,43 @@
-<table class="w-full">
-  <thead class="bg-blue-600">
-    <tr>
-      <th class="border border-slate-700">STT</th>
-      <th class="border border-slate-700">book</th>
-      <th class="border border-slate-700">user</th>
-      <th class="border border-slate-700">rating</th>
-      <th class="border border-slate-700">comment</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% data.forEach(function(item, index) { %>
-    <tr>
-      <td class="border border-slate-700"><%= index + 1 %></td>
-      <td class="border border-slate-700"><%= item.book.title %></td>
-      <td class="border border-slate-700"><%= item.user.username %></td>
-      <td class="border border-slate-700"><%= item.rating %></td>
-      <td class="border border-slate-700"><%= item.comment %></td>
-    </tr>
-    <% }); %>
-  </tbody>
-</table>
+<div class="p-4">
+  <table class="w-full">
+    <thead class="bg-blue-600 uppercase">
+      <tr>
+        <th class="border border-slate-700">STT</th>
+        <th class="border border-slate-700">book</th>
+        <th class="border border-slate-700">user</th>
+        <th class="border border-slate-700">rating</th>
+        <th class="border border-slate-700">comment</th>
+        <th class="border border-slate-700">action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(function(item, index) { %>
+        <tr class="text-center">
+          <td class="border border-slate-700">
+            <%= index + 1 %>
+          </td>
+          <td class="border border-slate-700">
+            <%= item.book.title %>
+          </td>
+          <td class="border border-slate-700">
+            <%= item.user.username %>
+          </td>
+          <td class="border border-slate-700">
+            <%= item.rating %><i class="fa-solid fa-star text-yellow-500"></i>
+          </td>
+          <td class="border border-slate-700 text-left pl-3">
+            <p>
+              <strong><%= item.title %></strong>
+            </p>
+            <p>
+              <%= item.content %>
+            </p>
+          </td>
+          <td class="font-bold border border-slate-700">
+            <a href="/reviews/hidden/<%= item.id %>" class="text-red-500 hover:text-red-800">Hidden</a> | <a href="/reviews/show/<%= item.id %>" class="text-blue-500 hover:text-blue-800">Show</a>
+          </td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+</div>

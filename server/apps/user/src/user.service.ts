@@ -26,7 +26,6 @@ export class UserService {
       ttl: this.configService.get<number>('LOGIN_EXPIRED'),
     }); // 30 days
     this.commonService.deleteField(user, ['']);
-    console.log('user', user);
     return {
       user,
       token,

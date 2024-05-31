@@ -1,4 +1,4 @@
-import { CommonService } from '@app/common';
+import { CommonService, PrismaService } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { AuthorService } from 'apps/author/src/author.service';
 import { BookService } from 'apps/books/src/books.service';
@@ -39,6 +39,7 @@ export class AdminService {
     private readonly reviewsService: ReviewsService,
     private readonly userService: UserService,
     private readonly commonService: CommonService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async login(userLoginDto: any) {
@@ -49,14 +50,16 @@ export class AdminService {
   getServiceFromEntityName(entityName: EntityNames): Service {
     return this[`${entityName}Service`] as Service;
   }
-  async listRes(entityName: EntityNames, page: number = 1, limit: number = 5) {
+  async listRes(entityName: EntityNames, page: number = 1, limit: number = 10) {
     const entityService = this.getServiceFromEntityName(entityName);
 
     // Fetch the data for the current page
     const start = (page - 1) * limit;
     const end = page * limit;
-    const allData = (await entityService.findAll()).map((item) =>
-      this.commonService.deleteField(item, ['']),
+    const allData = ((await entityService.findAll()) as Array<any>).map(
+      (item) => {
+        return this.commonService.formatDate(item);
+      },
     );
     const res = allData.slice(start, end);
 
@@ -65,7 +68,6 @@ export class AdminService {
 
     // Generate the pagination links
     const pagination = this.handlePagination(page, limit, total, entityName);
-    console.log('data');
     return { data: res, pagination };
   }
 
@@ -80,7 +82,6 @@ export class AdminService {
     if (entityName === 'promotions') {
       data.startDate = new Date(data.startDate);
       data.endDate = new Date(data.endDate);
-      console.log('Data:', data);
       const books = await this.categoriesService.getBookByCategory(
         data.category,
       );
@@ -115,7 +116,10 @@ export class AdminService {
   async updateRes(entityName: EntityNames, id: string, data: any) {
     const entityService = this.getServiceFromEntityName(entityName);
 
-    const rs = await entityService.update(id, data);
+    const rs = await entityService.update(
+      id,
+      this.commonService.convertToDate(data),
+    );
     return rs;
   }
 
@@ -123,7 +127,7 @@ export class AdminService {
     const entityService = this.getServiceFromEntityName(entityName);
 
     const res = await entityService.findOne(id);
-    return res;
+    return this.commonService.formatDate(res);
   }
 
   async getAllAuthors() {

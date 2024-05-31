@@ -1,109 +1,113 @@
-<h1>Add new book</h1>
-<form class="max-w-sm mx-auto" action="/create/books" method="POST" id="formt_submit">
-  <div class="mb-5">
-    <label for="title" class="block mb-2 text-sm font-medium text-gray-900 ">Title</label>
-    <input type="text" id="title"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
-      placeholder="" required name="title" />
-  </div>
-
-  <div class="mb-5">
-    <label class="block mb-2 text-sm font-medium text-gray-900" for="file_input">Upload image</label>
-    <input
-      class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-      onchange="uploadFiles()" id="file_input" type="file" multiple accept="image/*">
-  </div>
-  <div class="mb-5">
-    <label for="price" class="block mb-2 text-sm font-medium text-gray-900 ">Price($)</label>
-    <input type="text" id="price"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
-      placeholder="" required name="price" />
-  </div>
-
-
-  <div class="mb-5">
-    <label for="publisher" class="block text-sm font-medium text-gray-900 ">Publisher</label>
-    <select id="publisher" name="publisher"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-      <option selected>Choose publisher</option>
-      <% data.publishers.forEach(element=> { %>
-        <option value="<%= element.id %>">
-          <%= element.name %>
-        </option>
-        <% }) %>
-    </select>
-  </div>
-
-  <div class="mb-5">
-    <label for="category" class="block text-sm font-medium text-gray-900 ">categories</label>
-    <select id="category" name="category"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-      <option selected>Choose category</option>
-      <% data.categories.forEach(element=> { %>
-        <option value="<%= element.id %>">
-          <%= element.name %>
-        </option>
-        <% }) %>
-    </select>
-  </div>
-  <div class="mb-5">
-    <label for="author" class="block text-sm font-medium text-gray-900 ">Author</label>
-    <select id="author" name="author"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-      <option selected>Choose author</option>
-      <% data.authors.forEach(element=> { %>
-        <option value="<%= element.id %>">
-          <%= element.name %>
-        </option>
-        <% }) %>
-    </select>
-  </div>
-  <div class="mb-5">
-    <label for="description" class="block mb-2 text-sm font-medium text-gray-900 ">Description</label>
-    <textarea type="text" id="description"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600  resize-none"
-      placeholder="" required name="description" ></textarea>
-  </div>
-
-
-  <button type="submit"
-    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-  <% if (error) { %>
-    <div class="alert alert-danger">
-      <%= error %>
+<div class="p-4">
+  <a href="javascript:history.back()"
+    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full sm:w-auto px-5 py-2.5 text-center">
+    <i class="fa-solid fa-arrow-left"></i>
+    Go Back </a>
+  <form class="max-w-sm mt-4 " action="/create/books" method="POST" id="formt_submit">
+    <div class="mb-5">
+      <label for="title" class="block mb-2 text-lg font-medium text-black ">Title</label>
+      <input type="text" id="title"
+        class="bg-gray-50 border  text-black text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
+        placeholder="" required name="title" />
     </div>
-    <% } %>
 
-</form>
+    <div class="mb-5">
+      <label class="block mb-2 text-lg font-medium text-black" for="file_input">Upload image</label>
+      <input class="block w-full text-lg text-black border  rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+        onchange="uploadFiles()" id="file_input" type="file" multiple accept="image/*">
+    </div>
+    <div class="mb-5">
+      <label for="price" class="block mb-2 text-lg font-medium text-black ">Price($)</label>
+      <input type="text" id="price"
+        class="bg-gray-50 border  text-black text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
+        placeholder="" required name="price" />
+    </div>
 
-<script>
-  function uploadFiles() {
-    const input = document.getElementById('file_input');
-    const files = input.files;
-    const formData = new FormData();
 
-    for (let i = 0;i < files.length;i++) {
-      formData.append('file[]', files[i]);
-    }
+    <div class="mb-5">
+      <label for="publisher" class="block text-lg font-medium text-black ">Publisher</label>
+      <select id="publisher" name="publisher"
+        class="bg-gray-50 border  text-black text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+        <option selected>Choose publisher</option>
+        <% data.publishers.forEach(element=> { %>
+          <option value="<%= element.id %>">
+            <%= element.name %>
+          </option>
+          <% }) %>
+      </select>
+    </div>
 
-    fetch('/uploads', {
-      method: 'POST',
-      body: formData
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Assuming data is an array of image URLs
-        const form = document.querySelector('#formt_submit');
-        let images = []
-        data.forEach((url) => {
-          images.push(url)
-        });
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'images';
-        input.value = JSON.stringify(images);
-        form.appendChild(input);
+    <div class="mb-5">
+      <label for="category" class="block text-lg font-medium text-black ">categories</label>
+      <select id="category" name="category"
+        class="bg-gray-50 border  text-black  text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+        <option selected>Choose category</option>
+        <% data.categories.forEach(element=> { %>
+          <option value="<%= element.id %>">
+            <%= element.name %>
+          </option>
+          <% }) %>
+      </select>
+    </div>
+    <div class="mb-5">
+      <label for="author" class="block text-lg font-medium text-black ">Author</label>
+      <select id="author" name="author"
+        class="bg-gray-50 border text-black  text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+        <option selected>Choose author</option>
+        <% data.authors.forEach(element=> { %>
+          <option value="<%= element.id %>">
+            <%= element.name %>
+          </option>
+          <% }) %>
+      </select>
+    </div>
+    <div class="mb-5">
+      <label for="description" class="block mb-2 text-lg font-medium text-black ">Description</label>
+      <textarea type="text" id="description"
+        class="bg-gray-50 border  text-black text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600  resize-none"
+        placeholder="" required name="description"></textarea>
+    </div>
+
+
+    <button type="submit"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+    <% if (error) { %>
+      <div class="alert alert-danger">
+        <%= error %>
+      </div>
+      <% } %>
+
+  </form>
+
+  <script>
+    function uploadFiles() {
+      const input = document.getElementById('file_input');
+      const files = input.files;
+      const formData = new FormData();
+
+      for (let i = 0;i < files.length;i++) {
+        formData.append('file[]', files[i]);
+      }
+
+      fetch('/uploads', {
+        method: 'POST',
+        body: formData
       })
-      .catch(error => console.error(error));
-  }
-</script>
+        .then(response => response.json())
+        .then(data => {
+          // Assuming data is an array of image URLs
+          const form = document.querySelector('#formt_submit');
+          let images = []
+          data.forEach((url) => {
+            images.push(url)
+          });
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'images';
+          input.value = JSON.stringify(images);
+          form.appendChild(input);
+        })
+        .catch(error => console.error(error));
+    }
+  </script>
+</div>

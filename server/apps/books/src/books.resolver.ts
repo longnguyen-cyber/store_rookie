@@ -56,10 +56,6 @@ export class BookResolver {
       type as QUERY_SORT,
       parseInt(skip),
     );
-    console.log('author_id', author_id);
-    console.log('type', type);
-    console.log('skip', skip);
-    console.log('data', data);
     return data;
   }
 

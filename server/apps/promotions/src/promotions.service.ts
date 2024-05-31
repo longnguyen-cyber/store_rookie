@@ -32,29 +32,6 @@ export class PromotionsService {
     return booksSale;
   }
 
-  private formatTimeVi(time: Date) {
-    const date = new Date(time);
-    let day: any = date.getDate();
-    let month: any = date.getMonth() + 1;
-    const year = date.getFullYear();
-    let hour: any = date.getHours() - 7;
-    let minute: any = date.getMinutes();
-    if (day < 10) {
-      day = `0${day}`;
-    }
-    if (month < 10) {
-      month = `0${month}`;
-    }
-    if (hour < 10) {
-      hour = `0${hour}`;
-    }
-    if (minute < 10) {
-      minute = `0${minute}`;
-    }
-
-    return `${day}/${month}/${year} ${hour}:${minute}`;
-  }
-
   async findOne(id: string) {
     return await this.promotionRepository.findOne(id);
   }

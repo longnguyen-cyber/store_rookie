@@ -20,12 +20,14 @@ generator nestgraphql {
 }
 
 model User {
-  id        String   @id() @default(cuid()) @map("user_id")
-  username  String   @unique()
+  id        String    @id() @default(cuid()) @map("user_id")
+  username  String    @unique()
   password  String
-  email     String   @unique()
-  isAdmin   Boolean  @default(false) @map("is_admin")
-  createdAt DateTime @default(now()) @map("created_at")
+  email     String    @unique()
+  isAdmin   Boolean   @default(false) @map("is_admin")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
   orders    Order[]
   reviews   Review[]
   Cart      Cart[]
@@ -34,27 +36,36 @@ model User {
 }
 
 model Category {
-  id    String @id() @default(cuid()) @map("category_id")
-  name  String
-  books Book[]
+  id        String    @id() @default(cuid()) @map("category_id")
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  books     Book[]
 
   @@map("categories")
 }
 
 model Author {
-  id    String       @id() @default(cuid()) @map("author_id")
-  name  String
-  bio   String?
-  books BookAuthor[]
+  id        String       @id() @default(cuid()) @map("author_id")
+  name      String
+  bio       String?
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @default(now()) @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+  books     BookAuthor[]
 
   @@map("authors")
 }
 
 model Publisher {
-  id      String          @id() @default(cuid()) @map("publisher_id")
-  name    String
-  address String?         @map("address")
-  books   BookPublisher[]
+  id        String          @id() @default(cuid()) @map("publisher_id")
+  name      String
+  address   String?         @map("address")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @default(now()) @map("updated_at")
+  deletedAt DateTime?       @map("deleted_at")
+  books     BookPublisher[]
 
   @@map("publishers")
 }
@@ -68,6 +79,8 @@ model Book {
   ratings     Json            @map("ratings")
   images      Json            @map("images")
   createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @default(now()) @map("updated_at")
+  deletedAt   DateTime?       @map("deleted_at")
   category    Category        @relation(fields: [categoryId], references: [id])
   prices      BookPrice[]
   authors     BookAuthor[]
@@ -88,28 +101,36 @@ model BookPrice {
   startDate     DateTime  @map("start_date")
   endDate       DateTime? @map("end_date")
   createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
   book          Book      @relation(fields: [bookId], references: [id])
 
   @@map("book_prices")
 }
 
 model OrderItem {
-  id       String @id() @default(cuid()) @map("order_item_id")
-  orderId  String @map("order_id")
-  bookId   String @map("book_id")
-  quantity Int    @map("quantity")
-  priceId  String @map("price_id")
-  order    Order  @relation(fields: [orderId], references: [id])
-  book     Book   @relation(fields: [bookId], references: [id])
+  id        String    @id() @default(cuid()) @map("order_item_id")
+  orderId   String    @map("order_id")
+  bookId    String    @map("book_id")
+  quantity  Int       @map("quantity")
+  priceId   String    @map("price_id")
+  order     Order     @relation(fields: [orderId], references: [id])
+  book      Book      @relation(fields: [bookId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@map("order_items")
 }
 
 model BookAuthor {
-  bookId   String @map("book_id")
-  authorId String @map("author_id")
-  book     Book   @relation(fields: [bookId], references: [id])
-  author   Author @relation(fields: [authorId], references: [id])
+  bookId    String    @map("book_id")
+  authorId  String    @map("author_id")
+  book      Book      @relation(fields: [bookId], references: [id])
+  author    Author    @relation(fields: [authorId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@id([bookId, authorId])
   @@map("book_authors")
@@ -120,6 +141,9 @@ model BookPublisher {
   publisherId String    @map("publisher_id")
   book        Book      @relation(fields: [bookId], references: [id])
   publisher   Publisher @relation(fields: [publisherId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
 
   @@id([bookId, publisherId])
   @@map("book_publishers")
@@ -132,20 +156,25 @@ model Promotion {
   startDate     DateTime? @map("start_date")
   endDate       DateTime? @map("end_date")
   book          Book      @relation(fields: [bookId], references: [id])
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
 
   @@map("promotions")
 }
 
 model Review {
-  id        String   @id() @default(cuid()) @map("review_id")
-  bookId    String   @map("book_id")
-  userId    String   @map("user_id")
-  rating    Int      @map("rating")
-  title     String   @map("title")
-  content   String?  @map("content")
-  createdAt DateTime @default(now()) @map("created_at")
-  book      Book     @relation(fields: [bookId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  id        String    @id() @default(cuid()) @map("review_id")
+  bookId    String    @map("book_id")
+  userId    String    @map("user_id")
+  rating    Int       @map("rating")
+  title     String    @map("title")
+  content   String?   @map("content")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  book      Book      @relation(fields: [bookId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 
   @@map("reviews")
 }
@@ -156,8 +185,12 @@ model Order {
   orderDate DateTime    @default(now()) @map("order_date")
   status    String      @default("Pending") @map("status")
   payment   String      @default("cash") @map("payment")
+  isPayment Boolean     @default(false) @map("is_payment")
   address   String      @map("address")
   shipping  Float       @map("shipping")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @default(now()) @map("updated_at")
+  deletedAt DateTime?   @map("deleted_at")
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
 
@@ -165,23 +198,42 @@ model Order {
 }
 
 model Cart {
-  id      String     @id() @default(cuid()) @map("cart_id")
-  userId  String?    @map("user_id")
-  user    User?      @relation(fields: [userId], references: [id])
-  items   CartItem[]
-  guestId String?    @map("guest_id")
+  id        String     @id() @default(cuid()) @map("cart_id")
+  userId    String?    @map("user_id")
+  user      User?      @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @default(now()) @map("updated_at")
+  deletedAt DateTime?  @map("deleted_at")
+  guestId   String?    @map("guest_id")
 
   @@map("carts")
 }
 
 model CartItem {
-  id       String @id() @default(cuid()) @map("cart_item_id")
-  cartId   String @map("cart_id")
-  bookId   String @map("book_id")
-  quantity Int    @map("quantity")
-  priceId  String @map("price_id")
-  cart     Cart   @relation(fields: [cartId], references: [id])
-  book     Book   @relation(fields: [bookId], references: [id])
+  id        String    @id() @default(cuid()) @map("cart_item_id")
+  cartId    String    @map("cart_id")
+  bookId    String    @map("book_id")
+  quantity  Int       @map("quantity")
+  priceId   String    @map("price_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  cart      Cart      @relation(fields: [cartId], references: [id])
+  book      Book      @relation(fields: [bookId], references: [id])
 
   @@map("cart_items")
+}
+
+model StaticPage {
+  id          String    @id() @default(cuid()) @map("static_page_id")
+  title       String
+  description String
+  ourStory    String    @map("our_story")
+  ourVision   String    @map("our_vision")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("static_pages")
 }

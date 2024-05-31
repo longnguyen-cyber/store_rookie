@@ -1,81 +1,124 @@
-<button type='submit' id='submit'
-  class='text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
-  <a href="create/promotions" class="px-4">
-    Add new promotion
-  </a>
-</button>
+<div class="py-5 px-10">
+  <div class="flex justify-between items-center mb-5">
 
-<table class="w-3/4 mx-auto text-sm text-left rtl:text-right ">
-  <thead class="bg-blue-600 text-center">
-    <tr>
-      <th class="border border-slate-700">STT</th>
-      <th class="border border-slate-700 w-96">book</th>
-      <th class="border border-slate-700">promotion type</th>
-      <th class="border border-slate-700">Price</th>
-      <th class="border border-slate-700">start date</th>
-      <th class="border border-slate-700">end date</th>
-      <th class="border border-slate-700">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% data.forEach(function(item, index) { %>
-      <tr>
-        <td class="border border-slate-700 pl-4">
-          <%= index + 1 %>
-        </td>
-        <td class="border border-slate-700 pl-4 flex w-96 py-1">
-          <img width="50" src="<%= item.book.images[0] %>" alt="">
-          <div class="ml-3">
-            <%= item.book.title %>
-          <br>
-            <% item.book.authors.forEach(element=> { %>
-              <p>
-                Author: <strong><i><%= element.author.name %></i></strong>
-              </p>
-              <p>
-                Bio: <small><%= element.author.bio %></small>
-
-              </p>
-              <% }) %>
-          </div>
-        </td>
-        <td class="border border-slate-700 pl-4">
-          <%= item.promotionType %>
-        </td>
-        <td class="border border-slate-700 pl-4 text-center ">
-          <span class="line-through p-2 bg-gray-400 rounded"><%= item.book.prices[0].originalPrice %>$</span>
-          <span class="p-2 bg-green-400 rounded"><%= item.book.prices[0].discountPrice.toFixed(2) %>$</span>
-        </td>
-        <td class="border border-slate-700 pl-4">
-          <%= item.startDate %>
-        </td>
-        <td class="border border-slate-700 pl-4">
-          <%= item.endDate %>
-        </td>
-        <td class="border border-slate-700 pl-4">
-          <a href="edit/promotions/<%= item.id %>" class="text-blue-500 hover:text-blue-800">Edit</a>
-          <form action="delete/promotions/<%= item.id %>" method="POST" class="inline">
-            <input type="hidden" name="_method" value="DELETE">
-            <button type="submit" class="text-red-500 hover:text-red-800">Delete</button>
-          </form>
-        </td>
-      </tr>
-      <% }); %>
-  </tbody>
-</table>
-
-<br>
-<div class="">
-  <a href="<%= pagination.prevPage %>" class="px-4">
-    <i class="fa-solid fa-angle-left"></i>
-  </a>
-  <% pagination.pages.forEach(function(page) { %>
-    <a href="/<%= entityName %>?page=<%= page %>&limit=5"
-      class="<%= (page === pagination.currentPage) ? 'bg-red-500 text-white' : '' %> border rounded p-2 mr-2">
-      <%= page %>
-    </a>
-    <% }); %>
-      <a href="<%= pagination.nextPage %>" class="px-4">
-        <i class="fa-solid fa-angle-right"></i>
+    <form action="/promotions" method="GET">
+      <div class="flex space-x-4">
+        <div>
+          <label for="promotionType">Promotion Type</label>
+          <select class="border border-gray-600 text-gray-900 rounded-lg" name="promotionType" id="promotionType">
+            <option value="sale">Sale</option>
+            <option value="discount">Discount</option>
+          </select>
+        </div>
+        <div>
+          <label for="startDate">Start Date</label>
+          <input class="border border-gray-600 text-gray-900 rounded-lg" type="date" name="startDate" id="startDate">
+        </div>
+        <div>
+          <label for="endDate">End Date</label>
+          <input class="border border-gray-600 text-gray-900 rounded-lg" type="date" name="endDate" id="endDate">
+        </div>
+        <div>
+          <button type="submit">Fillter</button>
+        </div>
+      </div>
+    </form>
+    <button type='submit' id='submit'
+      class='text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+      <a href="create/promotions" class="px-4">
+        Add new promotion
       </a>
+    </button>
+
+  </div>
+  <table class="text-2xl w-full text-left rtl:text-right">
+    <thead class="bg-blue-600 text-center text-base">
+      <tr>
+        <th class="border border-slate-700 p-2 uppercase w-10">STT</th>
+        <th class="border border-slate-700 p-2 uppercase">book</th>
+        <th class="border border-slate-700 p-2 uppercase w-20">promotion type</th>
+        <th class="border border-slate-700 p-2 uppercase w-56">Price</th>
+        <th class="border border-slate-700 p-2 uppercase w-20">start date</th>
+        <th class="border border-slate-700 p-2 uppercase w-20">end date</th>
+        <th class="border border-slate-700 p-2 uppercase w-32">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(function(item, index) { %>
+        <tr class="text-center">
+          <td class="border border-slate-700 ">
+            <%= index + 1 %>
+          </td>
+          <td class="border border-slate-700 pl-4 flex  py-1 text-left">
+            <img width="50" src="<%= item.book.images[0] %>" alt="">
+            <div class="ml-3">
+              <%= item.book.title %>
+                <br>
+                <% item.book.authors.forEach(element=> { %>
+                  <p>
+                    Author: <strong class="underline"><i>
+                        <%= element.author.name %>
+                      </i></strong>
+                  </p>
+                  <p>
+                    <small> Bio:
+                      <%= element.author.bio %>
+                    </small>
+
+                  </p>
+                  <% }) %>
+            </div>
+          </td>
+          <td class="border border-slate-700  w-20 uppercase">
+            <%= item.promotionType %>
+          </td>
+          <td class="border border-slate-700  text-center space-x-2">
+            <span class="line-through p-2 bg-gray-400 rounded">
+              <%= item.book.prices[0].originalPrice %>$
+            </span>
+            <span class="p-2 bg-green-700 rounded font-bold">
+              <%= item.book.prices[0].discountPrice.toFixed(2) %>$
+            </span>
+          </td>
+          <td class="border border-slate-700 ">
+            <%= item.startDate %>
+          </td>
+          <td class="border border-slate-700 ">
+            <%= item.endDate %>
+          </td>
+          <td class="border border-slate-700 space-x-2  ">
+            <a href="edit/promotions/<%= item.id %>"
+              class="p-2 py-[10px] rounded text-white font-semibold hover:text-blue-800 bg-blue-500 border-none ">
+              <i class="fa-solid fa-pen-to-square"></i>
+
+            </a>
+            <form action="delete/promotions/<%= item.id %>" method="POST" class="inline">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit"
+                class="p-2 rounded text-white font-semibold hover:text-red-800 bg-red-500 border-none">
+                <i
+                class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+
+  <br>
+  <div class="">
+    <a href="<%= pagination.prevPage %>" class="px-4">
+      <i class="fa-solid fa-angle-left"></i>
+    </a>
+    <% pagination.pages.forEach(function(page) { %>
+      <a href="/<%= entityName %>?page=<%= page %>&limit=8"
+        class="<%= (page === pagination.currentPage) ? 'bg-red-500 text-white' : '' %> border rounded p-2 mr-2">
+        <%= page %>
+      </a>
+      <% }); %>
+        <a href="<%= pagination.nextPage %>" class="px-4">
+          <i class="fa-solid fa-angle-right"></i>
+        </a>
+  </div>
 </div>

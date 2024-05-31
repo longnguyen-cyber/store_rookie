@@ -46,7 +46,7 @@ export class AdminController {
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
-    if (login.isAdmin) {
+    if (login.user.isAdmin) {
       return res.redirect('/');
     } else {
       return res.redirect('/login');
@@ -66,28 +66,36 @@ export class AdminController {
   @Get(':entityName')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async getHello(
+  async getList(
     @Param('entityName') entityName: EntityNames,
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Res() res: Response,
   ) {
     if (
-      entityName.toString() !== 'login' ||
+      entityName.toString() !== 'login' &&
       entityName.toString() !== 'favicon.ico'
     ) {
-      const { data, pagination } = await this.adminService.listRes(
-        entityName,
-        page,
-        limit,
-      );
+      if (entityName.toString() === 'spa') {
+        res.render('layout', {
+          content: `./${entityName}/index`,
+          data: {},
+          entityName,
+        });
+      } else {
+        const { data, pagination } = await this.adminService.listRes(
+          entityName,
+          page,
+          limit,
+        );
 
-      return res.render('layout', {
-        content: `./${entityName}/index`,
-        data,
-        pagination,
-        entityName,
-      });
+        return res.render('layout', {
+          content: `./${entityName}/index`,
+          data,
+          pagination,
+          entityName,
+        });
+      }
     }
   }
 
@@ -109,6 +117,17 @@ export class AdminController {
     @Res() res: Response,
   ) {
     const data = await this.adminService.getRes(entityName, id);
+    if (entityName.toString() === 'books') {
+      const authors = await this.adminService.getAllAuthors();
+      const categories = await this.adminService.getAllCategories();
+      const publishers = await this.adminService.getAllPublishers();
+      console.log('Data:', data);
+      return res.render('layout', {
+        content: `./${entityName}/edit`,
+        data: { authors, categories, publishers, book: data },
+        error: '',
+      });
+    }
     return res.render('layout', {
       content: `./${entityName}/edit`,
       data,
@@ -133,6 +152,15 @@ export class AdminController {
       });
     }
   }
+
+  // @Get('/search/:entityName')
+  // async searchEntity(
+  //   @Param('entityName') entityName: EntityNames,
+  //   @Query('q') q: string,
+  // ) {
+  //   console.log('EntityName:', entityName);
+  //   console.log('Query:', q);
+  // }
 
   //create
   @Get('create/:entityName')
@@ -193,4 +221,7 @@ export class AdminController {
 
     return rs.map((r) => r.url);
   }
+
+  @Post('uploadSPA')
+  async uploadSPA() {}
 }

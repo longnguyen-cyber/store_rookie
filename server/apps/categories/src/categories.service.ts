@@ -10,14 +10,12 @@ export class CategoriesService {
     return categories;
   }
 
-  // async getBookByCategory(category: string, type: QUERY_SORT) {
-  //   const categories = await this.categoriesRepository.getBookByCategory(
-  //     category,
-  //     type,
-  //   );
-  //   const books = categories.map((category) => category.books);
-  //   return books.flat();
-  // }
+  async getBookByCategory(category: string) {
+    const categories =
+      await this.categoriesRepository.getBookByCategory(category);
+    const books = categories.map((category) => category.books);
+    return books.flat();
+  }
 
   async findOne(id: string) {
     const category = await this.categoriesRepository.findOne(id);

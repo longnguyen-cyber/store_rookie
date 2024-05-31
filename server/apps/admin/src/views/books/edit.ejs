@@ -1,37 +1,117 @@
-<h1>Edit Name</h1>
-<form class="max-w-sm mx-auto" action="/edit/books/<%= data.id %>" method="POST">
-  <div class="mb-5">
-    <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-    <input type="text" id="title"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="" required value="<%= data.title %>" name="title" />
-  </div>
+<div class="p-4">
+  <a href="javascript:history.back()"
+    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base w-full sm:w-auto px-5 py-2.5 text-center">
+    <i class="fa-solid fa-arrow-left"></i>
+    Go Back </a>
+  <form class="max-w-sm mt-4"  action="/edit/books/<%= data.book.id %>" method="POST" id="formt_submit">
+    <div class="mb-5">
+      <label for="title" class="block mb-2 text-base font-medium text-black">Title</label>
+      <input type="text" id="title"
+        class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
+        value="<%= data.book.title %>"
+        placeholder="" required name="title" />
+    </div>
 
-  <div class="mb-5">
-    <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-    <input type="text" id="description"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="" required value="<%= data.description %>" name="description" />
-  </div>
+    <div class="mb-5">
+      <label class="block mb-2 text-base font-medium text-white" for="file_input">Upload image</label>
+      <input class="block w-full text-base text-white border  rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+        onchange="uploadFiles()" id="file_input" type="file" multiple accept="image/*">
+    </div>
+    <div class="mb-5">
+      <label for="price" class="block mb-2 text-base font-medium text-black">Price($)</label>
+      <input type="text" id="price"
+      value="<%= data.book.prices[0].originalPrice %>"
+        class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
+        placeholder="" required name="price" />
+    </div>
 
-  <div class="mb-5">
-    <label for="category_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category_id</label>
-    <input type="text" id="category_id"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="" required value="<%= data.category_id %>" name="category_id" />
-  </div>
 
-  <div class="mb-5">
-    <label for="image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image</label>
-    <input type="text" id="image"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="" required value="<%= data.image %>" name="image" />
-  </div>
+    <div class="mb-5">
+      <label for="publisher" class="block text-base font-medium text-black">Publisher</label>
+      <select id="publisher" name="publisher"
+        class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+        <option selected>Choose publisher</option>
+        <% data.publishers.forEach(element=> { %>
+          <option value="<%= element.id %>" <%= data.book.publishers[0].publisher.id == element.id ? 'selected' : '' %>>
+            <%= element.name %>
+          </option>
+          <% }) %>
+      </select>
+    </div>
 
-  <button type="submit"
-    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-  <% if (error) { %>
-  <div class="alert alert-danger"><%= error %></div>
-  <% } %>
+    <div class="mb-5">
+      <label for="category" class="block text-base font-medium text-black">categories</label>
+      <select id="category" name="category"
+        class="bg-gray-50 border  text-black  text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+        <option selected>Choose category</option>
+        <% data.categories.forEach(element=> { %>
+          <option value="<%= element.id %>" <%= data.book.category.id == element.id ? 'selected' : '' %>>
+            <%= element.name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="mb-5">
+      <label for="author" class="block text-base font-medium text-black">Author</label>
+      <select id="author" name="author"
+        class="bg-gray-50 border text-black  text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+        <option selected>Choose author</option>
+        <% data.authors.forEach(element=> { %>
+          <option value="<%= element.id %>" <%= data.book.authors[0].author.id == element.id ? 'selected' : '' %>>
+            <%= element.name %>
+          </option>
+          <% }) %>
+      </select>
+    </div>
+    <div class="mb-5">
+      <label for="description" class="block mb-2 text-base font-medium text-black">Description</label>
+      <textarea type="text" id="description"
+        class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500  w-full p-2.5 border-gray-600  resize-none"
+        placeholder="" required name="description">
+      <%= data.book.description %>
+      </textarea>
+    </div>
 
-</form>
+
+    <button type="submit"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+    <% if (error) { %>
+      <div class="alert alert-danger">
+        <%= error %>
+      </div>
+      <% } %>
+
+  </form>
+
+  <script>
+    function uploadFiles() {
+      const input = document.getElementById('file_input');
+      const files = input.files;
+      const formData = new FormData();
+
+      for (let i = 0;i < files.length;i++) {
+        formData.append('file[]', files[i]);
+      }
+
+      fetch('/uploads', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Assuming data is an array of image URLs
+          const form = document.querySelector('#formt_submit');
+          let images = []
+          data.forEach((url) => {
+            images.push(url)
+          });
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'images';
+          input.value = JSON.stringify(images);
+          form.appendChild(input);
+        })
+        .catch(error => console.error(error));
+    }
+  </script>
+</div>

@@ -38,20 +38,34 @@ export class BookService {
     console.log('Update book rating');
   }
 
-  async findAll(skip: number) {
-    const books = await this.bookRepository.findAll(skip);
-    const final = books.books.map((book) => {
-      const lastedPrice = book.prices.find((p) => p.endDate === null);
+  async findAll(skip?: number) {
+    if (skip) {
+      const books = await this.bookRepository.findAll(skip);
+      const final = books.books.map((book) => {
+        const lastedPrice = book.prices.find((p) => p.endDate === null);
+        return {
+          ...book,
+          prices: [lastedPrice],
+          createdAt: lastedPrice.createdAt,
+        };
+      });
       return {
-        ...book,
-        prices: [lastedPrice],
-        createdAt: lastedPrice.createdAt,
+        books: final,
+        total: books.total,
       };
-    });
-    return {
-      books: final,
-      total: books.total,
-    };
+    } else {
+      const books = await this.bookRepository.findAllAdmin();
+      const final = books.map((book) => {
+        const lastedPrice = book.prices.find((p) => p.endDate === null);
+        return {
+          ...book,
+          prices: [lastedPrice],
+          createdAt: lastedPrice.createdAt,
+        };
+      });
+
+      return final;
+    }
   }
 
   async createBookPrice(data: any) {
@@ -126,7 +140,6 @@ export class BookService {
             return b;
           })
           .filter(Boolean);
-        console.log('final', final);
         return final;
 
       default:

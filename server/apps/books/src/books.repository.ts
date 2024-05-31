@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { PrismaService, QUERY_SORT } from '@app/common';
+import { PrismaService } from '@app/common';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -28,6 +28,21 @@ export class BookRepository {
     };
   }
 
+  async findAllAdmin() {
+    const books = await this.prisma.book.findMany({
+      include: {
+        prices: true,
+        category: true,
+        publishers: {
+          select: {
+            publisher: true,
+          },
+        },
+      },
+    });
+    return books;
+  }
+
   async getBooksForCron() {
     const books = await this.prisma.book.findMany({
       include: {
@@ -48,17 +63,19 @@ export class BookRepository {
           select: {
             author: {
               select: {
+                id: true,
                 name: true,
               },
             },
           },
         },
-        category: {
+        category: true,
+        prices: true,
+        publishers: {
           select: {
-            name: true,
+            publisher: true,
           },
         },
-        prices: true,
       },
     });
     return book;

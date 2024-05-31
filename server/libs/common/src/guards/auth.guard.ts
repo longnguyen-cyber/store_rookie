@@ -51,11 +51,6 @@ export class AuthGuard implements CanActivate {
       return false;
     }
 
-    // const decoded = this.authService.decodeJWT(token);
-    // if (!decoded) {
-    //   this.throwTokenError(request);
-    // }
-
     try {
       const decoded = this.authService.decodeJWT(token);
       // ... (rest of your guard logic)

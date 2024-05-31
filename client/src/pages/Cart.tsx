@@ -206,12 +206,23 @@ const Cart = () => {
                 </dl>
               </div>
               {data?.getCart.items && data?.getCart.items.length > 0 ? (
-                <Link
-                  to="/checkout"
-                  className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black focus:outline-none focus:ring-4"
-                >
-                  Proceed to Checkout
-                </Link>
+                <>
+                  {auth?.user ? (
+                    <Link
+                      to="/checkout"
+                      className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white cursor-pointer"
+                    >
+                      Proceed to Checkout
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/login"
+                      className="flex w-full items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white cursor-pointer"
+                    >
+                      Login to Checkout
+                    </Link>
+                  )}
+                </>
               ) : (
                 <button
                   disabled

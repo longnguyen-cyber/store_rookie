@@ -7,6 +7,29 @@ export class CartRepository {
 
   //create only when click add item, if checkout cart and add more item will get old cart and create new item cart
   private async createCart(dataRaw: any) {
+    const quantityOfBook = await this.prisma.book.findMany({
+      where: {
+        id: {
+          in: dataRaw.items.map((item: any) => item.book.connect.id),
+        },
+      },
+      select: {
+        id: true,
+        quantity: true,
+      },
+    });
+
+    const checkQuantity = dataRaw.items.every((item: any) => {
+      const book = quantityOfBook.find((book) => book.id === item.book.id);
+      return book.quantity >= item.quantity;
+    });
+
+    if (!checkQuantity)
+      throw new Error(
+        'Quantity of book is not enough just have ' +
+          quantityOfBook[0].quantity +
+          ' left',
+      );
     const data = {
       guestId: dataRaw.guestId,
       items: {
@@ -33,6 +56,21 @@ export class CartRepository {
     const cartExist = await this.findCart(userId, type);
 
     if (cartExist) {
+      //check quantity of book
+      const book = await this.prisma.book.findUnique({
+        where: {
+          id: data.book.connect.id,
+        },
+        select: {
+          quantity: true,
+        },
+      });
+
+      if (book.quantity < data.quantity)
+        throw new Error(
+          'Quantity of book is not enough just ' + book.quantity + ' left',
+        );
+
       const db = {
         ...data,
         cart: {
@@ -49,8 +87,6 @@ export class CartRepository {
       });
 
       return cart ? true : false;
-      // console.log('db', db);
-      // return false;
     } else {
       delete data.cart;
       const dataCart = {
@@ -73,6 +109,26 @@ export class CartRepository {
   }
 
   async updateQuantityOfItem(id: string, quantity: number) {
+    const cartItem = await this.prisma.cartItem.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        book: {
+          select: {
+            quantity: true,
+          },
+        },
+      },
+    });
+
+    if (cartItem.book.quantity < quantity)
+      throw new Error(
+        'Quantity of book is not enough just ' +
+          cartItem.book.quantity +
+          ' left',
+      );
+
     const cart = await this.prisma.cartItem.update({
       where: {
         id: id,

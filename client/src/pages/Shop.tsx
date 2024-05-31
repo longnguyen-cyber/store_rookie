@@ -25,11 +25,13 @@ const Shop = () => {
   }
 
   const navigate = useNavigate()
+  const [allQuantity, setAllQuantity] = useState('')
+  const [quantityLeft, setQuantityLeft] = useState(0)
   const [page, setPage] = useState(0)
 
   const [getBooks, { data }] = useLazyQuery(GET_BOOKS, {
     variables: {
-      skip: page * 2 + '',
+      skip: page * 4 + '',
     },
   })
 
@@ -46,7 +48,7 @@ const Shop = () => {
   const [booksByCategory] = useLazyQuery(BOOKS_BY_CATEGORY)
 
   const [filter, setFilter] = useState(defaultFilter)
-  const [sort, setSort] = useState('sale')
+  const [sort, setSort] = useState('asc')
 
   const handleChangeFilter = (e: InputChange) => {
     setFilter(defaultFilter)
@@ -56,6 +58,8 @@ const Shop = () => {
     setPage(0)
     setBooks([])
     setDisableMore(false)
+    setAllQuantity('')
+    setQuantityLeft(0)
     setFilter((prevFilter) => ({
       ...prevFilter,
       [e.target.name]: e.target.value,
@@ -70,7 +74,6 @@ const Shop = () => {
     )
 
     if (!filterSelected || Object.keys(filterSelected).length === 0) {
-      console.log('getBooks')
       setDisableMore(true)
       return
     }
@@ -106,11 +109,12 @@ const Shop = () => {
           skip: '0',
         },
         onCompleted(data) {
+          setAllQuantity(`${name} has ${data.booksByAuthor.total} books`)
           setBooks(data.booksByAuthor.books as Book[])
           const newLength =
             (books?.length ?? 0) + data.booksByAuthor.books.length
           console.log('newLength', newLength)
-          console.log('data?.booksByAuthor.total', data?.booksByAuthor.total)
+          setQuantityLeft(data.booksByAuthor.total - newLength)
           if (data?.booksByAuthor.total === newLength) {
             setDisableMore(true)
           }
@@ -126,9 +130,12 @@ const Shop = () => {
             skip: '0',
           },
           onCompleted(data) {
+            setAllQuantity(`${name} has ${data.booksByCategory.total} books`)
+
             setBooks(data.booksByCategory.books as Book[])
             const newLength =
               (books?.length ?? 0) + data.booksByCategory.books.length
+            setQuantityLeft(data.booksByCategory.total - newLength)
             if (data?.booksByCategory.total === newLength) {
               setDisableMore(true)
             }
@@ -160,7 +167,7 @@ const Shop = () => {
           variables: {
             star: name,
             type: sort,
-            skip: page * 2 + '',
+            skip: page * 4 + '',
           },
           onCompleted(data) {
             const newBooks = data.booksByRating.books as Book[]
@@ -180,13 +187,14 @@ const Shop = () => {
           variables: {
             author_id: firstValue.toString().split('-')[0],
             type: sort,
-            skip: page * 2 + '',
+            skip: page * 4 + '',
           },
           onCompleted(data) {
             const newBooks = data.booksByAuthor.books as Book[]
-            console.log('newBooks', newBooks)
+            setAllQuantity(`${name} has ${data.booksByAuthor.total} books`)
             setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
             const newLength = (books?.length ?? 0) + newBooks.length
+            setQuantityLeft(data.booksByAuthor.total - newLength)
             if (
               data?.booksByAuthor.total === newLength ||
               newBooks.length === 0
@@ -200,12 +208,14 @@ const Shop = () => {
           variables: {
             category_id: firstValue.toString().split('-')[0],
             type: sort,
-            skip: page * 2 + '',
+            skip: page * 4 + '',
           },
           onCompleted(data) {
+            setAllQuantity(`${name} has ${data.booksByCategory.total} books`)
             const newBooks = data.booksByCategory.books as Book[]
             setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
             const newLength = (books?.length ?? 0) + newBooks.length
+            setQuantityLeft(data.booksByCategory.total - newLength)
             if (data?.booksByCategory.total === newLength) {
               setDisableMore(true)
             }
@@ -244,7 +254,7 @@ const Shop = () => {
             className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
           >
             <img
-              className="p-8 rounded-t-lg"
+              className="p-8 rounded-t-lg w-full h-96 object-contain"
               src={book.images[0]}
               alt="product image"
             />
@@ -396,39 +406,44 @@ const Shop = () => {
         </div>
 
         <div className="flex space-y-3 flex-col">
-          <form className="max-w-sm">
-            <select
-              id="sort"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              name="sort"
-              onChange={(e) => {
-                setSort(e.target.value)
-                setPage(0)
-                setDisableMore(false)
-                setBooks([])
-              }}
-            >
-              <option value={QUERY_SORT.SALE} defaultValue={QUERY_SORT.SALE}>
-                Sort by on sale
-              </option>
-              <option value={QUERY_SORT.POPULAR}>Sort by popularity</option>
-              <option value={QUERY_SORT.ASC}>
-                Sort by price: low to high{' '}
-              </option>
-              <option value={QUERY_SORT.DESC}>
-                Sort by price: high to low
-              </option>
-            </select>
-          </form>
-
+          <div className="flex items-center space-x-4">
+            <form className="max-w-sm">
+              <select
+                id="sort"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                name="sort"
+                onChange={(e) => {
+                  setSort(e.target.value)
+                  setPage(0)
+                  setDisableMore(false)
+                  setBooks([])
+                }}
+              >
+                <option value={QUERY_SORT.ASC} defaultValue={QUERY_SORT.ASC}>
+                  Sort by price: low to high{' '}
+                </option>
+                <option value={QUERY_SORT.DESC}>
+                  Sort by price: high to low
+                </option>
+                <option value={QUERY_SORT.SALE}>Sort by on sale</option>
+                <option value={QUERY_SORT.POPULAR}>Sort by popularity</option>
+              </select>
+            </form>
+            <h1>
+              <strong>{allQuantity !== '' && allQuantity}</strong>
+            </h1>
+          </div>
           <div className="grid grid-cols-4 gap-4">{renderCard(books!)}</div>
           {!disableMore && (
             <button
               type="button"
               className={`bg-gray-100  hover:bg-gray-200 border border-gray-300 rounded px-4 py-1 focus:ring-gray-100  focus:ring-2 focus:outline-none w-fit mx-auto mt-5`}
-              onClick={() => setPage(page + 1)}
+              onClick={() => {
+                setPage(page + 1)
+                setQuantityLeft(quantityLeft - 4)
+              }}
             >
-              More
+              More {quantityLeft > 0 && `(${quantityLeft} left)`}
             </button>
           )}
         </div>

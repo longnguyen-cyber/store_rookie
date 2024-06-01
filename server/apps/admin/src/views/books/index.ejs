@@ -76,7 +76,7 @@
       <i class="fa-solid fa-angle-left"></i>
     </a>
     <% pagination.pages.forEach(function(page) { %>
-      <a href="/<%= entityName %>?page=<%= page %>&limit=6"
+      <a href="/<%= entityName %>?page=<%= page %>&limit=10"
         class="<%= (page === pagination.currentPage) ? 'bg-red-500 text-white' : '' %> border rounded p-2 mr-2">
         <%= page %>
       </a>

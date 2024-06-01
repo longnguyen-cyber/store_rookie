@@ -103,9 +103,10 @@ const Home = () => {
               } else {
                 description = description.padEnd(100, '')
               }
+              console.log(book)
               return (
                 <SwiperSlide key={index}>
-                  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                  <div className="w-full max-w-sm h-[34rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                     <Link to={`/book/${book.id}`}>
                       <img
                         className="p-8 rounded-t-lg w-full h-96 object-contain"

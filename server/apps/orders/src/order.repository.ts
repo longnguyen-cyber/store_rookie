@@ -84,7 +84,12 @@ export class OrderRepository {
     const books = orders.flatMap((order) =>
       order.items.map((item) => item.book),
     );
-    return books;
+
+    const distinctBooks = books.reduce((unique, book) => {
+      return unique.some((u) => u.id === book.id) ? unique : [...unique, book];
+    }, []);
+
+    return distinctBooks;
   }
 
   async findOne(id: string) {

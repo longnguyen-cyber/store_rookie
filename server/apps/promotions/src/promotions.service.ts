@@ -24,12 +24,19 @@ export class PromotionsService {
 
   //compare with end date and current date to get books on sale
   async getOnSaleByCurrentDate() {
-    const booksSale = (await this.findAll()).filter((item) => {
+    const allBooks = await this.findAll();
+    const booksSale = allBooks.filter((item) => {
       const currentDate = new Date();
       return item.endDate >= currentDate;
     });
 
-    return booksSale;
+    const distinctBooksSale = booksSale.reduce((unique, book) => {
+      return unique.some((u) => u.bookId === book.bookId)
+        ? unique
+        : [...unique, book];
+    }, []);
+    console.log(distinctBooksSale);
+    return distinctBooksSale;
   }
 
   async findOne(id: string) {

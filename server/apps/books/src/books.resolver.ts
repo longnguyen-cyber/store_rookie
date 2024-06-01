@@ -11,8 +11,12 @@ export class BookResolver {
   @Query(() => BookResponseCustom)
   async books(
     @Args('skip', { type: () => String, nullable: true }) skip: string,
+    @Args('type') type: string,
   ) {
-    const books = await this.bookService.findAll(parseInt(skip));
+    const books = await this.bookService.findAll(
+      parseInt(skip),
+      type as QUERY_SORT,
+    );
     return books;
   }
 

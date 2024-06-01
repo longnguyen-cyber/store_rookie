@@ -1,8 +1,8 @@
 import { gql } from '../../generated'
 
 export const GET_BOOKS = gql(`
-  query Books($skip:String) {
-    books(skip: $skip) {
+  query Books($skip:String, $type: String!) {
+    books(skip: $skip, type: $type) {
       books {
         id
         title

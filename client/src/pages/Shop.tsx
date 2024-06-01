@@ -32,6 +32,7 @@ const Shop = () => {
   const [getBooks, { data }] = useLazyQuery(GET_BOOKS, {
     variables: {
       skip: page * 4 + '',
+      type: 'asc',
     },
   })
 
@@ -74,7 +75,22 @@ const Shop = () => {
     )
 
     if (!filterSelected || Object.keys(filterSelected).length === 0) {
-      setDisableMore(true)
+      getBooks({
+        variables: {
+          skip: page * 4 + '',
+          type: sort,
+        },
+        onCompleted(data) {
+          setAllQuantity(`All books has ${data.books.total} books`)
+          const newBooks = data.books.books as Book[]
+          setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+          const newLength = (books?.length ?? 0) + newBooks.length
+          setQuantityLeft(data.books.total - newLength)
+          if (data?.books.total === newLength || newBooks.length === 0) {
+            setDisableMore(true)
+          }
+        },
+      })
       return
     }
 
@@ -95,7 +111,7 @@ const Shop = () => {
           setBooks(data.booksByRating.books as Book[])
           const newLength =
             (books?.length ?? 0) + data.booksByRating.books.length
-          if (data?.booksByRating.total === newLength) {
+          if (data?.booksByRating.total === newLength || newLength === 0) {
             setDisableMore(true)
           }
         },
@@ -115,7 +131,7 @@ const Shop = () => {
             (books?.length ?? 0) + data.booksByAuthor.books.length
           console.log('newLength', newLength)
           setQuantityLeft(data.booksByAuthor.total - newLength)
-          if (data?.booksByAuthor.total === newLength) {
+          if (data?.booksByAuthor.total === newLength || newLength === 0) {
             setDisableMore(true)
           }
         },
@@ -131,12 +147,12 @@ const Shop = () => {
           },
           onCompleted(data) {
             setAllQuantity(`${name} has ${data.booksByCategory.total} books`)
-
+            console.log('data', data)
             setBooks(data.booksByCategory.books as Book[])
             const newLength =
               (books?.length ?? 0) + data.booksByCategory.books.length
             setQuantityLeft(data.booksByCategory.total - newLength)
-            if (data?.booksByCategory.total === newLength) {
+            if (data?.booksByCategory.total === newLength || newLength === 0) {
               setDisableMore(true)
             }
           },
@@ -158,7 +174,22 @@ const Shop = () => {
     )
 
     if (!filterSelected || Object.keys(filterSelected).length === 0) {
-      getBooks()
+      getBooks({
+        variables: {
+          skip: page * 4 + '',
+          type: sort,
+        },
+        onCompleted(data) {
+          setAllQuantity(`All books has ${data.books.total} books`)
+          const newBooks = data.books.books as Book[]
+          setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+          const newLength = (books?.length ?? 0) + newBooks.length
+          setQuantityLeft(data.books.total - newLength)
+          if (data?.books.total === newLength || newBooks.length === 0) {
+            setDisableMore(true)
+          }
+        },
+      })
     } else {
       const [_, firstValue] = Object.entries(filterSelected)[0] || []
       const name = firstValue.toString().split('-')[1] ?? firstValue
@@ -171,7 +202,6 @@ const Shop = () => {
           },
           onCompleted(data) {
             const newBooks = data.booksByRating.books as Book[]
-            console.log('newBooks', newBooks)
             setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
             const newLength = (books?.length ?? 0) + newBooks.length
             if (
@@ -216,7 +246,10 @@ const Shop = () => {
             setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
             const newLength = (books?.length ?? 0) + newBooks.length
             setQuantityLeft(data.booksByCategory.total - newLength)
-            if (data?.booksByCategory.total === newLength) {
+            if (
+              data?.booksByCategory.total === newLength ||
+              newBooks.length === 0
+            ) {
               setDisableMore(true)
             }
           },
@@ -224,25 +257,28 @@ const Shop = () => {
       }
     }
   }, [page])
-  useEffect(() => {
-    const filterSelected = Object.fromEntries(
-      Object.entries(filter).filter(
-        ([key, value]) =>
-          value !== defaultFilter[key as keyof typeof defaultFilter]
-      )
-    )
+  // useEffect(() => {
+  //   const filterSelected = Object.fromEntries(
+  //     Object.entries(filter).filter(
+  //       ([key, value]) =>
+  //         value !== defaultFilter[key as keyof typeof defaultFilter]
+  //     )
+  //   )
 
-    if (!filterSelected || Object.keys(filterSelected).length === 0) {
-      if (data) {
-        const newBooks = data.books.books as Book[]
-        setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
-        const newLength = (books?.length ?? 0) + newBooks.length
-        if (data?.books.total === newLength) {
-          setDisableMore(true)
-        }
-      }
-    }
-  }, [data])
+  //   if (!filterSelected || Object.keys(filterSelected).length === 0) {
+  //     console.log('here')
+  //     if (data) {
+  //       setAllQuantity(`All books has ${data.books.total} books`)
+  //       const newBooks = data.books.books as Book[]
+  //       setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+  //       const newLength = (books?.length ?? 0) + newBooks.length
+  //       setQuantityLeft(data.books.total - newLength)
+  //       if (data?.books.total === newLength) {
+  //         setDisableMore(true)
+  //       }
+  //     }
+  //   }
+  // }, [data])
 
   const renderCard = (books: Book[]) => {
     if (books) {

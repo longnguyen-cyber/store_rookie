@@ -12,6 +12,7 @@ import { ReviewsModule } from 'apps/reviews/src/reviews.module';
 import { UserModule } from 'apps/user/src/user.module';
 import { AppService } from './app.service';
 import { GatewayResolver } from './getway.resolver';
+import { PrismaModule } from '@app/common';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { GatewayResolver } from './getway.resolver';
     PromotionsModule,
     PublisherModule,
     ReviewsModule,
+    PrismaModule,
     UserModule,
     CartModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({

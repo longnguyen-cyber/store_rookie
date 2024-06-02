@@ -31,6 +31,7 @@ const documents = {
     "\n  query BooksByAuthor($author_id: String!, $type: String!, $skip:String) {\n    booksByAuthor(author_id: $author_id, type: $type, skip:$skip) {\n      books {\n        id\n        title\n        description\n        categoryId\n        rating\n        ratings\n        images\n        createdAt\n        prices {\n          id\n          bookId\n          originalPrice\n          discountPrice\n          startDate\n          endDate\n          createdAt\n        }\n      }\n      total\n    }\n  }\n": types.BooksByAuthorDocument,
     "\n  query GetCart($id: String!) {\n    getCart(id: $id) {\n\t\t\tid\n\t\t\tuserId\n\t\t\tguestId\n\t\t\ttotal\n\t\t\titems {\n\t\t\t\tid\n\t\t\t\tquantity\n\t\t\t\tpriceId\n\t\t\t\tbook {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tdescription\n\t\t\t\t\trating\n\t\t\t\t\timages\n\t\t\t\t\tprices {\n\t\t\t\t\t\tid\n\t\t\t\t\t\toriginalPrice\n\t\t\t\t\t\tdiscountPrice\n\t\t\t\t\t\tstartDate\n\t\t\t\t\t\tendDate\n\t\t\t\t\t\tcreatedAt\n\t\t\t\t\t}\n\t\t\t\t\tauthors {\n\t\t\t\t\t\tauthor {\n\t\t\t\t\t\t\t\tname\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n    }\n  }\n": types.GetCartDocument,
     "\n  query Categories {\n    categories {\n        id\n        name\n    }\n  }\n": types.CategoriesDocument,
+    "\n  query GetSPA {\n      getSPA\n  }\n": types.GetSpaDocument,
 };
 
 /**
@@ -119,6 +120,10 @@ export function gql(source: "\n  query GetCart($id: String!) {\n    getCart(id: 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query Categories {\n    categories {\n        id\n        name\n    }\n  }\n"): (typeof documents)["\n  query Categories {\n    categories {\n        id\n        name\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetSPA {\n      getSPA\n  }\n"): (typeof documents)["\n  query GetSPA {\n      getSPA\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

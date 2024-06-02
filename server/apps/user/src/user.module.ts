@@ -1,5 +1,5 @@
 import { CacheModule } from '@app/cache';
-import { CommonModule, LoggerService, PrismaModule } from '@app/common';
+import { CommonModule, PrismaModule } from '@app/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -25,13 +25,7 @@ import { UserService } from './user.service';
     }),
   ],
   controllers: [UserController],
-  providers: [
-    UserService,
-    UserRepository,
-    LoggerService,
-    UserCheck,
-    UserResolver,
-  ],
+  providers: [UserService, UserRepository, UserCheck, UserResolver],
   exports: [UserService],
 })
 export class UserModule {}

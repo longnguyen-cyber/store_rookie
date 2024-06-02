@@ -170,6 +170,15 @@ export class AdminService {
     return publishers;
   }
 
+  async uploadSPA(data: any) {
+    const rs = this.prisma.staticPage.create({
+      data: {
+        ...data,
+      },
+    });
+    return rs;
+  }
+
   private handlePagination(
     pageStr: number,
     limit: number,

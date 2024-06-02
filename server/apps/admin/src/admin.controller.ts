@@ -235,5 +235,10 @@ export class AdminController {
   }
 
   @Post('uploadSPA')
-  async uploadSPA() {}
+  async uploadSPA(@Body() data: string) {
+    console.log('Data:', data);
+    const rs = await this.adminService.uploadSPA(data);
+    console.log('Data:', rs);
+    return rs;
+  }
 }

@@ -13,8 +13,6 @@ export * from './enums';
 
 export * from './array';
 
-export * from './logger.service';
-
 export * from './cloudinary';
 
 export * from './interceptor';

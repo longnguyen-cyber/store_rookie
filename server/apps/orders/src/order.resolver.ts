@@ -13,7 +13,9 @@ export class OrderResolver {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.User)
   async orders(@Context() req: any) {
-    return await this.orderService.findAll(req.req.user.id);
+    return (await this.orderService.findAll()).filter(
+      (order) => order.userId === req.req.user.id,
+    );
   }
 
   @Mutation(() => Order)

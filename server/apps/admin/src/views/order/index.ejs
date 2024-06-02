@@ -1,0 +1,108 @@
+<div class="p-4">
+
+
+  <table class="w-full">
+    <thead class="bg-blue-600 uppercase">
+      <tr>
+        <th class="border border-slate-700">STT</th>
+        <th class="border border-slate-700">user</th>
+        <th class="border border-slate-700">Payment</th>
+        <th class="border border-slate-700">Status</th>
+        <th class="border border-slate-700">Total price</th>
+        <th class="border border-slate-700">Time</th>
+        <th class="border border-slate-700">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(function(item, index) { %>
+        <tr class="text-center">
+          <td class="border border-slate-700 py-2">
+            <%= index + 1 %>
+          </td>
+          <td class="border border-slate-700">
+            <%= item.user.username %>
+              <%= item.address %>
+          </td>
+          <td class="border border-slate-700 uppercase font-bold">
+            <%= item.payment %>
+              <% if (item.isPayment) { %>
+                <i class="fa-solid fa-check bg-green-500 rounded-full text-white p-1 px-[6px]"></i>
+                <% } else { %>
+                  <i class="fa-solid fa-times bg-red-500 rounded-full text-white p-1 px-[6px]"></i>
+                  <% } %>
+          </td>
+          <td class="border border-slate-700">
+
+            <%= item.status %>
+
+            <input type="checkbox" id="status-checkbox-<%= item.id %>" value="<%= item.status ==='Completed' ? 'true' : 'false' %>" <%= item.status==='Completed' ? 'checked' : '' %> style="display: none;">
+          </td>
+          <td class="border border-slate-700">
+            <%= item.total %>$
+          </td>
+          <td class="border border-slate-700">
+            <%= item.orderDate %>
+          </td>
+          <td class="border border-slate-700 space-x-2" id="button">
+            <span class="hidden"><%= item.id %></span>
+            <button class="p-2 py-[10px] rounded text-white font-semibold hover:text-blue-800 bg-blue-500 border-none edit">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+
+            <button class="p-2 py-[10px] rounded text-white font-semibold hover:text-green-800 bg-green-500 border-none confirm" style="display: none;">
+              <i class="fa-solid fa-check " ></i>
+            </button>
+
+          </td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+
+</div>
+
+<script>
+  document.querySelectorAll('#button').forEach((button) => {
+    button.addEventListener('click', (e) => {
+      const id = button.querySelector('span').innerText;
+      console.log(id);
+      const checkbox = document.getElementById(`status-checkbox-${id}`);
+      if (checkbox) {
+        checkbox.style.display = checkbox.style.display === 'none' ? 'inline' : 'none';
+      }
+
+      const edit = button.querySelector('.edit');
+      const confirm = button.querySelector('.confirm');
+
+      if (edit.style.display !== 'none') {
+        console.log('edit');
+        edit.style.display = 'none';
+        confirm.style.display = 'inline';
+      } else {
+        edit.style.display = 'inline';
+        confirm.style.display = 'none';
+        fetch(`/edit/order/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            status: checkbox.value === 'true' ? 'Completed' : 'Pending'
+          })
+        }).then(response => response.json())
+          .then(data => {
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    });
+  });
+
+  document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+    checkbox.addEventListener('change', (e) => {
+      e.target.value = e.target.checked ? 'true' : 'false';
+    });
+  });
+</script>

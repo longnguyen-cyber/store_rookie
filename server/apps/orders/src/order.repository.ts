@@ -4,12 +4,10 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class OrderRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async findAll(userId: string) {
+  async findAll() {
     const orders = await this.prisma.order.findMany({
-      where: {
-        userId: userId,
-      },
       include: {
+        user: true,
         items: {
           include: {
             book: {

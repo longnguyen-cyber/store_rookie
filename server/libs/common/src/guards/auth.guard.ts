@@ -1,3 +1,4 @@
+import { AuthService } from '@app/auth/auth.service';
 import { CACHE_SERVICE } from '@app/cache';
 import {
   CanActivate,
@@ -8,7 +9,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { AuthService } from 'apps/auth/src/auth.service';
 import { Cache } from 'cache-manager';
 
 @Injectable()

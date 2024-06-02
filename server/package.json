@@ -127,7 +127,12 @@
     ],
     "moduleNameMapper": {
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
-      "^y/cache(|/.*)$": "<rootDir>/libs/cache/src/$1"
+      "^@app/cache(|/.*)$": "<rootDir>/libs/cache/src/$1",
+      "^@app/auth/(.*)$": "<rootDir>/apps/auth/src/$1",
+      "^@app/author/(.*)$": "<rootDir>/apps/author/src/$1",
+      "^@app/author$": "<rootDir>/apps/author/src",
+      "^@app/orders/(.*)$": "<rootDir>/apps/orders/src/$1",
+      "^@app/orders$": "<rootDir>/apps/orders/src"
     }
   }
 }

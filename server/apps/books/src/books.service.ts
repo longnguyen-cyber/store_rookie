@@ -1,18 +1,14 @@
 import { QUERY_SORT } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AuthorService } from 'apps/author/src/author.service';
-import { CategoriesService } from 'apps/categories/src/categories.service';
-import { OrderService } from 'apps/orders/src/order.service';
 import { BookRepository } from './books.repository';
+import { OrderService } from '@app/orders/order.service';
 
 @Injectable()
 export class BookService {
   constructor(
     private readonly bookRepository: BookRepository,
-    private readonly categoriesService: CategoriesService,
     private readonly orderService: OrderService,
-    private readonly authorService: AuthorService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {

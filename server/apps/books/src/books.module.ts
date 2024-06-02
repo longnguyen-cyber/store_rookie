@@ -1,14 +1,15 @@
+import { AuthorModule } from '@app/author/author.module';
+import { CacheModule } from '@app/cache';
 import { PrismaModule } from '@app/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { BookService } from './books.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CategoriesModule } from 'apps/categories/src/categories.module';
+import { OrderModule } from 'apps/orders/src/order.module';
 import { BookRepository } from './books.repository';
 import { BookResolver } from './books.resolver';
-import { OrderModule } from 'apps/orders/src/order.module';
-import { CategoriesModule } from 'apps/categories/src/categories.module';
-import { AuthorModule } from 'apps/author/src/author.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { BookService } from './books.service';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     OrderModule,
     CategoriesModule,
     AuthorModule,
+    CacheModule.register(),
     ScheduleModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

@@ -121,7 +121,6 @@ export class AdminController {
       const authors = await this.adminService.getAllAuthors();
       const categories = await this.adminService.getAllCategories();
       const publishers = await this.adminService.getAllPublishers();
-      console.log('Data:', data);
       return res.render('layout', {
         content: `./${entityName}/edit`,
         data: { authors, categories, publishers, book: data },
@@ -159,13 +158,11 @@ export class AdminController {
     @Query('q') q: string,
     @Res() res: Response,
   ) {
-    console.log('EntityName:', entityName);
-    console.log('Q:', q);
+    console.log(q);
     const { data, pagination } = await this.adminService.searchRes(
       entityName,
       q.toLowerCase(),
     );
-    console.log('Data:', data);
     return res.render('layout', {
       content: `./${entityName}/index`,
       data,
@@ -184,9 +181,10 @@ export class AdminController {
       const categories = (await this.adminService.getAllCategories()).filter(
         (category) => category.books.length > 0,
       );
+      const books = await this.adminService.getBooks();
       return res.render('layout', {
         content: `./${entityName}/create`,
-        data: { categories },
+        data: { categories, books },
         error: '',
       });
     } else if (entityName.toString() === 'books') {
@@ -236,9 +234,7 @@ export class AdminController {
 
   @Post('uploadSPA')
   async uploadSPA(@Body() data: string) {
-    console.log('Data:', data);
     const rs = await this.adminService.uploadSPA(data);
-    console.log('Data:', rs);
     return rs;
   }
 }

@@ -82,25 +82,45 @@ export class AdminService {
     if (entityName === 'promotions') {
       data.startDate = new Date(data.startDate);
       data.endDate = new Date(data.endDate);
-      const books = await this.categoriesService.getBookByCategory(
-        data.category,
-      );
-      delete data.category;
-      await Promise.all(
-        books.map(async (book) => {
-          await this.booksService.createBookPrice({
-            bookId: book.id,
-            originalPrice: book.prices[0].originalPrice,
-            old_price_id: book.prices[0].id,
-          });
 
-          await entityService.create({
-            ...data,
-            bookId: book.id,
-            promotionType: 'percent',
-          });
-        }),
-      );
+      if (data.category && data.book.includes('book')) {
+        const books = await this.categoriesService.getBookByCategory(
+          data.category,
+        );
+        delete data.book;
+        delete data.category;
+        await Promise.all(
+          books.map(async (book) => {
+            await this.booksService.createBookPrice({
+              bookId: book.id,
+              originalPrice: book.prices[0].originalPrice,
+              old_price_id: book.prices[0].id,
+            });
+
+            await entityService.create({
+              ...data,
+              bookId: book.id,
+              promotionType: 'percent',
+            });
+          }),
+        );
+      } else {
+        const book = await this.booksService.findOne(data.book);
+        await this.booksService.createBookPrice({
+          bookId: book.id,
+          originalPrice: book.prices[0].originalPrice,
+          old_price_id: book.prices[0].id,
+        });
+        delete data.book;
+        delete data.category;
+
+        await entityService.create({
+          ...data,
+          bookId: book.id,
+          promotionType: 'percent',
+        });
+      }
+
       return true;
     } else if (entityName === 'books') {
       data.originalPrice = parseFloat(data.price);
@@ -128,6 +148,11 @@ export class AdminService {
 
     const res = await entityService.findOne(id);
     return this.commonService.formatDate(res);
+  }
+
+  async getBooks() {
+    const books = await this.booksService.findAll();
+    return books;
   }
 
   async searchRes(

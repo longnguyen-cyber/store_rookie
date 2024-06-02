@@ -9,12 +9,24 @@
       <select id="category"
       name="category"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-        <option selected>Choose category</option>
+        <option>Choose category</option>
         <% data.categories.forEach(element => { %>
           <option value="<%= element.id %>"><%= element.name %></option>
         <% }) %>
       </select>
     </div>
+    <div class="mb-5">
+      <label for="name" class="block text-sm font-medium text-gray-900 ">Promotion by book</label>
+      <select id="book"
+      name="book"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <option >Choose book</option>
+        <% data.books.forEach(element => { %>
+          <option value="<%= element.id %>"><%= element.title %></option>
+        <% }) %>
+      </select>
+    </div>
+
 
     <div date-rangepicker class="flex items-center">
       <div class="relative">

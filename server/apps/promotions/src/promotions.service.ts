@@ -56,8 +56,9 @@ export class PromotionsService {
   }
 
   async search(q: any) {
-    const startDate = q.startDate;
-    const endDate = q.endDate;
+    const [startDate, endDate] = q.split('/');
+
+    console.log(startDate, endDate);
     return await this.promotionRepository.search(startDate, endDate);
   }
 }

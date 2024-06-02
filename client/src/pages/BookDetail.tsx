@@ -99,7 +99,7 @@ const BookDetail = () => {
   const [getReviews, { data: reviews, loading }] = useLazyQuery(
     GET_REVIEWS_BY_BOOK,
     {
-      variables: { id: id ?? '', skip: page * 2 + '', take: '2' },
+      variables: { id: id ?? '', skip: page * 5 + '', take: '5' },
     }
   )
   const nextPage = () => {

@@ -1,28 +1,20 @@
 <div class="py-5 px-10">
   <div class="flex justify-between items-center mb-5">
 
-    <form action="/promotions" method="GET">
-      <div class="flex space-x-4">
-        <div>
-          <label for="promotionType">Promotion Type</label>
-          <select class="border border-gray-600 text-gray-900 rounded-lg" name="promotionType" id="promotionType">
-            <option value="sale">Sale</option>
-            <option value="discount">Discount</option>
-          </select>
-        </div>
-        <div>
-          <label for="startDate">Start Date</label>
-          <input class="border border-gray-600 text-gray-900 rounded-lg" type="date" name="startDate" id="startDate">
-        </div>
-        <div>
-          <label for="endDate">End Date</label>
-          <input class="border border-gray-600 text-gray-900 rounded-lg" type="date" name="endDate" id="endDate">
-        </div>
-        <div>
-          <button type="submit">Fillter</button>
-        </div>
+    <div class="flex space-x-4">
+
+      <div>
+        <label for="startDate">Start Date</label>
+        <input class="border border-gray-600 text-gray-900 rounded-lg" type="date" name="startDate" id="startDate">
       </div>
-    </form>
+      <div>
+        <label for="endDate">End Date</label>
+        <input class="border border-gray-600 text-gray-900 rounded-lg" type="date" name="endDate" id="endDate">
+      </div>
+      <div>
+        <button type="button" id="submit">Fillter</button>
+      </div>
+    </div>
     <button type='submit' id='submit'
       class='text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
       <a href="create/promotions" class="px-4">
@@ -96,8 +88,7 @@
               <input type="hidden" name="_method" value="DELETE">
               <button type="submit"
                 class="p-2 rounded text-white font-semibold hover:text-red-800 bg-red-500 border-none">
-                <i
-                class="fa-solid fa-trash"></i>
+                <i class="fa-solid fa-trash"></i>
               </button>
             </form>
           </td>
@@ -122,3 +113,20 @@
         </a>
   </div>
 </div>
+<script>
+  document.getElementById('submit').addEventListener('click', function () {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    fetch(`/search/promotions?q=${startDate}/${endDate}`)
+      .then(response => response.json())
+      .then(data => {
+        // Handle the data returned from the server
+        console.log(data);
+      })
+      .catch(error => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+  });
+</script>

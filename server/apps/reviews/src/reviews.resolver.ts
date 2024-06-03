@@ -41,6 +41,7 @@ export class ReviewsResolver {
       return !!(await this.reviewsService.update(data.id, data));
     } else {
       delete data.id;
+      delete data.isEdit;
       const rs = await this.reviewsService.create({
         ...data,
         user: {

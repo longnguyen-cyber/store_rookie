@@ -32,6 +32,11 @@ export class UserService {
     };
   }
 
+  async logout(token: string): Promise<boolean> {
+    await this.cacheManager.del(token);
+    return true;
+  }
+
   private async checkLoginData(
     email: string,
     password: string,

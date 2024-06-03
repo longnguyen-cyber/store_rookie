@@ -25,7 +25,6 @@ export class CartResolver {
 
   @Mutation(() => Boolean!)
   async removeItemFromCart(@Args('id') id: string) {
-    console.log('remove item id: ', id);
     return await this.cartService.removeItemFromCart(id);
   }
 

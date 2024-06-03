@@ -100,8 +100,6 @@ export class OrderRepository {
   }
 
   async create(data: any, guestId: string) {
-    console.log('data', data);
-    console.log('guestId', guestId);
     const order = await this.prisma.order.create({
       data: {
         ...data,

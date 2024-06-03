@@ -71,6 +71,11 @@ export class AdminService {
     return { data: res, pagination };
   }
 
+  async getSPA() {
+    const spa = await this.prisma.staticPage.findFirst({});
+    return spa;
+  }
+
   async deleteRes(entityName: EntityNames, id: string) {
     const entityService = this.getServiceFromEntityName(entityName);
 
@@ -196,12 +201,26 @@ export class AdminService {
   }
 
   async uploadSPA(data: any) {
-    const rs = this.prisma.staticPage.create({
-      data: {
-        ...data,
-      },
-    });
-    return rs;
+    const existing = await this.prisma.staticPage.findFirst({});
+
+    if (existing) {
+      const rs = await this.prisma.staticPage.update({
+        where: {
+          id: existing.id,
+        },
+        data: {
+          ...data,
+        },
+      });
+      return rs;
+    } else {
+      const rs = await this.prisma.staticPage.create({
+        data: {
+          ...data,
+        },
+      });
+      return rs;
+    }
   }
 
   private handlePagination(

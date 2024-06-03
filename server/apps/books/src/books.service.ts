@@ -31,15 +31,11 @@ export class BookService {
         ratings,
       });
     });
-    console.log('Update book rating');
   }
 
   async findAll(skip?: number, query?: QUERY_SORT) {
-    console.log('skip', skip);
-    console.log('query', query);
     if (skip !== undefined) {
       const books = await this.bookRepository.findAll(skip, query);
-      console.log('books', books);
       return {
         books: books.books,
         total: books.total,

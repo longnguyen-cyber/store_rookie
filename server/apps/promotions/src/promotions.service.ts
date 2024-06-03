@@ -35,7 +35,6 @@ export class PromotionsService {
         ? unique
         : [...unique, book];
     }, []);
-    console.log(distinctBooksSale);
     return distinctBooksSale;
   }
 
@@ -58,7 +57,6 @@ export class PromotionsService {
   async search(q: any) {
     const [startDate, endDate] = q.split('/');
 
-    console.log(startDate, endDate);
     return await this.promotionRepository.search(startDate, endDate);
   }
 }

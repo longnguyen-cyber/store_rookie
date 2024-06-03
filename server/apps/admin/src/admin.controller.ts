@@ -72,16 +72,23 @@ export class AdminController {
     @Query('limit') limit: number,
     @Res() res: Response,
   ) {
-    console.log(entityName);
     if (
       entityName.toString() !== 'login' &&
       entityName.toString() !== 'favicon.ico'
     ) {
+      const data = await this.adminService.getSPA();
+
       if (entityName.toString() === 'spa') {
         res.render('layout', {
           content: `./${entityName}/index`,
-          data: {},
+          data: data.content,
           entityName,
+        });
+      } else if (entityName.toString() === 'updateSPA') {
+        return res.render('layout', {
+          content: `./spa/edit`,
+          data: data.content,
+          entityName: 'spa',
         });
       } else {
         const { data, pagination } = await this.adminService.listRes(

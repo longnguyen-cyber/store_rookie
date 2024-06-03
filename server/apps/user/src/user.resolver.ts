@@ -1,6 +1,13 @@
-import { ResponseCustom } from '@app/common';
+import {
+  AuthGuard,
+  ResponseCustom,
+  Role,
+  Roles,
+  RolesGuard,
+} from '@app/common';
 import { LoginInput, ResUserDto } from '@app/common/user';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 
 @Resolver()
@@ -18,5 +25,12 @@ export class UserResolver {
   @Query(() => String!)
   async test() {
     return 'Hello World';
+  }
+
+  @Mutation(() => Boolean!)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.User)
+  async logout(@Context() req: any): Promise<boolean> {
+    return await this.userService.logout(req.req.token);
   }
 }

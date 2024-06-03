@@ -103,7 +103,6 @@ const Home = () => {
               } else {
                 description = description.padEnd(100, '')
               }
-              console.log(book)
               return (
                 <SwiperSlide key={index}>
                   <div className="w-full max-w-sm h-[34rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">

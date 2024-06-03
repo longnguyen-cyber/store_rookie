@@ -8,6 +8,7 @@ import { useAuth } from '../provider/auth-provider'
 import { SEARCH_BOOKS } from '../graphql/queries/book'
 import { useEffect, useState } from 'react'
 import { Book } from '../generated/graphql'
+import { FaRegUserCircle } from 'react-icons/fa'
 
 const Navbar = () => {
   const guestId = localStorage.getItem('guestId')
@@ -229,6 +230,7 @@ const Navbar = () => {
                     setSearch('')
                     setDataSearch([])
                   }}
+                  title="Cart"
                 >
                   <IoMdCart />
                   {data?.getCart.items && data.getCart.items?.length > 0 && (
@@ -237,6 +239,32 @@ const Navbar = () => {
                     </span>
                   )}
                 </a>
+              </li>
+              <li>
+                {auth?.user ? (
+                  <a
+                    href="/profile"
+                    className="block py-2 text-white rounded hover:text-blue-500 text-2xl"
+                    onClick={() => {
+                      setSearch('')
+                      setDataSearch([])
+                    }}
+                    title="Profile"
+                  >
+                    <FaRegUserCircle />
+                  </a>
+                ) : (
+                  <a
+                    href="/login"
+                    className="block py-2 text-white rounded hover:text-blue-500 "
+                    onClick={() => {
+                      setSearch('')
+                      setDataSearch([])
+                    }}
+                  >
+                    Login
+                  </a>
+                )}
               </li>
             </ul>
           </div>

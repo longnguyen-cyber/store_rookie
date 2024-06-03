@@ -19,3 +19,15 @@ export const LOGOUT = gql(`
       logout
   }
 `)
+
+export const REGISTER = gql(`
+  mutation Register($userCreateDto: RegisterDTO!) {
+    register(userCreateDto: $userCreateDto)
+  }
+`)
+
+export const VERIFY_EMAIL = gql(`
+  mutation VerifyEmail($accessToken: String!) {
+    verifyEmail(accessToken: $accessToken)
+  }
+`)

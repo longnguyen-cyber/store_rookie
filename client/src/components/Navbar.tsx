@@ -1,18 +1,20 @@
 import { useLazyQuery, useQuery } from '@apollo/client'
+import _ from 'lodash'
 import { IoMdCart } from 'react-icons/io'
 import { Outlet } from 'react-router-dom'
 import { GET_CART } from '../graphql/queries/cart'
-import _ from 'lodash'
 
-import { useAuth } from '../provider/auth-provider'
-import { SEARCH_BOOKS } from '../graphql/queries/book'
 import { useEffect, useState } from 'react'
-import { Book } from '../generated/graphql'
 import { FaRegUserCircle } from 'react-icons/fa'
+import { toast, ToastContainer } from 'react-toastify'
+import { Book } from '../generated/graphql'
+import { SEARCH_BOOKS } from '../graphql/queries/book'
+import { useAuth } from '../provider/auth-provider'
 
 const Navbar = () => {
-  const guestId = localStorage.getItem('guestId')
   const auth = useAuth()
+  const guestId = localStorage.getItem('guestId')
+  const user = localStorage.getItem('user')
 
   const [search, setSearch] = useState('')
   const [dataSearch, setDataSearch] = useState<Book[]>([])
@@ -45,12 +47,13 @@ const Navbar = () => {
 
   const { data } = useQuery(GET_CART, {
     variables: {
-      id: auth?.user?.id || guestId || '',
+      id: user ? JSON.parse(user).id : guestId,
     },
   })
 
   return (
     <div>
+      <ToastContainer />
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
@@ -234,11 +237,13 @@ const Navbar = () => {
                   title="Cart"
                 >
                   <IoMdCart />
-                  {data?.getCart.items && data.getCart.items?.length > 0 && (
-                    <span className="absolute top-[2px] -right-2 inline-block w-4 h-4 text-xs text-center text-white bg-blue-500 rounded-full">
-                      {data?.getCart.items?.length}
-                    </span>
-                  )}
+                  {data?.getCart &&
+                    data?.getCart.items &&
+                    data.getCart.items?.length > 0 && (
+                      <span className="absolute top-[2px] -right-2 inline-block w-4 h-4 text-xs text-center text-white bg-blue-500 rounded-full">
+                        {data?.getCart.items?.length}
+                      </span>
+                    )}
                 </a>
               </li>
               <li>
@@ -269,6 +274,7 @@ const Navbar = () => {
                             onClick={() => {
                               setOpen(false)
                               auth.logout()
+                              toast.success('Logout success')
                             }}
                             className="text-gray-900 p-2 text-left hover:text-white hover:bg-blue-600"
                           >

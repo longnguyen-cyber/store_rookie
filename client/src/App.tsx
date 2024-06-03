@@ -11,6 +11,8 @@ import Login from './pages/Login'
 import Checkout from './pages/Checkout'
 import About from './pages/About'
 import Profile from './pages/Profile'
+import Signup from './pages/Signup'
+import Verification from './pages/Verification'
 function App() {
   const guestId = localStorage.getItem('guestId')
   if (!guestId) {
@@ -20,6 +22,9 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/sign-up" element={<Signup />} />
+      <Route path="/auth/verify-email" element={<Verification />} />
+
       <Route path="/" element={<Navbar />}>
         <Route index element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />

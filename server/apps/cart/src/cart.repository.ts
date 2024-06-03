@@ -18,9 +18,12 @@ export class CartRepository {
         quantity: true,
       },
     });
+    console.log('quantityOfBook', quantityOfBook);
 
     const checkQuantity = dataRaw.items.every((item: any) => {
-      const book = quantityOfBook.find((book) => book.id === item.book.id);
+      const book = quantityOfBook.find(
+        (book) => book.id === item.book.connect.id,
+      );
       return book.quantity >= item.quantity;
     });
 
@@ -31,7 +34,8 @@ export class CartRepository {
           ' left',
       );
     const data = {
-      guestId: dataRaw.guestId,
+      userId: dataRaw.id,
+      guestId: dataRaw.id,
       items: {
         createMany: {
           data: dataRaw.items.map((item: any) => {
@@ -45,6 +49,10 @@ export class CartRepository {
         },
       },
     };
+
+    if (dataRaw.type === Role.User) delete data.guestId;
+    if (dataRaw.type === Role.GUEST) delete data.userId;
+
     const cart = await this.prisma.cart.create({
       data,
     });
@@ -54,7 +62,7 @@ export class CartRepository {
 
   async addItemToCart(data: any, userId: string, type: Role) {
     const cartExist = await this.findCart(userId, type);
-
+    console.log('cartExist', cartExist);
     if (cartExist) {
       //check quantity of book
       const book = await this.prisma.book.findUnique({
@@ -90,7 +98,8 @@ export class CartRepository {
     } else {
       delete data.cart;
       const dataCart = {
-        guestId: userId,
+        id: userId,
+        type: type,
         items: [data],
       };
       const cart = await this.createCart(dataCart);
@@ -209,21 +218,20 @@ export class CartRepository {
   }
 
   private async findCart(id: string, type: Role) {
-    let cart = null;
     if (type === Role.User) {
-      cart = await this.prisma.cart.findFirst({
+      const rs = await this.prisma.cart.findFirst({
         where: {
           userId: id,
         },
       });
+      console.log('rs', rs);
+      return rs;
     } else if (type === Role.GUEST) {
-      cart = await this.prisma.cart.findFirst({
+      return await this.prisma.cart.findFirst({
         where: {
           guestId: id,
         },
       });
     }
-
-    return cart;
   }
 }

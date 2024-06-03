@@ -10,6 +10,10 @@ export interface ILoignInput {
   password: string
 }
 
+export interface ISignupInput extends ILoignInput {
+  username: string
+}
+
 export interface IUser {
   id: string
   username: string
@@ -22,6 +26,8 @@ export type AuthContextType = {
   user: IUser | undefined
   login: (data: ILoignInput) => void
   logout: () => void
+  register: (data: ISignupInput) => void
+  verification: (accessToken: string) => void
 }
 export enum QUERY_SORT {
   ASC = 'asc',

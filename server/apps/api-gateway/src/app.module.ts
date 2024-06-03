@@ -1,3 +1,4 @@
+import { PrismaModule } from '@app/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -12,7 +13,6 @@ import { ReviewsModule } from 'apps/reviews/src/reviews.module';
 import { UserModule } from 'apps/user/src/user.module';
 import { AppService } from './app.service';
 import { GatewayResolver } from './getway.resolver';
-import { PrismaModule } from '@app/common';
 
 @Module({
   imports: [

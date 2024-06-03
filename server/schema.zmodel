@@ -17,7 +17,7 @@ generator nestgraphql {
 
 model User {
   id        String    @id() @default(cuid()) @map("user_id")
-  username  String    @unique()
+  username  String
   password  String
   email     String    @unique()
   isAdmin   Boolean   @default(false) @map("is_admin")

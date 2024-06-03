@@ -18,4 +18,6 @@ export * from './cloudinary';
 export * from './interceptor';
 export * from './decorator';
 
+export * from './email.consumer';
+
 // export * from './graphql/dto';

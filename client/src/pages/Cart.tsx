@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
+  const user = localStorage.getItem('user')
   const auth = useAuth()
 
   const [quantities, setQuantities] = useState<Record<string, number>>({})
@@ -72,14 +73,17 @@ const Cart = () => {
     // Call the debounced function to delay the actual update operation
     debouncedUpdateQuantity(id, newQuantity)
   }
+
   const { data } = useQuery(GET_CART, {
     variables: {
-      id: auth?.user?.id || guestId || '',
+      id: user ? JSON.parse(user).id : guestId,
+    },
+    onCompleted(data) {
+      console.log(data)
     },
   })
-
   useEffect(() => {
-    if (data) {
+    if (data?.getCart) {
       setTotal(parseFloat(data.getCart.total))
     }
   }, [data])
@@ -96,111 +100,112 @@ const Cart = () => {
         </h2>
         <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-            {data?.getCart.items?.map((item, index) => {
-              return (
-                <div className="mb-6" key={index}>
-                  <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                    <div className=" flex items-center justify-between gap-6">
-                      <a href={`/book/${item.book.id}`} className="shrink-0">
-                        <img
-                          className="w-24 object-cover shadow-sm"
-                          src={item.book.images[0]}
-                          alt="imac image"
-                        />
-                      </a>
-
-                      <div className="w-full  flex flex-col justify-start">
-                        <a
-                          href={`/book/${item.book.id}`}
-                          className="text-base font-medium text-gray-900 hover:underline"
-                        >
-                          <p>{item.book.title}</p>
+            {data.getCart &&
+              data?.getCart.items?.map((item, index) => {
+                return (
+                  <div className="mb-6" key={index}>
+                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                      <div className=" flex items-center justify-between gap-6">
+                        <a href={`/book/${item.book.id}`} className="shrink-0">
+                          <img
+                            className="w-24 object-cover shadow-sm"
+                            src={item.book.images[0]}
+                            alt="imac image"
+                          />
                         </a>
-                        <p className="mt-0">
-                          <small>{item.book.description}</small>
-                        </p>
-                        <br />
 
-                        <div className="flex items-center gap-4">
+                        <div className="w-full  flex flex-col justify-start">
+                          <a
+                            href={`/book/${item.book.id}`}
+                            className="text-base font-medium text-gray-900 hover:underline"
+                          >
+                            <p>{item.book.title}</p>
+                          </a>
+                          <p className="mt-0">
+                            <small>{item.book.description}</small>
+                          </p>
+                          <br />
+
+                          <div className="flex items-center gap-4">
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteItem(item.id)}
+                              className="inline-flex items-center text-sm font-medium text-red-600 hover:underline"
+                            >
+                              <svg
+                                className="me-1.5 h-5 w-5"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={24}
+                                height={24}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18 17.94 6M18 18 6.06 6"
+                                />
+                              </svg>
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex items-center">
                           <button
                             type="button"
-                            onClick={() => handleDeleteItem(item.id)}
-                            className="inline-flex items-center text-sm font-medium text-red-600 hover:underline"
+                            className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                            onClick={() => {
+                              handleChangeQuantity(-1, item.id, item)
+                            }}
                           >
-                            <svg
-                              className="me-1.5 h-5 w-5"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={24}
-                              height={24}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18 17.94 6M18 18 6.06 6"
-                              />
-                            </svg>
-                            Remove
+                            <FaMinus />
+                          </button>
+                          <span className="text-center w-10 shrink-0 border-0 bg-transparent text-sm font-medium text-gray-900 focus:outline-none focus:ring-0">
+                            {quantities[item.id] || item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                            onClick={() => {
+                              handleChangeQuantity(1, item.id, item)
+                            }}
+                          >
+                            <FaPlus />
                           </button>
                         </div>
-                      </div>
-                      <div className="flex items-center">
-                        <button
-                          type="button"
-                          className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                          onClick={() => {
-                            handleChangeQuantity(-1, item.id, item)
-                          }}
-                        >
-                          <FaMinus />
-                        </button>
-                        <span className="text-center w-10 shrink-0 border-0 bg-transparent text-sm font-medium text-gray-900 focus:outline-none focus:ring-0">
-                          {quantities[item.id] || item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                          onClick={() => {
-                            handleChangeQuantity(1, item.id, item)
-                          }}
-                        >
-                          <FaPlus />
-                        </button>
-                      </div>
-                      <div className="flex items-center justify-between md:justify-end">
-                        <div className="text-end md:w-32">
-                          <p className="text-base font-bold text-gray-900">
-                            {item?.book.prices &&
-                            item?.book.prices[0].discountPrice !== 0 ? (
-                              <>
+                        <div className="flex items-center justify-between md:justify-end">
+                          <div className="text-end md:w-32">
+                            <p className="text-base font-bold text-gray-900">
+                              {item?.book.prices &&
+                              item?.book.prices[0].discountPrice !== 0 ? (
+                                <>
+                                  <span className="font-bold text-black text-xl">
+                                    $
+                                    {item?.book.prices[0].discountPrice.toFixed(
+                                      2
+                                    )}{' '}
+                                  </span>
+                                </>
+                              ) : (
                                 <span className="font-bold text-black text-xl">
                                   $
-                                  {item?.book.prices[0].discountPrice.toFixed(
-                                    2
-                                  )}{' '}
+                                  {item?.book.prices &&
+                                    item?.book.prices[0].originalPrice.toFixed(
+                                      2
+                                    )}{' '}
                                 </span>
-                              </>
-                            ) : (
-                              <span className="font-bold text-black text-xl">
-                                $
-                                {item?.book.prices &&
-                                  item?.book.prices[0].originalPrice.toFixed(
-                                    2
-                                  )}{' '}
-                              </span>
-                            )}
-                          </p>
+                              )}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
           </div>
           <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
             <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
@@ -215,7 +220,9 @@ const Cart = () => {
                   </dd>
                 </dl>
               </div>
-              {data?.getCart.items && data?.getCart.items.length > 0 ? (
+              {data.getCart &&
+              data?.getCart.items &&
+              data?.getCart.items.length > 0 ? (
                 <>
                   {auth?.user ? (
                     <Link

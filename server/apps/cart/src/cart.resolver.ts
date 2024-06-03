@@ -28,9 +28,17 @@ export class CartResolver {
     return await this.cartService.removeItemFromCart(id);
   }
 
-  @Query(() => CartResponseCustom)
+  @Query(() => CartResponseCustom, { nullable: true })
   async getCart(@Args('id') id: string) {
-    return await this.cartService.getCart(id.trim());
+    if (id) {
+      const rs = await this.cartService.getCart(id.trim());
+      console.log('rs', rs);
+      if (Object.keys(rs).length === 0) {
+        return null;
+      }
+      return rs;
+    }
+    return null;
   }
 
   @Mutation(() => Boolean!)

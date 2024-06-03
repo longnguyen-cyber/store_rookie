@@ -168,7 +168,6 @@ export class AdminController {
     @Res() res: Response,
   ) {
     this.getList(entityName, 1, 10, res);
-    // console.log(q);
     // const { data, pagination } = await this.adminService.searchRes(
     //   entityName,
     //   q.toLowerCase(),

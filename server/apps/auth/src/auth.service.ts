@@ -102,4 +102,10 @@ export class AuthService {
       }
     }
   }
+
+  generateJWTRegister(email: string): string {
+    return sign({ email }, process.env.JWT_REGISTER_SECRET, {
+      expiresIn: '15m',
+    });
+  }
 }

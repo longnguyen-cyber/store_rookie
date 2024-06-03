@@ -5,19 +5,18 @@ import { Injectable } from '@nestjs/common';
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByUsername(username: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-    });
-    return user;
-  }
   async findByEmail(email: string) {
     const user = await this.prisma.user.findUnique({
       where: {
         email: email,
       },
+    });
+    return user;
+  }
+
+  async createUser(data: any) {
+    const user = await this.prisma.user.create({
+      data: data,
     });
     return user;
   }

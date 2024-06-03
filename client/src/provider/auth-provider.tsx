@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation } from '@apollo/client'
 import {
   createContext,
@@ -8,8 +9,14 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoginInput } from '../generated/graphql'
-import { LOGIN, LOGOUT } from '../graphql/mutations/user'
-import { AuthContextType, IUser } from '../utils/types'
+import {
+  LOGIN,
+  LOGOUT,
+  REGISTER,
+  VERIFY_EMAIL,
+} from '../graphql/mutations/user'
+import { AuthContextType, ISignupInput, IUser } from '../utils/types'
+import { toast, ToastContainer } from 'react-toastify'
 
 const AuthContext = createContext<AuthContextType | null>(null)
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -33,6 +40,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     },
   })
 
+  const [verifyEmail] = useMutation(VERIFY_EMAIL)
+  const [registerUser] = useMutation(REGISTER, {
+    onCompleted: () => {
+      navigate('/login')
+    },
+  })
+
   const login = (data: LoginInput) => {
     loginUser({
       variables: {
@@ -53,8 +67,50 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     logoutUser()
   }
 
+  const register = (data: ISignupInput) => {
+    registerUser({
+      variables: {
+        userCreateDto: {
+          ...data,
+        },
+      },
+      onCompleted: (data) => {
+        if (data.register) {
+          toast.success('Register success please check your email to verify')
+
+          return true
+        } else {
+          return false
+        }
+      },
+    })
+  }
+
+  const verification = (token: string) => {
+    verifyEmail({
+      variables: {
+        accessToken: token,
+      },
+      onCompleted: (data) => {
+        if (data.verifyEmail) {
+          toast.success('Verify success')
+          setTimeout(() => {
+            navigate('/login')
+          }, 1000)
+          return true
+        } else {
+          toast.error('Verify fail')
+          return false
+        }
+      },
+    })
+  }
+
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ token, user, login, logout, register, verification }}
+    >
+      <ToastContainer />
       {children}
     </AuthContext.Provider>
   )

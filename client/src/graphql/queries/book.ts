@@ -27,6 +27,30 @@ export const GET_BOOKS = gql(`
   }
 `)
 
+export const SEARCH_BOOKS = gql(`
+  query SearchByTitle($title:String!) {
+    searchByTitle(title: $title) {
+      id
+      title
+      description
+      categoryId
+      rating
+      ratings
+      images
+      createdAt
+      prices {
+        id
+        bookId
+        originalPrice
+        discountPrice
+        startDate
+        endDate
+        createdAt
+      }
+    }
+  }
+`)
+
 export const GET_BOOK_ONSALE = gql(`
   query PromotionsOnSale {
     promotionsOnSale {

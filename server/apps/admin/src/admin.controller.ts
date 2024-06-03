@@ -72,6 +72,7 @@ export class AdminController {
     @Query('limit') limit: number,
     @Res() res: Response,
   ) {
+    console.log(entityName);
     if (
       entityName.toString() !== 'login' &&
       entityName.toString() !== 'favicon.ico'
@@ -153,22 +154,24 @@ export class AdminController {
   }
 
   @Get('/search/:entityName')
+  @Render('layout')
   async searchEntity(
     @Param('entityName') entityName: EntityNames,
     @Query('q') q: string,
     @Res() res: Response,
   ) {
-    console.log(q);
-    const { data, pagination } = await this.adminService.searchRes(
-      entityName,
-      q.toLowerCase(),
-    );
-    return res.render('layout', {
-      content: `./${entityName}/index`,
-      data,
-      pagination,
-      entityName,
-    });
+    this.getList(entityName, 1, 10, res);
+    // console.log(q);
+    // const { data, pagination } = await this.adminService.searchRes(
+    //   entityName,
+    //   q.toLowerCase(),
+    // );
+    // return {
+    //   content: `./${entityName}/index`,
+    //   data,
+    //   pagination,
+    //   entityName,
+    // };
   }
 
   //create

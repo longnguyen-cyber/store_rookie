@@ -78,6 +78,19 @@ export class BookService {
     return final;
   }
 
+  async searchByTitle(title: string) {
+    const books = await this.bookRepository.searchByTitle(title);
+    const final = books.map((book) => {
+      const lastedPrice = book.prices.find((p) => p.endDate === null);
+      return {
+        ...book,
+        prices: [lastedPrice],
+        createdAt: lastedPrice.createdAt,
+      };
+    });
+    return final;
+  }
+
   async getBookPopular() {
     const books = await this.orderService.getAllOrderCompletedOfBook();
     return books;

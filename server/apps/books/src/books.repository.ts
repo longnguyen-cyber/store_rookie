@@ -794,4 +794,25 @@ export class BookRepository {
       total,
     };
   }
+
+  async searchByTitle(q: string) {
+    const books = await this.prisma.book.findMany({
+      where: {
+        title: {
+          contains: q,
+          mode: 'insensitive',
+        },
+      },
+      include: {
+        category: true,
+        prices: true,
+        publishers: {
+          select: {
+            publisher: true,
+          },
+        },
+      },
+    });
+    return books;
+  }
 }

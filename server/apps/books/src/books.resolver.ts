@@ -31,6 +31,11 @@ export class BookResolver {
   }
 
   @Query(() => [Book])
+  async searchByTitle(@Args('title') title: string) {
+    return await this.bookService.searchByTitle(title);
+  }
+
+  @Query(() => [Book])
   async popularBooks() {
     return await this.bookService.getBookPopular();
   }

@@ -19,6 +19,7 @@ const documents = {
     "\n  mutation CreateOrder($data: CreateOrderInput!, $guestId: String!) {\n    createOrder(data: $data, guestId: $guestId) {\n      id\n      userId\n      orderDate\n      status\n      payment\n      address\n      shipping\n    }\n  }\n\n": types.CreateOrderDocument,
     "\n  mutation CreateReview($data: CreateReviewInput!) {\n    createReview(data: $data)\n  }\n": types.CreateReviewDocument,
     "\n  mutation Login( $userLoginDto: LoginInput!) {\n    login(userLoginDto: $userLoginDto) {\n      user {\n        id\n        username\n        email\n        isAdmin\n      }\n      token\n    }\n  }\n": types.LoginDocument,
+    "\n  mutation Logout {\n      logout\n  }\n": types.LogoutDocument,
     "\n  query Authors {\n    authors {\n        id\n        name\n    }\n  }\n": types.AuthorsDocument,
     "\n  query Books($skip:String, $type: String!) {\n    books(skip: $skip, type: $type) {\n      books {\n        id\n        title\n        description\n        categoryId\n        rating\n        ratings\n        images\n        createdAt\n        prices {\n          id\n          bookId\n          originalPrice\n          discountPrice\n          startDate\n          endDate\n          createdAt\n        }\n      }\n      total\n    }\n  }\n": types.BooksDocument,
     "\n  query SearchByTitle($title:String!) {\n    searchByTitle(title: $title) {\n      id\n      title\n      description\n      categoryId\n      rating\n      ratings\n      images\n      createdAt\n      prices {\n        id\n        bookId\n        originalPrice\n        discountPrice\n        startDate\n        endDate\n        createdAt\n      }\n    }\n  }\n": types.SearchByTitleDocument,
@@ -73,6 +74,10 @@ export function gql(source: "\n  mutation CreateReview($data: CreateReviewInput!
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation Login( $userLoginDto: LoginInput!) {\n    login(userLoginDto: $userLoginDto) {\n      user {\n        id\n        username\n        email\n        isAdmin\n      }\n      token\n    }\n  }\n"): (typeof documents)["\n  mutation Login( $userLoginDto: LoginInput!) {\n    login(userLoginDto: $userLoginDto) {\n      user {\n        id\n        username\n        email\n        isAdmin\n      }\n      token\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation Logout {\n      logout\n  }\n"): (typeof documents)["\n  mutation Logout {\n      logout\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

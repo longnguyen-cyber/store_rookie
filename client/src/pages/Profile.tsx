@@ -6,7 +6,6 @@ const Profile = () => {
   const auth = useAuth()
   const navigate = useNavigate()
 
-  console.log(auth?.user?.id)
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!auth?.user) {

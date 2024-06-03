@@ -129,7 +129,6 @@ const Shop = () => {
           setBooks(data.booksByAuthor.books as Book[])
           const newLength =
             (books?.length ?? 0) + data.booksByAuthor.books.length
-          console.log('newLength', newLength)
           setQuantityLeft(data.booksByAuthor.total - newLength)
           if (data?.booksByAuthor.total === newLength || newLength === 0) {
             setDisableMore(true)
@@ -147,7 +146,6 @@ const Shop = () => {
           },
           onCompleted(data) {
             setAllQuantity(`${name} has ${data.booksByCategory.total} books`)
-            console.log('data', data)
             setBooks(data.booksByCategory.books as Book[])
             const newLength =
               (books?.length ?? 0) + data.booksByCategory.books.length
@@ -266,7 +264,6 @@ const Shop = () => {
   //   )
 
   //   if (!filterSelected || Object.keys(filterSelected).length === 0) {
-  //     console.log('here')
   //     if (data) {
   //       setAllQuantity(`All books has ${data.books.total} books`)
   //       const newBooks = data.books.books as Book[]
@@ -326,8 +323,6 @@ const Shop = () => {
       })
     }
   }
-
-  // console.log()
 
   if (!categories_name || !authors_name) {
     return <Loading />

@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoginInput } from '../generated/graphql'
-import { LOGIN } from '../graphql/mutations/user'
+import { LOGIN, LOGOUT } from '../graphql/mutations/user'
 import { AuthContextType, IUser } from '../utils/types'
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -16,6 +16,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const token = localStorage.getItem('token')
   const navigate = useNavigate()
   const [user, setUser] = useState<IUser>()
+  const [logoutUser] = useMutation(LOGOUT, {
+    onCompleted: () => {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      setUser(undefined)
+      navigate('/')
+    },
+  })
   const [loginUser] = useMutation(LOGIN, {
     onCompleted: (data) => {
       setUser(data?.login.user)
@@ -41,8 +49,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
+  const logout = () => {
+    logoutUser()
+  }
+
   return (
-    <AuthContext.Provider value={{ token, user, login }}>
+    <AuthContext.Provider value={{ token, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

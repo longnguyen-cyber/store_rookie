@@ -3,7 +3,6 @@ import { SPA } from '../graphql/queries/spa'
 
 const About = () => {
   const { data } = useQuery(SPA)
-  console.log(data?.getSPA)
   if (data)
     return (
       <div

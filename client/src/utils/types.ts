@@ -21,6 +21,7 @@ export type AuthContextType = {
   token: string | null
   user: IUser | undefined
   login: (data: ILoignInput) => void
+  logout: () => void
 }
 export enum QUERY_SORT {
   ASC = 'asc',

@@ -33,6 +33,7 @@ const Navbar = () => {
       },
     })
   }, 3000)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     if (search) {
@@ -242,17 +243,41 @@ const Navbar = () => {
               </li>
               <li>
                 {auth?.user ? (
-                  <a
-                    href="/profile"
-                    className="block py-2 text-white rounded hover:text-blue-500 text-2xl"
+                  <span
+                    className="relative block py-2 text-white rounded hover:text-blue-500 text-2xl"
                     onClick={() => {
                       setSearch('')
                       setDataSearch([])
+                      setOpen(!open)
                     }}
                     title="Profile"
                   >
                     <FaRegUserCircle />
-                  </a>
+                    {open && (
+                      <div className="absolute w-32 top-full border rounded overflow-hidden border-black z-40 text-base">
+                        <div className="flex flex-col justify-center bg-white ">
+                          <a
+                            href="/profile"
+                            onClick={() => {
+                              setOpen(false)
+                            }}
+                            className="text-gray-900 p-2 text-left hover:text-white hover:bg-blue-600 border-b"
+                          >
+                            Profile
+                          </a>
+                          <button
+                            onClick={() => {
+                              setOpen(false)
+                              auth.logout()
+                            }}
+                            className="text-gray-900 p-2 text-left hover:text-white hover:bg-blue-600"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </span>
                 ) : (
                   <a
                     href="/login"

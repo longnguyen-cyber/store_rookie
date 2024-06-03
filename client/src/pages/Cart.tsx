@@ -80,7 +80,6 @@ const Cart = () => {
 
   useEffect(() => {
     if (data) {
-      console.log('data.getCart.total: ', data.getCart.total)
       setTotal(parseFloat(data.getCart.total))
     }
   }, [data])

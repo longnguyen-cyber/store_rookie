@@ -74,9 +74,6 @@ const BookDetail = () => {
     if (isEdit) {
       data.data.id = review.id
       data.data.isEdit = true
-      console.log('Edit data:', data)
-    } else {
-      console.log('Data:', data)
     }
     createReview({
       variables: data,

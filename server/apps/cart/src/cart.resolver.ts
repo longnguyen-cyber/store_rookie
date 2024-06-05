@@ -32,7 +32,6 @@ export class CartResolver {
   async getCart(@Args('id') id: string) {
     if (id) {
       const rs = await this.cartService.getCart(id.trim());
-      console.log('rs', rs);
       if (Object.keys(rs).length === 0) {
         return null;
       }

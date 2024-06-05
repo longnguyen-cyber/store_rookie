@@ -89,16 +89,71 @@ export class OrderRepository {
 
     return distinctBooks;
   }
-
   async findOne(id: string) {
     const order = await this.prisma.order.findUnique({
       where: {
         id: id,
       },
+      include: {
+        user: true,
+        items: {
+          include: {
+            book: {
+              include: {
+                prices: true,
+                authors: {
+                  include: {
+                    author: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                category: true,
+              },
+            },
+          },
+        },
+      },
     });
-    return order;
-  }
 
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    const items = await Promise.all(
+      order.items.map(async (item) => {
+        const bookPrice = await this.prisma.bookPrice.findUnique({
+          where: {
+            bookId: item.bookId,
+            id: item.priceId,
+          },
+        });
+        return {
+          ...item,
+          book: {
+            ...item.book,
+            prices: [bookPrice],
+          },
+        };
+      }),
+    );
+
+    const total = items.reduce((acc, item) => {
+      if (item.book.prices[0] && item.book.prices[0].discountPrice) {
+        return acc + item.book.prices[0].discountPrice * item.quantity;
+      } else {
+        return acc + item.book.prices[0].originalPrice * item.quantity;
+      }
+    }, 0);
+
+    return {
+      ...order,
+      items,
+      total: total.toFixed(2),
+    };
+  }
   async create(data: any, guestId: string) {
     const order = await this.prisma.order.create({
       data: {

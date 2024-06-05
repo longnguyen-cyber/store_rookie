@@ -152,7 +152,9 @@ export class AdminService {
     const entityService = this.getServiceFromEntityName(entityName);
 
     const res = await entityService.findOne(id);
-    return this.commonService.formatDate(res);
+    if (entityName.toString() === 'order') {
+      return this.commonService.formatDateOrder(res);
+    } else return this.commonService.formatDate(res);
   }
 
   async getBooks() {

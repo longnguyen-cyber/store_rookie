@@ -188,13 +188,13 @@ const BookDetail = () => {
           </div>
         </div>
         <div className="col-span-4 rounded border h-fit pb-4">
-          <p className="px-5 py-2 pl-5 bg-gray-200 text-center">
+          <p className="px-5 py-2 pl-5 bg-gray-100 text-center">
             {bookData?.book.prices && bookData?.book.prices[0].discountPrice ? (
               <>
-                <small className="text-gray-400 line-through">
+                <small className="text-black line-through text-xl">
                   ${bookData?.book.prices[0].originalPrice.toFixed(2)}
                 </small>
-                <span className="font-bold text-black text-3xl">
+                <span className="font-bold text-3xl text-red-700">
                   ${bookData?.book.prices[0].discountPrice.toFixed(2)}{' '}
                 </span>
               </>

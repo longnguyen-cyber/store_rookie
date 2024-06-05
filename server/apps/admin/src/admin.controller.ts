@@ -142,6 +142,20 @@ export class AdminController {
     });
   }
 
+  @Get('detail/:entityName/:id')
+  async getDetail(
+    @Param('entityName') entityName: EntityNames,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    const data = await this.adminService.getRes(entityName, id);
+    return res.render('layout', {
+      content: `./${entityName}/detail`,
+      data,
+      error: '',
+    });
+  }
+
   @Post('edit/:entityName/:id')
   async postEdit(
     @Param('entityName') entityName: EntityNames,
@@ -161,23 +175,21 @@ export class AdminController {
   }
 
   @Get('/search/:entityName')
-  @Render('layout')
   async searchEntity(
     @Param('entityName') entityName: EntityNames,
     @Query('q') q: string,
-    @Res() res: Response,
   ) {
-    this.getList(entityName, 1, 10, res);
-    // const { data, pagination } = await this.adminService.searchRes(
-    //   entityName,
-    //   q.toLowerCase(),
-    // );
-    // return {
-    //   content: `./${entityName}/index`,
-    //   data,
-    //   pagination,
-    //   entityName,
-    // };
+    const { data, pagination } = await this.adminService.searchRes(
+      entityName,
+      q.toLowerCase(),
+    );
+
+    return {
+      content: `./${entityName}/index`,
+      dataSearch: data,
+      pagination,
+      entityName,
+    };
   }
 
   //create

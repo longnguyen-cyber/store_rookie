@@ -61,8 +61,6 @@
         </a>
   </div>
 </div>
-
-
 <script>
   let debounceTimeout;
 
@@ -74,11 +72,59 @@
         method: 'GET',
       })
         .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
-      console.log(title);
-    }, 3000); // delay in milliseconds
+        .then(data => {
+          const dataSearch = data.dataSearch
+          const table = document.querySelector('table tbody');
 
+          // Remove all existing rows
+          while (table.firstChild) {
+            table.removeChild(table.firstChild);
+          }
+          dataSearch.forEach(element => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="border border-slate-700 ">
+                ${element.id}
+              </td>
+              <td class="border border-slate-700  pl-4 text-left">
+                ${element.name}
+              </td>
+              <td class="border border-slate-700 pl-4">
+                <a href="edit/categories/${element.id}" class="text-blue-500 hover:text-blue-800">Edit</a>
+                <form action="delete/categories/${element.id}" method="POST" class="inline">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="text-red-500 hover:text-red-800">Delete</button>
+                </form>
+              </td>
+            `;
+            table.appendChild(tr);
+          });
+          // Update pagination
+          const pagination = data.pagination;
+          document.querySelector('#pagination a:first-child').href = pagination.prevPage;
+          document.querySelector('#pagination a:last-child').href = pagination.nextPage;
+
+          // Get the pagination container
+          const paginationContainer = document.querySelector('#pagination');
+
+          // Remove existing page links
+          const existingPageLinks = document.querySelectorAll('#pagination a:not(:first-child):not(:last-child)');
+          existingPageLinks.forEach(link => link.remove());
+
+          // Add new page links
+          pagination.pages.forEach((page, index) => {
+            const link = document.createElement('a');
+            link.href = `/${data.entityName}?page=${page}&limit=10`;
+            link.textContent = page;
+            link.className = page === pagination.currentPage ? 'bg-red-500 text-white border rounded p-2 mr-2' : 'border rounded p-2 mr-2';
+
+            // Insert the new page link before the next page link
+            paginationContainer.insertBefore(link, document.querySelector('#pagination a:last-child'));
+          });
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+    }, 3000); // delay in milliseconds
   }
   debouncedSearch();
 </script>

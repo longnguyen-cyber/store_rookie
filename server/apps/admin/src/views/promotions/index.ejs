@@ -98,7 +98,7 @@
   </table>
 
   <br>
-  <div class="">
+  <div id="pagination">
     <a href="<%= pagination.prevPage %>" class="px-4">
       <i class="fa-solid fa-angle-left"></i>
     </a>
@@ -121,8 +121,98 @@
     fetch(`/search/promotions?q=${startDate}/${endDate}`)
       .then(response => response.json())
       .then(data => {
-        // Handle the data returned from the server
-        console.log(data);
+        const dataSearch = data.dataSearch
+        const table = document.querySelector('table tbody');
+
+        // Remove all existing rows
+        while (table.firstChild) {
+          table.removeChild(table.firstChild);
+        }
+        dataSearch.forEach(element => {
+          const originalPrice = element.book.prices[0].originalPrice;
+          const discountPrice = element.book.prices[0].discountPrice;
+          if (Array.isArray(element.book.authors)) {
+            element.book.authors.forEach(author => {
+              console.log(author); // Check the value of an individual author
+            });
+          }
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="border border-slate-700 ">
+              ${element.id}
+            </td>
+            <td class="border border-slate-700 pl-4 text-left">
+              ${element.book.title}
+              <br>
+              ${Array.isArray(element.book.authors) ? element.book.authors.map(author => `
+                <p>
+                  Author: <strong class="underline"><i>${author.name}</i></strong>
+                </p>
+                <p>
+                  <small> Bio: ${author.bio}</small>
+                </p>
+                `): ''}
+            </td>
+            <td class="border border-slate-700  w-20 uppercase">
+              ${element.promotionType}
+            </td>
+            <td class="border border-slate-700  text-center space-x-2">
+              ${discountPrice ? `
+                <span class="line-through p-2 bg-gray-400 rounded">
+                  ${originalPrice}$
+                </span>
+                <span class="p-2 bg-green-700 rounded font-bold">
+                  ${discountPrice.toFixed(2)}$
+                </span>
+              ` : `
+                <span class="p-2 bg-gray-400 rounded">
+                  ${originalPrice}$
+                </span>
+              `}
+            </td>
+            <td class="border border-slate-700 ">
+              ${element.startDate}
+            </td>
+            <td class="border border-slate-700 ">
+              ${element.endDate}
+            </td>
+            <td class="border border-slate-700 space-x-2  ">
+              <a href="edit/promotions/${element.id}" class="p-2 py-[10px] rounded text-white font-semibold hover:text-blue-800 bg-blue-500 border-none ">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+              <form action="delete/promotions/${element.id}" method="POST" class="inline">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="p-2 rounded text-white font-semibold hover:text-red-800 bg-red-500 border-none">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+            </td>
+          `;
+          table.appendChild(tr);
+        });
+        // Update pagination
+        const pagination = data.pagination;
+        document.querySelector('#pagination a:first-child').href = pagination.prevPage;
+        document.querySelector('#pagination a:last-child').href = pagination.nextPage;
+
+        // Get the pagination container
+        const paginationContainer = document.querySelector('#pagination');
+
+        // Remove existing page links
+        const existingPageLinks = document.querySelectorAll('#pagination a:not(:first-child):not(:last-child)');
+        existingPageLinks.forEach(link => link.remove());
+
+        // Add new page links
+        pagination.pages.forEach((page, index) => {
+          const link = document.createElement('a');
+          link.href = `/${data.entityName}?page=${page}&limit=10`;
+          link.textContent = page;
+          link.className = page === pagination.currentPage ? 'bg-red-500 text-white border rounded p-2 mr-2' : 'border rounded p-2 mr-2';
+
+          // Insert the new page link before the next page link
+          paginationContainer.insertBefore(link, document.querySelector('#pagination a:last-child'));
+        });
+
       })
       .catch(error => {
         // Handle any errors

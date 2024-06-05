@@ -14,10 +14,12 @@
       </tr>
     </thead>
     <tbody>
-      <% data.forEach(function(item, index) { %>
+      <% data.forEach(function(item) { %>
         <tr class="text-center">
           <td class="border border-slate-700 py-2">
-            <%= index + 1 %>
+            <a href="detail/order/<%= item.id %>" class="underline italic" title="View detail order">
+              <%= item.id.slice(-5) %>
+            </a>
           </td>
           <td class="border border-slate-700">
             <%= item.user.username %>

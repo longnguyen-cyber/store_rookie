@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@apollo/client'
-import _ from 'lodash'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { Link } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
 import Loading from '../components/Loading'
 import {
   REMOVE_ITEM_FROM_CART,
@@ -10,15 +11,22 @@ import {
 } from '../graphql/mutations/cart'
 import { GET_CART } from '../graphql/queries/cart'
 import { useAuth } from '../provider/auth-provider'
-import { Link } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
+import { GrPowerReset } from 'react-icons/gr'
+import { IoSaveOutline } from 'react-icons/io5'
+
+type Quantity = Record<
+  string,
+  { quantity: number | string; oldQuantity: number }
+>
+
 const Cart = () => {
   const guestId = localStorage.getItem('guestId')
   const user = localStorage.getItem('user')
   const auth = useAuth()
 
-  const [quantities, setQuantities] = useState<Record<string, number>>({})
+  const [quantities, setQuantities] = useState<Quantity>({})
   const [total, setTotal] = useState(0)
+
   const [updateQuantityOfItemBook] = useMutation(UPDATE_QUANTITY_OF_ITEM, {
     refetchQueries: [GET_CART, 'GetCart'],
   })
@@ -26,6 +34,27 @@ const Cart = () => {
   const [deleteItem] = useMutation(REMOVE_ITEM_FROM_CART, {
     refetchQueries: [GET_CART, 'GetCart'],
   })
+
+  const { data } = useQuery(GET_CART, {
+    variables: {
+      id: user ? JSON.parse(user).id : guestId,
+    },
+  })
+
+  useEffect(() => {
+    if (data?.getCart) {
+      setTotal(parseFloat(data.getCart.total))
+      data?.getCart.items?.forEach((item) => {
+        setQuantities((prevQuantities) => ({
+          ...prevQuantities,
+          [item.id]: {
+            quantity: item.quantity,
+            oldQuantity: item.quantity,
+          },
+        }))
+      })
+    }
+  }, [data])
 
   const handleDeleteItem = (id: string) => {
     deleteItem({
@@ -35,58 +64,51 @@ const Cart = () => {
     })
   }
 
-  const debouncedUpdateQuantity = useCallback(
-    _.debounce((id: string, newQuantity: number) => {
+  const handleChangeQuantity = (increment: number, id: string, item: any) => {
+    const newQuantity = (quantities[id]?.quantity || item.quantity) + increment
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: {
+        quantity: newQuantity,
+        oldQuantity: quantities[id]?.quantity || item.quantity,
+      },
+    }))
+    updateTotalPrice(increment, item)
+  }
+
+  const updateTotalPrice = (increment: number, item: any) => {
+    const price = item.book.prices[0].discountPrice
+      ? item.book.prices[0].discountPrice
+      : item.book.prices[0].originalPrice
+    setTotal((prevTotal) => prevTotal + increment * price)
+  }
+
+  const handleReset = (id: string, item: any) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: {
+        quantity: quantities[id]?.oldQuantity || item.quantity,
+        oldQuantity: quantities[id]?.oldQuantity || item.quantity,
+      },
+    }))
+  }
+
+  const handleSubmit = (id: string) => {
+    if (quantities[id]?.quantity) {
       updateQuantityOfItemBook({
         variables: {
           id,
-          quantity: newQuantity.toString(),
+          quantity: quantities[id]?.quantity + '',
         },
-        onError(error) {
-          setQuantities((prevQuantities) => ({
-            ...prevQuantities,
-            [id]: quantities[id],
-          }))
+        onCompleted: () => {
+          toast.success('Quantity updated successfully')
+        },
+        onError: (error) => {
           toast.error(error.message)
         },
-        refetchQueries: [GET_CART, 'GetCart'],
       })
-    }, 5000),
-    []
-  )
-  const handleChangeQuantity = (increment: number, id: string, item: any) => {
-    const newQuantity = (quantities[id] || item.quantity) + increment
-
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [id]: newQuantity,
-    }))
-
-    // Update total price
-    setTotal((prevTotal) => {
-      const price = item.book.prices[0].discountPrice
-        ? item.book.prices[0].discountPrice
-        : item.book.prices[0].originalPrice
-      return prevTotal + increment * price
-    })
-
-    // Call the debounced function to delay the actual update operation
-    debouncedUpdateQuantity(id, newQuantity)
-  }
-
-  const { data } = useQuery(GET_CART, {
-    variables: {
-      id: user ? JSON.parse(user).id : guestId,
-    },
-    onCompleted(data) {
-      console.log(data)
-    },
-  })
-  useEffect(() => {
-    if (data?.getCart) {
-      setTotal(parseFloat(data.getCart.total))
     }
-  }, [data])
+  }
 
   if (!data) return <Loading />
 
@@ -163,9 +185,31 @@ const Cart = () => {
                           >
                             <FaMinus />
                           </button>
-                          <span className="text-center w-10 shrink-0 border-0 bg-transparent text-sm font-medium text-gray-900 focus:outline-none focus:ring-0">
-                            {quantities[item.id] || item.quantity}
-                          </span>
+                          <input
+                            className="text-center w-10 shrink-0 border-0 bg-transparent text-sm font-medium text-gray-900 focus:outline-none focus:ring-0"
+                            value={quantities[item.id]?.quantity || ''}
+                            onChange={(e) => {
+                              if (
+                                e.target.value !== '' &&
+                                isNaN(parseInt(e.target.value))
+                              ) {
+                                toast.error('Please enter a number')
+                                return
+                              }
+                              const newQuantity = e.target.value
+                                ? parseInt(e.target.value)
+                                : ''
+                              setQuantities((prevQuantities) => ({
+                                ...prevQuantities,
+                                [item.id]: {
+                                  quantity: newQuantity,
+                                  oldQuantity:
+                                    quantities[item.id]?.oldQuantity ||
+                                    item.quantity,
+                                },
+                              }))
+                            }}
+                          />
                           <button
                             type="button"
                             className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
@@ -174,6 +218,28 @@ const Cart = () => {
                             }}
                           >
                             <FaPlus />
+                          </button>
+
+                          <button
+                            title="Reset"
+                            type="button"
+                            className="inline-flex mx-2 shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                            onClick={() => {
+                              handleReset(item.id, item)
+                            }}
+                          >
+                            <GrPowerReset />
+                          </button>
+
+                          <button
+                            title="Save"
+                            type="button"
+                            className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                            onClick={() => {
+                              handleSubmit(item.id)
+                            }}
+                          >
+                            <IoSaveOutline />
                           </button>
                         </div>
                         <div className="flex items-center justify-between md:justify-end">

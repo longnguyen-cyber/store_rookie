@@ -34,7 +34,7 @@ const Navbar = () => {
         setDataSearch(data?.searchByTitle as Book[])
       },
     })
-  }, 3000)
+  }, 0)
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const Navbar = () => {
             <ul className="font-medium flex  p-4 space-x-4 ">
               <li className="relative">
                 {dataSearch.length > 0 && (
-                  <div className="absolute z-50 h-56 overflow-y-auto w-full bg-white text-gray-900 top-full">
+                  <div className="absolute z-50 h-56 overflow-y-auto rounded border shadow-xl w-[200%] bg-white text-gray-900 top-[110%]">
                     {searchs?.searchByTitle?.map((book) => (
                       <a
                         key={book.id}
@@ -227,26 +227,6 @@ const Navbar = () => {
                 </a>
               </li>
               <li>
-                <a
-                  href="/cart"
-                  className="relative block py-2 text-white rounded hover:text-blue-500 text-2xl "
-                  onClick={() => {
-                    setSearch('')
-                    setDataSearch([])
-                  }}
-                  title="Cart"
-                >
-                  <IoMdCart />
-                  {data?.getCart &&
-                    data?.getCart.items &&
-                    data.getCart.items?.length > 0 && (
-                      <span className="absolute top-[2px] -right-2 inline-block w-4 h-4 text-xs text-center text-white bg-blue-500 rounded-full">
-                        {data?.getCart.items?.length}
-                      </span>
-                    )}
-                </a>
-              </li>
-              <li>
                 {auth?.user ? (
                   <span
                     className="relative block py-2 text-white rounded hover:text-blue-500 text-2xl"
@@ -296,6 +276,26 @@ const Navbar = () => {
                     Login
                   </a>
                 )}
+              </li>
+              <li>
+                <a
+                  href="/cart"
+                  className="relative block py-2 text-white rounded hover:text-blue-500 text-2xl "
+                  onClick={() => {
+                    setSearch('')
+                    setDataSearch([])
+                  }}
+                  title="Cart"
+                >
+                  <IoMdCart />
+                  {data?.getCart &&
+                    data?.getCart.items &&
+                    data.getCart.items?.length > 0 && (
+                      <span className="absolute top-[2px] -right-2 inline-block w-4 h-4 text-xs text-center text-white bg-blue-500 rounded-full">
+                        {data?.getCart.items?.length}
+                      </span>
+                    )}
+                </a>
               </li>
             </ul>
           </div>

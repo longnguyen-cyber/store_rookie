@@ -70,15 +70,27 @@ export class PromotionRepository {
         AND: [
           {
             startDate: {
-              lte: startDate,
+              gte: new Date(startDate).toISOString(),
             },
           },
           {
             endDate: {
-              gte: endDate,
+              gte: new Date(endDate).toISOString(),
             },
           },
         ],
+      },
+      include: {
+        book: {
+          include: {
+            prices: true,
+            authors: {
+              select: {
+                author: true,
+              },
+            },
+          },
+        },
       },
     });
     return promotions;

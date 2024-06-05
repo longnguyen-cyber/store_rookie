@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useLazyQuery, useQuery } from '@apollo/client'
 import { useEffect, useState } from 'react'
@@ -7,6 +6,7 @@ import Footer from '../components/Footer'
 import Loading from '../components/Loading'
 import { Book } from '../generated/graphql'
 
+import ScrollToTopButton from '../components/Scroll'
 import { AUTHOR_NAME } from '../graphql/queries/author'
 import {
   BOOKS_BY_AUTHOR,
@@ -334,6 +334,8 @@ const Shop = () => {
       <br />
       <h1 className="text-2xl ml-20 ">Filter</h1>
 
+      <ScrollToTopButton />
+
       <div className="flex mx-20 space-x-4">
         <div className="w-40 space-y-2">
           <div className="rounded border border-black p-3">
@@ -382,7 +384,7 @@ const Shop = () => {
               Rating review
             </h1>
             <ul>
-              <li className="space-x-1">
+              <li className="space-x-2 flex">
                 <input
                   type="radio"
                   id="rating5"
@@ -390,9 +392,11 @@ const Shop = () => {
                   onChange={handleChangeFilter}
                   value="5"
                 />
-                <label htmlFor="rating5">5 stars</label>
+                <label htmlFor="rating5" className="flex items-center">
+                  5 {generateStar(5)}
+                </label>
               </li>
-              <li className="space-x-1">
+              <li className="space-x-2 flex">
                 <input
                   type="radio"
                   id="rating4"
@@ -400,9 +404,11 @@ const Shop = () => {
                   onChange={handleChangeFilter}
                   value="4"
                 />
-                <label htmlFor="rating4">4 stars</label>
+                <label htmlFor="rating4" className="flex items-center">
+                  4 {generateStar(4)}
+                </label>
               </li>
-              <li className="space-x-1">
+              <li className="space-x-2 flex">
                 <input
                   type="radio"
                   id="rating3"
@@ -410,9 +416,11 @@ const Shop = () => {
                   onChange={handleChangeFilter}
                   value="3"
                 />
-                <label htmlFor="rating3">3 stars</label>
+                <label htmlFor="rating3" className="flex items-center">
+                  3 {generateStar(3)}
+                </label>
               </li>
-              <li className="space-x-1">
+              <li className="space-x-2 flex">
                 <input
                   type="radio"
                   id="rating2"
@@ -420,9 +428,11 @@ const Shop = () => {
                   onChange={handleChangeFilter}
                   value="2"
                 />
-                <label htmlFor="rating2">2 stars</label>
+                <label htmlFor="rating2" className="flex items-center">
+                  2 {generateStar(2)}
+                </label>
               </li>
-              <li className="space-x-1">
+              <li className="space-x-2 flex">
                 <input
                   type="radio"
                   id="rating1"
@@ -430,7 +440,9 @@ const Shop = () => {
                   onChange={handleChangeFilter}
                   value="1"
                 />
-                <label htmlFor="rating1">1 stars</label>
+                <label htmlFor="rating1" className="flex items-center">
+                  1 {generateStar(1)}
+                </label>
               </li>
             </ul>
           </div>

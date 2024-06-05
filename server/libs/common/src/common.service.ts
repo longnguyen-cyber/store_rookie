@@ -67,6 +67,18 @@ export class CommonService {
     return obj;
   }
 
+  formatDateOrder(obj: any): any {
+    for (const key in obj) {
+      if (obj[key] instanceof Date) {
+        obj[key] = format(obj[key], "do MMMM yyyy 'at' h:mm a");
+      } else if (typeof obj[key] === 'object') {
+        this.formatDate(obj[key]);
+      }
+    }
+
+    return obj;
+  }
+
   convertToDate(obj: any): any {
     for (const key in obj) {
       if (typeof obj[key] === 'string' && !isNaN(Date.parse(obj[key]))) {

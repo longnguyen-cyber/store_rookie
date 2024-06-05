@@ -18,7 +18,6 @@ export class CartRepository {
         quantity: true,
       },
     });
-    console.log('quantityOfBook', quantityOfBook);
 
     const checkQuantity = dataRaw.items.every((item: any) => {
       const book = quantityOfBook.find(
@@ -62,7 +61,6 @@ export class CartRepository {
 
   async addItemToCart(data: any, userId: string, type: Role) {
     const cartExist = await this.findCart(userId, type);
-    console.log('cartExist', cartExist);
     if (cartExist) {
       //check quantity of book
       const book = await this.prisma.book.findUnique({
@@ -224,7 +222,6 @@ export class CartRepository {
           userId: id,
         },
       });
-      console.log('rs', rs);
       return rs;
     } else if (type === Role.GUEST) {
       return await this.prisma.cart.findFirst({

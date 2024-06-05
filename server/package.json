@@ -68,7 +68,7 @@
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
-    "@nestjs/testing": "^8.0.0",
+    "@nestjs/testing": "^9.3.12",
     "@types/bull": "^4.10.0",
     "@types/cache-manager": "^4.0.6",
     "@types/cache-manager-redis-store": "^2.0.4",
@@ -126,13 +126,12 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
-      "^@app/cache(|/.*)$": "<rootDir>/libs/cache/src/$1",
-      "^@app/auth/(.*)$": "<rootDir>/apps/auth/src/$1",
-      "^@app/author/(.*)$": "<rootDir>/apps/author/src/$1",
-      "^@app/author$": "<rootDir>/apps/author/src",
-      "^@app/orders/(.*)$": "<rootDir>/apps/orders/src/$1",
-      "^@app/orders$": "<rootDir>/apps/orders/src"
+      "^@app/common(/.*)?$": "<rootDir>/libs/common/src$1",
+      "^@app/cache(/.*)?$": "<rootDir>/libs/cache/src$1",
+      "^@app/auth(/.*)?$": "<rootDir>/apps/auth/src$1",
+      "^@app/author(/.*)?$": "<rootDir>/apps/author/src$1",
+      "^@app/orders(/.*)?$": "<rootDir>/apps/orders/src$1",
+      "^@app/user(/.*)?$": "<rootDir>/apps/user/src$1"
     }
   }
 }

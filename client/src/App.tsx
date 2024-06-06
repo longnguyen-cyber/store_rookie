@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { v4 as uuidv4 } from 'uuid'
 import Navbar from './components/Navbar'
 import BookDetail from './pages/BookDetail'
 import Cart from './pages/Cart'
@@ -14,11 +13,6 @@ import Profile from './pages/Profile'
 import Signup from './pages/Signup'
 import Verification from './pages/Verification'
 function App() {
-  const guestId = localStorage.getItem('guestId')
-  if (!guestId) {
-    localStorage.setItem('guestId', uuidv4())
-  }
-
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

@@ -15,6 +15,7 @@ import {
   REGISTER,
   VERIFY_EMAIL,
 } from '../graphql/mutations/user'
+
 import { AuthContextType, ISignupInput, IUser } from '../utils/types'
 import { toast, ToastContainer } from 'react-toastify'
 
@@ -27,6 +28,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     onCompleted: () => {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
+      const oldGuestId = localStorage.getItem('oldGuestId')
+      localStorage.setItem('guestId', oldGuestId || '')
+      localStorage.removeItem('oldGuestId')
+
       setUser(undefined)
       navigate('/')
     },

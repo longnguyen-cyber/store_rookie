@@ -1,5 +1,6 @@
 import { PrismaService, Role } from '@app/common';
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class CartRepository {
@@ -18,7 +19,6 @@ export class CartRepository {
         quantity: true,
       },
     });
-    console.log('quantityOfBook', quantityOfBook);
 
     const checkQuantity = dataRaw.items.every((item: any) => {
       const book = quantityOfBook.find(
@@ -62,7 +62,6 @@ export class CartRepository {
 
   async addItemToCart(data: any, userId: string, type: Role) {
     const cartExist = await this.findCart(userId, type);
-    console.log('cartExist', cartExist);
     if (cartExist) {
       //check quantity of book
       const book = await this.prisma.book.findUnique({
@@ -184,7 +183,19 @@ export class CartRepository {
         },
       },
     });
+
     if (!cart) return [];
+
+    if (!cart.guestId) {
+      await this.prisma.cart.update({
+        where: {
+          id: cart.id,
+        },
+        data: {
+          guestId: uuidv4(),
+        },
+      });
+    }
 
     const items = await Promise.all(
       cart.items.map(async (item) => {
@@ -224,7 +235,6 @@ export class CartRepository {
           userId: id,
         },
       });
-      console.log('rs', rs);
       return rs;
     } else if (type === Role.GUEST) {
       return await this.prisma.cart.findFirst({

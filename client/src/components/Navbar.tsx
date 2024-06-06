@@ -10,6 +10,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import { Book } from '../generated/graphql'
 import { SEARCH_BOOKS } from '../graphql/queries/book'
 import { useAuth } from '../provider/auth-provider'
+import { v4 as uuidv4 } from 'uuid'
 
 const Navbar = () => {
   const auth = useAuth()
@@ -48,6 +49,17 @@ const Navbar = () => {
   const { data } = useQuery(GET_CART, {
     variables: {
       id: user ? JSON.parse(user).id : guestId,
+    },
+    onCompleted(data) {
+      if (data.getCart?.guestId) {
+        //save old guestId when login success and replace with new guestId of user
+        if (data.getCart.userId) {
+          localStorage.setItem('oldGuestId', guestId || '')
+        }
+        localStorage.setItem('guestId', data?.getCart?.guestId)
+      } else {
+        localStorage.setItem('guestId', uuidv4())
+      }
     },
   })
 

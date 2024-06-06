@@ -1,8 +1,8 @@
 import { gql } from '../../generated'
 
-export const GET_BOOKS = gql(`
-  query Books($skip:String, $type: String!) {
-    books(skip: $skip, type: $type) {
+export const GET_BOOKS_FILTER = gql(`
+  query BooksFilter($filter:FilterBookDto!) {
+    booksFilter(filter: $filter) {
       books {
         id
         title
@@ -171,87 +171,6 @@ export const GET_REVIEWS_BY_BOOK = gql(`
             username
           }
       }
-    }
-  }
-`)
-
-export const BOOKS_BY_RATING = gql(`
-  query BooksByRating($star: String!, $type: String!, $skip:String) {
-    booksByRating(star: $star, type: $type, skip:$skip) {
-      books {
-        id
-        title
-        description
-        categoryId
-        rating
-        ratings
-        images
-        createdAt
-        prices {
-          id
-          bookId
-          originalPrice
-          discountPrice
-          startDate
-          endDate
-          createdAt
-        }
-      }
-      total
-    }
-  }
-`)
-
-export const BOOKS_BY_CATEGORY = gql(`
-  query BooksByCategory($category_id: String!, $type: String!, $skip:String) {
-    booksByCategory(category_id: $category_id, type: $type, skip:$skip) {
-      books {
-        id
-        title
-        description
-        categoryId
-        rating
-        ratings
-        images
-        createdAt
-        prices {
-          id
-          bookId
-          originalPrice
-          discountPrice
-          startDate
-          endDate
-          createdAt
-        }
-      }
-      total
-    }
-  }
-`)
-
-export const BOOKS_BY_AUTHOR = gql(`
-  query BooksByAuthor($author_id: String!, $type: String!, $skip:String) {
-    booksByAuthor(author_id: $author_id, type: $type, skip:$skip) {
-      books {
-        id
-        title
-        description
-        categoryId
-        rating
-        ratings
-        images
-        createdAt
-        prices {
-          id
-          bookId
-          originalPrice
-          discountPrice
-          startDate
-          endDate
-          createdAt
-        }
-      }
-      total
     }
   }
 `)

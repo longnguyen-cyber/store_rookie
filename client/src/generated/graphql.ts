@@ -102,7 +102,7 @@ export type Book = {
   images: Scalars['JSON']['output'];
   orderItems?: Maybe<Array<OrderItem>>;
   prices?: Maybe<Array<BookPrice>>;
-  promotions?: Maybe<Array<Promotion>>;
+  promotions?: Maybe<Promotion>;
   publishers?: Maybe<Array<BookPublisher>>;
   quantity: Scalars['Int']['output'];
   rating: Scalars['Float']['output'];
@@ -198,7 +198,6 @@ export type BookCount = {
   authors: Scalars['Int']['output'];
   orderItems: Scalars['Int']['output'];
   prices: Scalars['Int']['output'];
-  promotions: Scalars['Int']['output'];
   publishers: Scalars['Int']['output'];
   reviews: Scalars['Int']['output'];
 };
@@ -246,7 +245,7 @@ export type BookCreateWithoutCartItemInput = {
   images: Scalars['JSON']['input'];
   orderItems?: InputMaybe<OrderItemCreateNestedManyWithoutBookInput>;
   prices?: InputMaybe<BookPriceCreateNestedManyWithoutBookInput>;
-  promotions?: InputMaybe<PromotionCreateNestedManyWithoutBookInput>;
+  promotions?: InputMaybe<PromotionCreateNestedOneWithoutBookInput>;
   publishers?: InputMaybe<BookPublisherCreateNestedManyWithoutBookInput>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
   rating?: InputMaybe<Scalars['Float']['input']>;
@@ -266,7 +265,7 @@ export type BookCreateWithoutOrderItemsInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   images: Scalars['JSON']['input'];
   prices?: InputMaybe<BookPriceCreateNestedManyWithoutBookInput>;
-  promotions?: InputMaybe<PromotionCreateNestedManyWithoutBookInput>;
+  promotions?: InputMaybe<PromotionCreateNestedOneWithoutBookInput>;
   publishers?: InputMaybe<BookPublisherCreateNestedManyWithoutBookInput>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
   rating?: InputMaybe<Scalars['Float']['input']>;
@@ -287,7 +286,7 @@ export type BookCreateWithoutReviewsInput = {
   images: Scalars['JSON']['input'];
   orderItems?: InputMaybe<OrderItemCreateNestedManyWithoutBookInput>;
   prices?: InputMaybe<BookPriceCreateNestedManyWithoutBookInput>;
-  promotions?: InputMaybe<PromotionCreateNestedManyWithoutBookInput>;
+  promotions?: InputMaybe<PromotionCreateNestedOneWithoutBookInput>;
   publishers?: InputMaybe<BookPublisherCreateNestedManyWithoutBookInput>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
   rating?: InputMaybe<Scalars['Float']['input']>;
@@ -499,7 +498,7 @@ export type BookWhereInput = {
   images?: InputMaybe<JsonFilter>;
   orderItems?: InputMaybe<OrderItemListRelationFilter>;
   prices?: InputMaybe<BookPriceListRelationFilter>;
-  promotions?: InputMaybe<PromotionListRelationFilter>;
+  promotions?: InputMaybe<PromotionRelationFilter>;
   publishers?: InputMaybe<BookPublisherListRelationFilter>;
   quantity?: InputMaybe<IntFilter>;
   rating?: InputMaybe<FloatFilter>;
@@ -524,7 +523,7 @@ export type BookWhereUniqueInput = {
   images?: InputMaybe<JsonFilter>;
   orderItems?: InputMaybe<OrderItemListRelationFilter>;
   prices?: InputMaybe<BookPriceListRelationFilter>;
-  promotions?: InputMaybe<PromotionListRelationFilter>;
+  promotions?: InputMaybe<PromotionRelationFilter>;
   publishers?: InputMaybe<BookPublisherListRelationFilter>;
   quantity?: InputMaybe<IntFilter>;
   rating?: InputMaybe<FloatFilter>;
@@ -904,6 +903,14 @@ export type DateTimeFilter = {
   lte?: InputMaybe<Scalars['DateTime']['input']>;
   not?: InputMaybe<DateTimeFilter>;
   notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+export type FilterBookDto = {
+  author?: InputMaybe<Array<Scalars['String']['input']>>;
+  category?: InputMaybe<Array<Scalars['String']['input']>>;
+  rating?: InputMaybe<Array<Scalars['String']['input']>>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  sortByEnum?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type FloatFilter = {
@@ -1332,26 +1339,10 @@ export type Promotion = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
-export type PromotionCreateManyBookInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  promotionType: Scalars['String']['input'];
-  startDate?: InputMaybe<Scalars['DateTime']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type PromotionCreateManyBookInputEnvelope = {
-  data: Array<PromotionCreateManyBookInput>;
-  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type PromotionCreateNestedManyWithoutBookInput = {
-  connect?: InputMaybe<Array<PromotionWhereUniqueInput>>;
-  connectOrCreate?: InputMaybe<Array<PromotionCreateOrConnectWithoutBookInput>>;
-  create?: InputMaybe<Array<PromotionCreateWithoutBookInput>>;
-  createMany?: InputMaybe<PromotionCreateManyBookInputEnvelope>;
+export type PromotionCreateNestedOneWithoutBookInput = {
+  connect?: InputMaybe<PromotionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<PromotionCreateOrConnectWithoutBookInput>;
+  create?: InputMaybe<PromotionCreateWithoutBookInput>;
 };
 
 export type PromotionCreateOrConnectWithoutBookInput = {
@@ -1369,10 +1360,9 @@ export type PromotionCreateWithoutBookInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PromotionListRelationFilter = {
-  every?: InputMaybe<PromotionWhereInput>;
-  none?: InputMaybe<PromotionWhereInput>;
-  some?: InputMaybe<PromotionWhereInput>;
+export type PromotionRelationFilter = {
+  is?: InputMaybe<PromotionWhereInput>;
+  isNot?: InputMaybe<PromotionWhereInput>;
 };
 
 export type PromotionWhereInput = {
@@ -1395,7 +1385,7 @@ export type PromotionWhereUniqueInput = {
   NOT?: InputMaybe<Array<PromotionWhereInput>>;
   OR?: InputMaybe<Array<PromotionWhereInput>>;
   book?: InputMaybe<BookRelationFilter>;
-  bookId?: InputMaybe<StringFilter>;
+  bookId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<DateTimeFilter>;
   deletedAt?: InputMaybe<DateTimeFilter>;
   endDate?: InputMaybe<DateTimeFilter>;
@@ -1477,12 +1467,9 @@ export type Query = {
   __typename?: 'Query';
   authors: Array<Author>;
   book: Book;
-  books: BookResponseCustom;
-  booksByAuthor: BookResponseCustom;
-  booksByCategory: BookResponseCustom;
-  booksByRating: BookResponseCustom;
+  booksFilter: BookResponseCustom;
   categories: Array<Category>;
-  getCart: CartResponseCustom;
+  getCart?: Maybe<CartResponseCustom>;
   getSPA: Scalars['String']['output'];
   healhCheck: Scalars['String']['output'];
   orders: Array<OrderResponseCustom>;
@@ -1503,30 +1490,8 @@ export type QueryBookArgs = {
 };
 
 
-export type QueryBooksArgs = {
-  skip?: InputMaybe<Scalars['String']['input']>;
-  type: Scalars['String']['input'];
-};
-
-
-export type QueryBooksByAuthorArgs = {
-  author_id: Scalars['String']['input'];
-  skip?: InputMaybe<Scalars['String']['input']>;
-  type: Scalars['String']['input'];
-};
-
-
-export type QueryBooksByCategoryArgs = {
-  category_id: Scalars['String']['input'];
-  skip?: InputMaybe<Scalars['String']['input']>;
-  type: Scalars['String']['input'];
-};
-
-
-export type QueryBooksByRatingArgs = {
-  skip?: InputMaybe<Scalars['String']['input']>;
-  star: Scalars['String']['input'];
-  type: Scalars['String']['input'];
+export type QueryBooksFilterArgs = {
+  filter?: InputMaybe<FilterBookDto>;
 };
 
 
@@ -1855,7 +1820,7 @@ export type UserWhereUniqueInput = {
   password?: InputMaybe<StringFilter>;
   reviews?: InputMaybe<ReviewListRelationFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
-  username?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<StringFilter>;
 };
 
 export type AddItemToCartMutationVariables = Exact<{
@@ -1928,13 +1893,12 @@ export type AuthorsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AuthorsQuery = { __typename?: 'Query', authors: Array<{ __typename?: 'Author', id: string, name: string }> };
 
-export type BooksQueryVariables = Exact<{
-  skip?: InputMaybe<Scalars['String']['input']>;
-  type: Scalars['String']['input'];
+export type BooksFilterQueryVariables = Exact<{
+  filter: FilterBookDto;
 }>;
 
 
-export type BooksQuery = { __typename?: 'Query', books: { __typename?: 'BookResponseCustom', total: number, books: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, categoryId: string, rating: number, ratings: any, images: any, createdAt: any, prices?: Array<{ __typename?: 'BookPrice', id: string, bookId: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null }> } };
+export type BooksFilterQuery = { __typename?: 'Query', booksFilter: { __typename?: 'BookResponseCustom', total: number, books: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, categoryId: string, rating: number, ratings: any, images: any, createdAt: any, prices?: Array<{ __typename?: 'BookPrice', id: string, bookId: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null }> } };
 
 export type SearchByTitleQueryVariables = Exact<{
   title: Scalars['String']['input'];
@@ -1974,39 +1938,12 @@ export type ReviewsByBookQueryVariables = Exact<{
 
 export type ReviewsByBookQuery = { __typename?: 'Query', reviewsByBook: { __typename?: 'ReviewResponseCustom', totalPage: number, reviews: Array<{ __typename?: 'Review', id: string, rating: number, title: string, content?: string | null, createdAt: any, updatedAt: any, user: { __typename?: 'User', id: string, username: string } }> } };
 
-export type BooksByRatingQueryVariables = Exact<{
-  star: Scalars['String']['input'];
-  type: Scalars['String']['input'];
-  skip?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type BooksByRatingQuery = { __typename?: 'Query', booksByRating: { __typename?: 'BookResponseCustom', total: number, books: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, categoryId: string, rating: number, ratings: any, images: any, createdAt: any, prices?: Array<{ __typename?: 'BookPrice', id: string, bookId: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null }> } };
-
-export type BooksByCategoryQueryVariables = Exact<{
-  category_id: Scalars['String']['input'];
-  type: Scalars['String']['input'];
-  skip?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type BooksByCategoryQuery = { __typename?: 'Query', booksByCategory: { __typename?: 'BookResponseCustom', total: number, books: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, categoryId: string, rating: number, ratings: any, images: any, createdAt: any, prices?: Array<{ __typename?: 'BookPrice', id: string, bookId: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null }> } };
-
-export type BooksByAuthorQueryVariables = Exact<{
-  author_id: Scalars['String']['input'];
-  type: Scalars['String']['input'];
-  skip?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type BooksByAuthorQuery = { __typename?: 'Query', booksByAuthor: { __typename?: 'BookResponseCustom', total: number, books: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, categoryId: string, rating: number, ratings: any, images: any, createdAt: any, prices?: Array<{ __typename?: 'BookPrice', id: string, bookId: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null }> } };
-
 export type GetCartQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type GetCartQuery = { __typename?: 'Query', getCart: { __typename?: 'CartResponseCustom', id: string, userId?: string | null, guestId?: string | null, total: string, items?: Array<{ __typename?: 'CartItem', id: string, quantity: number, priceId: string, book: { __typename?: 'Book', id: string, title: string, description?: string | null, rating: number, images: any, prices?: Array<{ __typename?: 'BookPrice', id: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null, authors?: Array<{ __typename?: 'BookAuthor', author: { __typename?: 'Author', name: string } }> | null } }> | null } };
+export type GetCartQuery = { __typename?: 'Query', getCart?: { __typename?: 'CartResponseCustom', id: string, userId?: string | null, guestId?: string | null, total: string, items?: Array<{ __typename?: 'CartItem', id: string, quantity: number, priceId: string, book: { __typename?: 'Book', id: string, title: string, description?: string | null, rating: number, images: any, prices?: Array<{ __typename?: 'BookPrice', id: string, originalPrice: number, discountPrice: number, startDate: any, endDate?: any | null, createdAt: any }> | null, authors?: Array<{ __typename?: 'BookAuthor', author: { __typename?: 'Author', name: string } }> | null } }> | null } | null };
 
 export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2029,16 +1966,13 @@ export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"Operati
 export const RegisterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userCreateDto"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterDTO"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userCreateDto"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userCreateDto"}}}]}]}}]} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
 export const VerifyEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"VerifyEmail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accessToken"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyEmail"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"accessToken"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accessToken"}}}]}]}}]} as unknown as DocumentNode<VerifyEmailMutation, VerifyEmailMutationVariables>;
 export const AuthorsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<AuthorsQuery, AuthorsQueryVariables>;
-export const BooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Books"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksQuery, BooksQueryVariables>;
+export const BooksFilterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksFilter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterBookDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksFilter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksFilterQuery, BooksFilterQueryVariables>;
 export const SearchByTitleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchByTitle"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchByTitle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<SearchByTitleQuery, SearchByTitleQueryVariables>;
 export const PromotionsOnSaleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PromotionsOnSale"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"promotionsOnSale"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"promotionType"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"book"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<PromotionsOnSaleQuery, PromotionsOnSaleQueryVariables>;
 export const RecommendBooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RecommendBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recommendBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<RecommendBooksQuery, RecommendBooksQueryVariables>;
 export const PopularBooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PopularBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"popularBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<PopularBooksQuery, PopularBooksQueryVariables>;
 export const GetBookDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBook"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"book"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}}]}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetBookQuery, GetBookQueryVariables>;
 export const ReviewsByBookDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"reviewsByBook"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"take"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reviewsByBook"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"bookId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}},{"kind":"Argument","name":{"kind":"Name","value":"take"},"value":{"kind":"Variable","name":{"kind":"Name","value":"take"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalPage"}},{"kind":"Field","name":{"kind":"Name","value":"reviews"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]}}]} as unknown as DocumentNode<ReviewsByBookQuery, ReviewsByBookQueryVariables>;
-export const BooksByRatingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksByRating"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"star"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksByRating"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"star"},"value":{"kind":"Variable","name":{"kind":"Name","value":"star"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksByRatingQuery, BooksByRatingQueryVariables>;
-export const BooksByCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksByCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"category_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksByCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"category_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"category_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksByCategoryQuery, BooksByCategoryQueryVariables>;
-export const BooksByAuthorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BooksByAuthor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"author_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"booksByAuthor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"author_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"author_id"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"ratings"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<BooksByAuthorQuery, BooksByAuthorQueryVariables>;
 export const GetCartDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCart"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getCart"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"guestId"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"priceId"}},{"kind":"Field","name":{"kind":"Name","value":"book"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"images"}},{"kind":"Field","name":{"kind":"Name","value":"prices"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"originalPrice"}},{"kind":"Field","name":{"kind":"Name","value":"discountPrice"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetCartQuery, GetCartQueryVariables>;
 export const CategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Categories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"categories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<CategoriesQuery, CategoriesQueryVariables>;
 export const GetSpaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSPA"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSPA"}}]}}]} as unknown as DocumentNode<GetSpaQuery, GetSpaQueryVariables>;

@@ -82,7 +82,7 @@ model Book {
   prices      BookPrice[]
   authors     BookAuthor[]
   publishers  BookPublisher[]
-  promotions  Promotion[]
+  promotions  Promotion?
   reviews     Review[]
   orderItems  OrderItem[]
   CartItem    CartItem[]
@@ -148,7 +148,7 @@ model BookPublisher {
 
 model Promotion {
   id            String    @id() @default(cuid()) @map("promotion_id")
-  bookId        String    @map("book_id")
+  bookId        String    @unique @map("book_id")
   promotionType String    @map("promotion_type")
   startDate     DateTime? @map("start_date")
   endDate       DateTime? @map("end_date")

@@ -77,7 +77,7 @@
             </div>
             <div class="flex justify-between items-center w-full">
               <p class="text-base leading-4 text-gray-800">Shipping</p>
-              <p class="text-base leading-4 text-gray-600">$<%= parseInt(data.total) * 0.1 %>
+              <p class="text-base leading-4 text-gray-600">$<%= (parseInt(data.total) * 0.1).toFixed(2) %>
               </p>
             </div>
           </div>
@@ -101,7 +101,7 @@
                     class="font-normal">Delivery with 24 Hours</span></p>
               </div>
             </div>
-            <p class="text-lg font-semibold leading-6 text-gray-800">$<%= parseInt(data.total) * 0.1 %>
+            <p class="text-lg font-semibold leading-6 text-gray-800">$<%= (parseInt(data.total) * 0.1).toFixed(2) %>
             </p>
           </div>
 

@@ -35,6 +35,12 @@ export class PromotionRepository {
   }
 
   async create(data: any) {
+    await this.prisma.promotion.deleteMany({
+      where: {
+        bookId: data.bookId,
+      },
+    });
+
     const promotion = await this.prisma.promotion.create({
       data: {
         ...data,
@@ -64,18 +70,20 @@ export class PromotionRepository {
     return promotion;
   }
 
-  async search(startDate: Date, endDate: Date) {
+  async search(start: Date, end: Date) {
+    const startDate = new Date(start).toISOString();
+    const endDate = new Date(end).toISOString();
     const promotions = await this.prisma.promotion.findMany({
       where: {
         AND: [
           {
             startDate: {
-              gte: new Date(startDate).toISOString(),
+              gte: startDate,
             },
           },
           {
             endDate: {
-              gte: new Date(endDate).toISOString(),
+              gte: endDate,
             },
           },
         ],

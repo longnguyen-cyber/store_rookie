@@ -1,281 +1,129 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useLazyQuery, useQuery } from '@apollo/client'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
-import { Book } from '../generated/graphql'
+import { Book, FilterBookDto } from '../generated/graphql'
 
 import ScrollToTopButton from '../components/Scroll'
 import { AUTHOR_NAME } from '../graphql/queries/author'
-import {
-  BOOKS_BY_AUTHOR,
-  BOOKS_BY_CATEGORY,
-  BOOKS_BY_RATING,
-  GET_BOOKS,
-} from '../graphql/queries/book'
+import { GET_BOOKS_FILTER } from '../graphql/queries/book'
 import { CATEGORIES_NAME } from '../graphql/queries/categories'
 import generateStar from '../utils/generateStart'
 import { InputChange, QUERY_SORT } from '../utils/types'
 const Shop = () => {
-  const defaultFilter = {
-    categories: '',
-    author: '',
-    rating: '',
-  }
-
-  const navigate = useNavigate()
   const [allQuantity, setAllQuantity] = useState('')
   const [quantityLeft, setQuantityLeft] = useState(0)
   const [page, setPage] = useState(0)
 
-  const [getBooks, { data }] = useLazyQuery(GET_BOOKS, {
+  const [getBooks] = useLazyQuery(GET_BOOKS_FILTER, {
     variables: {
-      skip: page * 4 + '',
-      type: 'asc',
+      filter: {
+        rating: [],
+        author: [],
+        category: [],
+        sortByEnum: QUERY_SORT.ASC,
+        skip: 0,
+      },
+    },
+    onCompleted(data) {
+      if (data) {
+        setAllQuantity(`All books has ${data.booksFilter.total} books`)
+        const newBooks = data.booksFilter.books as Book[]
+        setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+        const newLength = (books?.length ?? 0) + newBooks.length
+        setQuantityLeft(data.booksFilter.total - newLength)
+        if (data?.booksFilter.total === newLength) {
+          setDisableMore(true)
+        }
+      }
     },
   })
 
   const [disableMore, setDisableMore] = useState(false)
-  const [typeFilter, setTypeFilter] = useState('' as string)
+  const [typeFilter, setTypeFilter] = useState<FilterBookDto>({
+    rating: [],
+    author: [],
+    category: [],
+    sortByEnum: QUERY_SORT.ASC,
+    skip: 0,
+  })
 
   const { data: categories_name } = useQuery(CATEGORIES_NAME)
   const { data: authors_name } = useQuery(AUTHOR_NAME)
 
   const [books, setBooks] = useState<Book[] | null>(null)
 
-  const [booksByRating] = useLazyQuery(BOOKS_BY_RATING)
-  const [booksByAuthor] = useLazyQuery(BOOKS_BY_AUTHOR)
-  const [booksByCategory] = useLazyQuery(BOOKS_BY_CATEGORY)
-
-  const [filter, setFilter] = useState(defaultFilter)
-  const [sort, setSort] = useState('asc')
-
   const handleChangeFilter = (e: InputChange) => {
-    setFilter(defaultFilter)
-    if (e.target.value === '') {
-      return
-    }
+    const { name, value } = e.target
+
     setPage(0)
     setBooks([])
     setDisableMore(false)
     setAllQuantity('')
     setQuantityLeft(0)
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      [e.target.name]: e.target.value,
-    }))
+    setTypeFilter((prevState) => {
+      if (name === 'author' || name === 'category' || name === 'rating') {
+        const [id] = value.split('-')
+
+        return { ...prevState, [name]: id ? [id] : [] }
+      } else if (name === 'sort') {
+        return { ...prevState, sortByEnum: value as QUERY_SORT }
+      } else {
+        return prevState
+      }
+    })
   }
   useEffect(() => {
-    const filterSelected = Object.fromEntries(
-      Object.entries(filter).filter(
-        ([key, value]) =>
-          value !== defaultFilter[key as keyof typeof defaultFilter]
-      )
-    )
-
-    if (!filterSelected || Object.keys(filterSelected).length === 0) {
-      getBooks({
-        variables: {
-          skip: page * 4 + '',
-          type: sort,
+    getBooks({
+      variables: {
+        filter: {
+          ...typeFilter,
+          skip: page * 4,
         },
-        onCompleted(data) {
-          setAllQuantity(`All books has ${data.books.total} books`)
-          const newBooks = data.books.books as Book[]
+      },
+      onCompleted(data) {
+        if (data) {
+          setAllQuantity(`All books has ${data.booksFilter.total} books`)
+          const newBooks = data.booksFilter.books as Book[]
           setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
           const newLength = (books?.length ?? 0) + newBooks.length
-          setQuantityLeft(data.books.total - newLength)
-          if (data?.books.total === newLength || newBooks.length === 0) {
+          setQuantityLeft(data.booksFilter.total - newLength)
+          if (data?.booksFilter.total === newLength) {
             setDisableMore(true)
           }
-        },
-      })
-      return
-    }
-
-    const [firstKey, firstValue] = Object.entries(filterSelected)[0] || []
-    const name = firstValue.toString().split('-')[1] ?? firstValue
-    if (firstKey && firstValue) {
-      updateUrl(firstKey, name, sort)
-    }
-    if (firstKey === 'rating') {
-      setTypeFilter('rating')
-      booksByRating({
-        variables: {
-          star: name,
-          type: sort,
-          skip: '0',
-        },
-        onCompleted(data) {
-          setBooks(data.booksByRating.books as Book[])
-          const newLength =
-            (books?.length ?? 0) + data.booksByRating.books.length
-          if (data?.booksByRating.total === newLength || newLength === 0) {
-            setDisableMore(true)
-          }
-        },
-      })
-    } else if (firstKey === 'author') {
-      setTypeFilter('author')
-      booksByAuthor({
-        variables: {
-          author_id: firstValue.toString().split('-')[0],
-          type: sort,
-          skip: '0',
-        },
-        onCompleted(data) {
-          setAllQuantity(`${name} has ${data.booksByAuthor.total} books`)
-          setBooks(data.booksByAuthor.books as Book[])
-          const newLength =
-            (books?.length ?? 0) + data.booksByAuthor.books.length
-          setQuantityLeft(data.booksByAuthor.total - newLength)
-          if (data?.booksByAuthor.total === newLength || newLength === 0) {
-            setDisableMore(true)
-          }
-        },
-      })
-    } else {
-      if (firstKey === 'categories') {
-        setTypeFilter('categories')
-        booksByCategory({
-          variables: {
-            category_id: firstValue.toString().split('-')[0],
-            type: sort,
-            skip: '0',
-          },
-          onCompleted(data) {
-            setAllQuantity(`${name} has ${data.booksByCategory.total} books`)
-            setBooks(data.booksByCategory.books as Book[])
-            const newLength =
-              (books?.length ?? 0) + data.booksByCategory.books.length
-            setQuantityLeft(data.booksByCategory.total - newLength)
-            if (data?.booksByCategory.total === newLength || newLength === 0) {
-              setDisableMore(true)
-            }
-          },
-        })
-      }
-    }
-  }, [filter, sort])
-
-  const updateUrl = (filter: string, name: string, sort: string) => {
-    navigate(`/shop?${filter}=${name}&sort=${sort}`)
-  }
-
-  useEffect(() => {
-    const filterSelected = Object.fromEntries(
-      Object.entries(filter).filter(
-        ([key, value]) =>
-          value !== defaultFilter[key as keyof typeof defaultFilter]
-      )
-    )
-
-    if (!filterSelected || Object.keys(filterSelected).length === 0) {
-      getBooks({
-        variables: {
-          skip: page * 4 + '',
-          type: sort,
-        },
-        onCompleted(data) {
-          setAllQuantity(`All books has ${data.books.total} books`)
-          const newBooks = data.books.books as Book[]
-          setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
-          const newLength = (books?.length ?? 0) + newBooks.length
-          setQuantityLeft(data.books.total - newLength)
-          if (data?.books.total === newLength || newBooks.length === 0) {
-            setDisableMore(true)
-          }
-        },
-      })
-    } else {
-      const [_, firstValue] = Object.entries(filterSelected)[0] || []
-      const name = firstValue.toString().split('-')[1] ?? firstValue
-      if (typeFilter === 'rating') {
-        booksByRating({
-          variables: {
-            star: name,
-            type: sort,
-            skip: page * 4 + '',
-          },
-          onCompleted(data) {
-            const newBooks = data.booksByRating.books as Book[]
-            setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
-            const newLength = (books?.length ?? 0) + newBooks.length
-            if (
-              data?.booksByRating.total === newLength ||
-              newBooks.length === 0
-            ) {
-              setDisableMore(true)
-            }
-          },
-        })
-      } else if (typeFilter === 'author') {
-        booksByAuthor({
-          variables: {
-            author_id: firstValue.toString().split('-')[0],
-            type: sort,
-            skip: page * 4 + '',
-          },
-          onCompleted(data) {
-            const newBooks = data.booksByAuthor.books as Book[]
-            setAllQuantity(`${name} has ${data.booksByAuthor.total} books`)
-            setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
-            const newLength = (books?.length ?? 0) + newBooks.length
-            setQuantityLeft(data.booksByAuthor.total - newLength)
-            if (
-              data?.booksByAuthor.total === newLength ||
-              newBooks.length === 0
-            ) {
-              setDisableMore(true)
-            }
-          },
-        })
-      } else if (typeFilter === 'categories') {
-        booksByCategory({
-          variables: {
-            category_id: firstValue.toString().split('-')[0],
-            type: sort,
-            skip: page * 4 + '',
-          },
-          onCompleted(data) {
-            setAllQuantity(`${name} has ${data.booksByCategory.total} books`)
-            const newBooks = data.booksByCategory.books as Book[]
-            setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
-            const newLength = (books?.length ?? 0) + newBooks.length
-            setQuantityLeft(data.booksByCategory.total - newLength)
-            if (
-              data?.booksByCategory.total === newLength ||
-              newBooks.length === 0
-            ) {
-              setDisableMore(true)
-            }
-          },
-        })
-      }
-    }
+        }
+      },
+    })
   }, [page])
-  // useEffect(() => {
-  //   const filterSelected = Object.fromEntries(
-  //     Object.entries(filter).filter(
-  //       ([key, value]) =>
-  //         value !== defaultFilter[key as keyof typeof defaultFilter]
-  //     )
-  //   )
 
-  //   if (!filterSelected || Object.keys(filterSelected).length === 0) {
-  //     if (data) {
-  //       setAllQuantity(`All books has ${data.books.total} books`)
-  //       const newBooks = data.books.books as Book[]
-  //       setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
-  //       const newLength = (books?.length ?? 0) + newBooks.length
-  //       setQuantityLeft(data.books.total - newLength)
-  //       if (data?.books.total === newLength) {
-  //         setDisableMore(true)
-  //       }
-  //     }
-  //   }
-  // }, [data])
+  useEffect(() => {
+    console.log('typeFilter', typeFilter)
+    getBooks({
+      variables: {
+        filter: {
+          ...typeFilter,
+          skip: 0,
+        },
+      },
+      onCompleted(data) {
+        if (data) {
+          setAllQuantity(`All books has ${data.booksFilter.total} books`)
+          const newBooks = data.booksFilter.books as Book[]
+          setBooks((prevBooks) => [...(prevBooks ?? []), ...newBooks])
+          const newLength = (books?.length ?? 0) + newBooks.length
+          setQuantityLeft(data.booksFilter.total - newLength)
+          if (data?.booksFilter.total === newLength) {
+            setDisableMore(true)
+          }
+        }
+      },
+    })
+    console.log('typeFilter', typeFilter)
+  }, [typeFilter])
+
+  // filter: { author: ["1"],category:["2"], sortByEnum: "asc", skip: 0, rating: [3,2, 5, 1] }
 
   const renderCard = (books: Book[]) => {
     if (books) {
@@ -339,11 +187,11 @@ const Shop = () => {
       <div className="flex mx-20 space-x-4">
         <div className="w-40 space-y-2">
           <div className="rounded border border-black p-3">
-            <h1 className="text-lg font-semibold text-gray-900">Categories</h1>
+            <h1 className="text-lg font-semibold text-gray-900">Category</h1>
             <select
-              id="categories"
+              id="category"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              name="categories"
+              name="category"
               onChange={handleChangeFilter}
             >
               <option value={''} defaultValue={''}>
@@ -455,12 +303,7 @@ const Shop = () => {
                 id="sort"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 name="sort"
-                onChange={(e) => {
-                  setSort(e.target.value)
-                  setPage(0)
-                  setDisableMore(false)
-                  setBooks([])
-                }}
+                onChange={handleChangeFilter}
               >
                 <option value={QUERY_SORT.ASC} defaultValue={QUERY_SORT.ASC}>
                   Sort by price: low to high{' '}

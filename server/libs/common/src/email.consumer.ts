@@ -20,4 +20,20 @@ export class EmailConsumer {
     const time2 = new Date();
     console.log('Send Success: ', time2.getTime() - time1.getTime(), 'ms');
   }
+
+  @Process('checkout')
+  async checkoutOrder(job: Job<unknown>) {
+    const time1 = new Date();
+    await this.mailerService.sendMail({
+      to: job.data['to'],
+      subject: 'Thank you for your order',
+      template: './checkout',
+      context: {
+        name: job.data['name'],
+        order_id: job.data['order_id'],
+      },
+    });
+    const time2 = new Date();
+    console.log('Send Success: ', time2.getTime() - time1.getTime(), 'ms');
+  }
 }

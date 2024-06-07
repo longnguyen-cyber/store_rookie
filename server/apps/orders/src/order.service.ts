@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue as QueueEmail } from 'bull';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(
+    private readonly orderRepository: OrderRepository,
+    @InjectQueue('queue')
+    private readonly mailQueue: QueueEmail,
+  ) {}
 
   async findAll() {
     return await this.orderRepository.findAll();
@@ -13,8 +19,22 @@ export class OrderService {
     return await this.orderRepository.findOne(id);
   }
 
-  async create(data: any, id?: string) {
-    return await this.orderRepository.create(data, id);
+  async create(data: any, id?: string, user?: any) {
+    const rs = await this.orderRepository.create(data, id);
+    if (rs) {
+      await this.mailQueue.add(
+        'checkout',
+        {
+          to: user.email,
+          username: user.username,
+          order_id: rs.id,
+        },
+        {
+          removeOnComplete: true,
+        },
+      );
+      return rs;
+    }
   }
 
   async update(id: string, data: any) {

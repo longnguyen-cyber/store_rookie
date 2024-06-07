@@ -98,10 +98,8 @@ const Home = () => {
             {booksSale?.promotionsOnSale.map((promotion, index) => {
               const { book } = promotion
               let description = book.description!
-              if (description.length > 100) {
-                description = description.substring(0, 100)
-              } else {
-                description = description.padEnd(100, '')
+              if (description.length > 50) {
+                description = description.substring(0, 50) + '...'
               }
               return (
                 <SwiperSlide key={index}>
@@ -124,10 +122,14 @@ const Home = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-gray-400 line-through">
-                            ${book.prices && book.prices[0].originalPrice}
+                            $
+                            {book.prices &&
+                              book.prices[0].originalPrice.toFixed(2)}
                           </span>
                           <span className=" font-bold text-gray-900 dark:text-white">
-                            ${book.prices && book.prices[0].discountPrice}{' '}
+                            $
+                            {book.prices &&
+                              book.prices[0].discountPrice.toFixed(2)}{' '}
                           </span>
                         </div>
                       </div>

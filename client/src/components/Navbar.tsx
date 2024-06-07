@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { IoMdCart } from 'react-icons/io'
 import { Outlet } from 'react-router-dom'
 import { GET_CART } from '../graphql/queries/cart'
+import LOGO from '../assets/logo.png'
 
 import { useEffect, useState } from 'react'
 import { FaRegUserCircle } from 'react-icons/fa'
@@ -70,20 +71,13 @@ const Navbar = () => {
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
             href="/"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
+            className="flex items-center space-x-3 rtl:space-x-reverse justify-center"
             onClick={() => {
               setSearch('')
               setDataSearch([])
             }}
           >
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              className="h-8"
-              alt="Flowbite Logo"
-            />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              Flowbite
-            </span>
+            <img src={LOGO} width={100} alt="Flowbite Logo" />
           </a>
           <button
             data-collapse-toggle="navbar-default"

@@ -176,6 +176,32 @@ const Cart = () => {
                           </div>
                         </div>
                         <div className="flex items-center">
+                          {quantities[item.id]?.quantity !==
+                            quantities[item.id]?.oldQuantity && (
+                            <>
+                              <button
+                                title="Reset"
+                                type="button"
+                                className="inline-flex mx-2 shrink-0 items-center justify-center rounded p-1 border border-gray-300"
+                                onClick={() => {
+                                  handleReset(item.id, item)
+                                }}
+                              >
+                                <GrPowerReset />
+                              </button>
+
+                              <button
+                                title="Save"
+                                type="button"
+                                className="inline-flex shrink-0 mr-2 items-center justify-center rounded p-1 border border-gray-300"
+                                onClick={() => {
+                                  handleSubmit(item.id)
+                                }}
+                              >
+                                <IoSaveOutline />
+                              </button>
+                            </>
+                          )}
                           <button
                             type="button"
                             className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
@@ -218,28 +244,6 @@ const Cart = () => {
                             }}
                           >
                             <FaPlus />
-                          </button>
-
-                          <button
-                            title="Reset"
-                            type="button"
-                            className="inline-flex mx-2 shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                            onClick={() => {
-                              handleReset(item.id, item)
-                            }}
-                          >
-                            <GrPowerReset />
-                          </button>
-
-                          <button
-                            title="Save"
-                            type="button"
-                            className="inline-flex shrink-0 items-center justify-center rounded p-1 border border-gray-300"
-                            onClick={() => {
-                              handleSubmit(item.id)
-                            }}
-                          >
-                            <IoSaveOutline />
                           </button>
                         </div>
                         <div className="flex items-center justify-between md:justify-end">

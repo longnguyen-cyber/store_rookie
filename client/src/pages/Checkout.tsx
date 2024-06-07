@@ -4,6 +4,7 @@ import { PLACE_ORDER } from '../graphql/mutations/order'
 import { GET_CART } from '../graphql/queries/cart'
 import { useAuth } from '../provider/auth-provider'
 import { useNavigate } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
 
 const Checkout = () => {
   const guestId = localStorage.getItem('guestId')
@@ -57,6 +58,9 @@ const Checkout = () => {
           },
           guestId: guestId ?? '',
         },
+        onCompleted(data) {
+          if (data) toast.success('Order placed successfully')
+        },
       })
     }
   }
@@ -91,6 +95,7 @@ const Checkout = () => {
 
   return (
     <div>
+      <ToastContainer />
       <div className="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
         <a href="#" className="text-2xl font-bold text-gray-800">
           sneekpeeks

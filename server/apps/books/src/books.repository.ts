@@ -23,7 +23,7 @@ export class BookRepository {
     return books;
   }
 
-  async getBooksForCron() {
+  async getBooksForCronRating() {
     const books = await this.prisma.book.findMany({
       include: {
         reviews: true,
@@ -31,6 +31,32 @@ export class BookRepository {
     });
 
     return books.filter((item) => item.reviews.length > 0);
+  }
+  async getBooksForCronPrice() {
+    const promotionOfBooks = await this.prisma.promotion.findMany({
+      include: {
+        book: {
+          include: {
+            prices: true,
+          },
+        },
+      },
+    });
+
+    const books = await this.prisma.book.findMany({});
+    const booksWithPromotion = promotionOfBooks.filter((promotion) =>
+      books.some((book) => book.id === promotion.bookId),
+    );
+
+    return booksWithPromotion.map((item) => {
+      const lastedPrice = item.book.prices.find((p) => p.endDate === null);
+      delete item.book.prices;
+      return {
+        ...item,
+        ...item.book,
+        ...lastedPrice,
+      };
+    });
   }
 
   async findOne(id: string) {
@@ -128,7 +154,7 @@ export class BookRepository {
     return books;
   }
 
-  async createBookPrice(data: any) {
+  async createBookPricePromotion(data: any) {
     const bookPrice = await this.prisma.bookPrice.create({
       data: {
         book: {
@@ -170,6 +196,23 @@ export class BookRepository {
       },
     });
     return book;
+  }
+
+  async createBookPrice(id: string, data: any) {
+    const bookPrice = await this.prisma.bookPrice.create({
+      data: {
+        book: {
+          connect: {
+            id: id,
+          },
+        },
+        originalPrice: data.originalPrice,
+        discountPrice: 0,
+        startDate: new Date(),
+      },
+    });
+    console.log(bookPrice);
+    return bookPrice;
   }
 
   async delete(id: string) {

@@ -2,10 +2,10 @@
 /* eslint-disable prettier/prettier */
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { TokenExpiredError } from '@nestjs/jwt';
 import { randomBytes, scrypt, timingSafeEqual } from 'crypto';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { Token } from './interface/auth.interface';
-import { TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {

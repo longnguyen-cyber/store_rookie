@@ -77,13 +77,13 @@ export class PromotionRepository {
       where: {
         AND: [
           {
-            startDate: {
+            endDate: {
               gte: startDate,
             },
           },
           {
             endDate: {
-              gte: endDate,
+              lte: endDate,
             },
           },
         ],

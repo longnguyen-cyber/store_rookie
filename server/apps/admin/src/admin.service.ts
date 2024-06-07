@@ -96,7 +96,7 @@ export class AdminService {
         delete data.category;
         await Promise.all(
           books.map(async (book) => {
-            await this.booksService.createBookPrice({
+            await this.booksService.createBookPricePromotion({
               bookId: book.id,
               originalPrice: book.prices[0].originalPrice,
               old_price_id: book.prices[0].id,
@@ -111,7 +111,7 @@ export class AdminService {
         );
       } else {
         const book = await this.booksService.findOne(data.book);
-        await this.booksService.createBookPrice({
+        await this.booksService.createBookPricePromotion({
           bookId: book.id,
           originalPrice: book.prices[0].originalPrice,
           old_price_id: book.prices[0].id,

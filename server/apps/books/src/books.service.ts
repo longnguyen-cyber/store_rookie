@@ -14,8 +14,8 @@ export class BookService {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
     name: 'update book rating',
   })
-  async handleCron() {
-    const books = await this.bookRepository.getBooksForCron();
+  async handleCronRating() {
+    const books = await this.bookRepository.getBooksForCronRating();
     books.forEach((item) => {
       const sumReviewOfBook = item.reviews.length;
       const totalStar = item.reviews.reduce((acc, cur) => acc + cur.rating, 0);
@@ -32,13 +32,30 @@ export class BookService {
       });
     });
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+    name: 'update book price',
+  })
+  async handleCronPrice() {
+    const books = await this.bookRepository.getBooksForCronPrice();
+    //check with new Date
+    const currentDate = new Date();
+    books.forEach((item) => {
+      if (item.endDate < currentDate) {
+        this.bookRepository.createBookPrice(item.bookId, {
+          originalPrice: item.originalPrice,
+        });
+      }
+    });
+  }
+
   async findAll() {
     const books = await this.bookRepository.findAllAdmin();
     return books;
   }
 
-  async createBookPrice(data: any) {
-    const price = await this.bookRepository.createBookPrice(data);
+  async createBookPricePromotion(data: any) {
+    const price = await this.bookRepository.createBookPricePromotion(data);
     return price;
   }
 
@@ -75,7 +92,6 @@ export class BookService {
   }
 
   //shop page
-
   async booksFilter(filter: FilterBookDto) {
     const books = await this.bookRepository.findByFilter(filter);
     return {

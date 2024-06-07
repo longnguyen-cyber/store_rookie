@@ -8,7 +8,7 @@ import { setContext } from '@apollo/client/link/context'
 import { PropsWithChildren } from 'react'
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql/',
+  uri: 'http://localhost:40000/graphql/',
 })
 
 const authLink = setContext((_, { headers }) => {

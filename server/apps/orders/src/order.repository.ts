@@ -196,6 +196,7 @@ export class OrderRepository {
         ...data,
       },
     });
+    console.log('update order', order);
     return order;
   }
 

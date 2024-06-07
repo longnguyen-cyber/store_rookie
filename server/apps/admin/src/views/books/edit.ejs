@@ -22,13 +22,13 @@
       <input type="text" id="price"
       value="<%= data.book.prices[0].originalPrice %>"
         class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-600"
-        placeholder="" required name="price" />
+        placeholder="" required name="prices" />
     </div>
 
 
-    <div class="mb-5">
+    <!-- <div class="mb-5">
       <label for="publisher" class="block text-base font-medium text-black">Publisher</label>
-      <select id="publisher" name="publisher"
+      <select id="publisher" name="publishers"
         class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
         <option selected>Choose publisher</option>
         <% data.publishers.forEach(element=> { %>
@@ -62,13 +62,13 @@
           </option>
           <% }) %>
       </select>
-    </div>
+    </div> -->
     <div class="mb-5">
       <label for="description" class="block mb-2 text-base font-medium text-black">Description</label>
       <textarea type="text" id="description"
         class="bg-gray-50 border  text-black text-base rounded-lg focus:ring-blue-500 focus:border-blue-500  w-full p-2.5 border-gray-600  resize-none"
         placeholder="" required name="description">
-      <%= data.book.description %>
+      <%= data.book.description.trim() %>
       </textarea>
     </div>
 

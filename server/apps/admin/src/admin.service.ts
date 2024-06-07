@@ -141,11 +141,20 @@ export class AdminService {
   async updateRes(entityName: EntityNames, id: string, data: any) {
     const entityService = this.getServiceFromEntityName(entityName);
 
-    const rs = await entityService.update(
-      id,
-      this.commonService.convertToDate(data),
-    );
-    return rs;
+    if (entityName.toString() === 'order')
+      return await entityService.update(
+        id,
+        this.commonService.convertToDate(data),
+      );
+    else {
+      if (entityName.toString() === 'books') {
+        data.prices = parseFloat(data.prices);
+        if (data.images) {
+          data.images = JSON.parse(data.images);
+        }
+      }
+      return await entityService.update(id, data);
+    }
   }
 
   async getRes(entityName: EntityNames, id: string) {

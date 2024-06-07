@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { FaMinus, FaPlus, FaStar } from 'react-icons/fa6'
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 import { useNavigate, useParams } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import Loading from '../components/Loading'
 import { ADD_ITEM_TO_CART } from '../graphql/mutations/cart'
 import { CREATE_REVIEW } from '../graphql/mutations/review'
@@ -17,6 +17,8 @@ import { FormSubmit, InputChange } from '../utils/types'
 const BookDetail = () => {
   const { id } = useParams<{ id: string }>()
   const guestId = localStorage.getItem('guestId')
+  const auth = useAuth()
+
   const navigate = useNavigate()
   const [review, setReview] = useState({
     title: '',
@@ -54,6 +56,7 @@ const BookDetail = () => {
   const handleChangeInput = (e: InputChange) => {
     setReview({ ...review, [e.target.name]: e.target.value })
   }
+
   const handleSumitReview = (e: FormSubmit) => {
     e.preventDefault()
     if (!review.title || !review.content) {
@@ -61,6 +64,10 @@ const BookDetail = () => {
     } else if (rating === 0) {
       return toast.error('Please select rating')
     }
+    if (!auth?.user) {
+      return toast.error('Please login to write review')
+    }
+
     const data = {
       data: {
         book: { connect: { id: id } },
@@ -138,7 +145,6 @@ const BookDetail = () => {
     },
     refetchQueries: [GET_CART, 'GetCart'],
   })
-  const auth = useAuth()
   const handleAddToCart = () => {
     if (bookData?.book.prices && guestId) {
       addItemToCart({
@@ -162,7 +168,6 @@ const BookDetail = () => {
 
   return (
     <div className="mx-72 mt-10 space-y-4">
-      <ToastContainer />
       <div className="grid grid-cols-12 space-x-4 ">
         <div className="col-span-8 rounded overflow-hidden space-x-6 border flex items-start">
           <img

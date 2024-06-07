@@ -153,15 +153,15 @@ const Shop = () => {
                 {book.prices && book.prices[0].discountPrice ? (
                   <>
                     <span className="text-gray-400 line-through">
-                      ${book.prices[0].originalPrice}
+                      ${book.prices[0].originalPrice.toFixed(2)}
                     </span>
                     <span className="font-bold text-white">
-                      ${book.prices[0].discountPrice}{' '}
+                      ${book.prices[0].discountPrice.toFixed(2)}
                     </span>
                   </>
                 ) : (
                   <span className="font-bold text-white">
-                    ${book.prices && book.prices[0].originalPrice}{' '}
+                    ${book.prices && book.prices[0].originalPrice.toFixed(2)}{' '}
                   </span>
                 )}
               </div>

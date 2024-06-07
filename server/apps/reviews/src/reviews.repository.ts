@@ -26,6 +26,7 @@ export class ReviewRepository {
     const reviews = await this.prisma.review.findMany({
       where: {
         bookId: bookId,
+        status: true,
       },
       include: {
         user: {
@@ -44,6 +45,7 @@ export class ReviewRepository {
     const total = await this.prisma.review.count({
       where: {
         bookId: bookId,
+        status: true,
       },
     });
     const totalPage = Math.ceil(total / take);

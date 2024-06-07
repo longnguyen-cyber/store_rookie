@@ -1,17 +1,17 @@
 import { useLazyQuery, useQuery } from '@apollo/client'
 import _ from 'lodash'
 import { IoMdCart } from 'react-icons/io'
-import { Outlet } from 'react-router-dom'
-import { GET_CART } from '../graphql/queries/cart'
+import { Link, Outlet } from 'react-router-dom'
 import LOGO from '../assets/logo.png'
+import { GET_CART } from '../graphql/queries/cart'
 
 import { useEffect, useState } from 'react'
 import { FaRegUserCircle } from 'react-icons/fa'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
+import { v4 as uuidv4 } from 'uuid'
 import { Book } from '../generated/graphql'
 import { SEARCH_BOOKS } from '../graphql/queries/book'
 import { useAuth } from '../provider/auth-provider'
-import { v4 as uuidv4 } from 'uuid'
 
 const Navbar = () => {
   const auth = useAuth()
@@ -54,7 +54,7 @@ const Navbar = () => {
     onCompleted(data) {
       if (data.getCart?.guestId) {
         //save old guestId when login success and replace with new guestId of user
-        if (data.getCart.userId) {
+        if (data.getCart.userId && data.getCart.guestId !== guestId) {
           localStorage.setItem('oldGuestId', guestId || '')
         }
         localStorage.setItem('guestId', data?.getCart?.guestId)
@@ -66,7 +66,6 @@ const Navbar = () => {
 
   return (
     <div>
-      <ToastContainer />
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
@@ -107,12 +106,12 @@ const Navbar = () => {
             <ul className="font-medium flex  p-4 space-x-4 ">
               <li className="relative">
                 {dataSearch.length > 0 && (
-                  <div className="absolute z-50 h-56 overflow-y-auto rounded border shadow-xl w-[200%] bg-white text-gray-900 top-[110%]">
+                  <div className="absolute z-50 max-h-56 h-fit overflow-y-auto rounded border shadow-xl w-[200%] bg-white text-white top-[110%]">
                     {searchs?.searchByTitle?.map((book) => (
-                      <a
+                      <Link
                         key={book.id}
-                        href={`/book/${book.id}`}
-                        className="text-gray-900 flex border-b items-center justify-between p-2 space-x-4 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        to={`book/${book.id}`}
+                        className="text-gray-900 flex border-b items-center justify-between p-2 space-x-4 hover:bg-gray-800 hover:text-white"
                         onClick={() => {
                           setSearch('')
                           setDataSearch([])
@@ -124,11 +123,11 @@ const Navbar = () => {
                           className="w-14 h-20 object-cover"
                         />
                         <div className="flex flex-col space-y-1">
-                          <h3 className="text-sm font-semibold text-gray-900 hover:text-white">
-                            {book.title}
+                          <h3 className="text-sm font-semibold ">
+                            {book.title.trim()}
                           </h3>
                         </div>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 )}

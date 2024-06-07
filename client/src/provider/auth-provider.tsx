@@ -9,6 +9,8 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoginInput } from '../generated/graphql'
+import { v4 as uuidv4 } from 'uuid'
+
 import {
   LOGIN,
   LOGOUT,
@@ -25,7 +27,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate()
   const [user, setUser] = useState<IUser>()
   const [logoutUser] = useMutation(LOGOUT, {
-    onCompleted: () => {
+    onCompleted: (data) => {
+      console.log('logout', data)
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       const oldGuestId = localStorage.getItem('oldGuestId')
@@ -65,6 +68,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const user = localStorage.getItem('user')
     if (user) {
       setUser(JSON.parse(user))
+    }
+
+    const guestId = localStorage.getItem('guestId')
+    if (!guestId) {
+      localStorage.setItem('guestId', uuidv4())
     }
   }, [])
 

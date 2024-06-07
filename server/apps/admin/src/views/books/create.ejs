@@ -106,6 +106,8 @@
           input.name = 'images';
           input.value = JSON.stringify(images);
           form.appendChild(input);
+
+          alert('Images uploaded successfully');
         })
         .catch(error => console.error(error));
     }

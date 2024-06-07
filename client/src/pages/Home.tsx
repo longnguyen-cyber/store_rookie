@@ -17,7 +17,8 @@ const Home = () => {
   const { data: booksRecommend } = useQuery(GET_BOOKS_RECOMMENED)
   const { data: booksPopular } = useQuery(GET_BOOKS_POPULAR)
   const [isRecommend, setIsRecommend] = useState(true)
-  if (!booksSale || !booksRecommend || !booksPopular) {
+
+  if (!booksRecommend || !booksPopular) {
     return <Loading />
   }
 
@@ -39,7 +40,7 @@ const Home = () => {
               <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
                 {book.title}
               </p>
-              <small className="text-white">{book.description}</small>
+              <small className="text-white flex-1">{book.description}</small>
               <div className="flex items-center mt-2.5 mb-5">
                 <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
                   {book.rating} {generateStar(book.rating)}
@@ -73,7 +74,9 @@ const Home = () => {
       <br />
       <div className="px-56">
         <div className="flex justify-between">
-          <h1>On sale</h1>
+          <h1 className="uppercase text-xl">
+            <strong>On sale</strong>
+          </h1>
 
           <button
             type="button"
@@ -83,62 +86,66 @@ const Home = () => {
           </button>
         </div>
         <>
-          <Swiper
-            slidesPerView={4}
-            autoplay={{
-              delay: 2500,
-              disableOnInteraction: false,
-            }}
-            spaceBetween={10}
-            navigation={true}
-            loop={true}
-            modules={[Navigation, Autoplay]}
-            className="mySwiper"
-          >
-            {booksSale?.promotionsOnSale.map((promotion, index) => {
-              const { book } = promotion
-              let description = book.description!
-              if (description.length > 50) {
-                description = description.substring(0, 50) + '...'
-              }
-              return (
-                <SwiperSlide key={index}>
-                  <div className="w-full max-w-sm h-[34rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                    <Link to={`/book/${book.id}`}>
-                      <img
-                        className="p-8 rounded-t-lg w-full h-96 object-contain"
-                        src={book.images[0]}
-                        alt="product image"
-                      />
-                      <div className="px-5 pb-5">
-                        <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                          {book.title}
-                        </p>
-                        <small className="text-white">{description}</small>
-                        <div className="flex items-center mt-2.5 mb-5">
-                          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
-                            {book.rating} {generateStar(book.rating)}
-                          </span>
+          {booksSale?.promotionsOnSale.length > 0 ? (
+            <Swiper
+              slidesPerView={4}
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: false,
+              }}
+              spaceBetween={10}
+              navigation={true}
+              loop={true}
+              modules={[Navigation, Autoplay]}
+              className="mySwiper"
+            >
+              {booksSale?.promotionsOnSale.map((promotion, index) => {
+                const { book } = promotion
+                let description = book.description!
+                if (description.length > 50) {
+                  description = description.substring(0, 50) + '...'
+                }
+                return (
+                  <SwiperSlide key={index}>
+                    <div className="w-full max-w-sm h-[34rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                      <Link to={`/book/${book.id}`}>
+                        <img
+                          className="p-8 rounded-t-lg w-full h-96 object-contain"
+                          src={book.images[0]}
+                          alt="product image"
+                        />
+                        <div className="px-5 pb-5">
+                          <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                            {book.title}
+                          </p>
+                          <small className="text-white">{description}</small>
+                          <div className="flex items-center mt-2.5 mb-5">
+                            <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex">
+                              {book.rating} {generateStar(book.rating)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 line-through">
+                              $
+                              {book.prices &&
+                                book.prices[0].originalPrice.toFixed(2)}
+                            </span>
+                            <span className=" font-bold text-gray-900 dark:text-white">
+                              $
+                              {book.prices &&
+                                book.prices[0].discountPrice.toFixed(2)}{' '}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-400 line-through">
-                            $
-                            {book.prices &&
-                              book.prices[0].originalPrice.toFixed(2)}
-                          </span>
-                          <span className=" font-bold text-gray-900 dark:text-white">
-                            $
-                            {book.prices &&
-                              book.prices[0].discountPrice.toFixed(2)}{' '}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </SwiperSlide>
-              )
-            })}
-          </Swiper>
+                      </Link>
+                    </div>
+                  </SwiperSlide>
+                )
+              })}
+            </Swiper>
+          ) : (
+            <h1 className="text-2xl font-bold">No books on sale</h1>
+          )}
         </>
         <div className="flex justify-center space-x-3 mt-20">
           <button

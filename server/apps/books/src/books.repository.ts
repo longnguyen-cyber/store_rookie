@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class BookRepository {
   private readonly TAKE = 4;
+  private readonly RATING_RECOMMEND = 4;
   constructor(private readonly prisma: PrismaService) {}
 
   async findAllAdmin() {
@@ -125,7 +126,7 @@ export class BookRepository {
     const books = await this.prisma.book.findMany({
       where: {
         rating: {
-          gte: 4,
+          gte: this.RATING_RECOMMEND,
         },
       },
       orderBy: {
@@ -187,6 +188,33 @@ export class BookRepository {
   }
 
   async update(id: string, data: any) {
+    console.log(data);
+    const latestPrice = await this.prisma.bookPrice.findFirst({
+      where: {
+        bookId: id,
+        endDate: null,
+      },
+    });
+
+    if (latestPrice) {
+      await this.prisma.bookPrice.update({
+        where: {
+          id: latestPrice.id,
+        },
+        data: {
+          originalPrice: data.prices,
+        },
+      });
+    } else {
+      await this.createBookPrice(id, data);
+    }
+
+    delete data.prices;
+    delete data.publishers;
+    delete data.publisher;
+    delete data.category;
+    delete data.author;
+
     const book = await this.prisma.book.update({
       where: {
         id: id,
@@ -211,11 +239,27 @@ export class BookRepository {
         startDate: new Date(),
       },
     });
-    console.log(bookPrice);
     return bookPrice;
   }
 
   async delete(id: string) {
+    await this.prisma.bookPrice.deleteMany({
+      where: {
+        bookId: id,
+      },
+    });
+    await this.prisma.bookAuthor.deleteMany({
+      where: {
+        bookId: id,
+      },
+    });
+
+    await this.prisma.bookPublisher.deleteMany({
+      where: {
+        bookId: id,
+      },
+    });
+
     const book = await this.prisma.book.delete({
       where: {
         id: id,
@@ -282,10 +326,10 @@ export class BookRepository {
     if (filter.rating && filter.rating.length > 0) {
       if (filter.rating.length === 1) {
         const [min] = filter.rating.map(Number);
-        whereCondition.AND.push({ rating: { gte: min, lte: min + 1 } });
+        whereCondition.AND.push({ rating: { gte: min, lt: min + 1 } });
       } else {
         const [min, max] = filter.rating.map(Number).sort((a, b) => a - b);
-        whereCondition.AND.push({ rating: { gte: min, lte: max } });
+        whereCondition.AND.push({ rating: { gte: min, lt: max } });
       }
     }
 

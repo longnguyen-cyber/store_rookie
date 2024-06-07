@@ -128,30 +128,29 @@
         while (table.firstChild) {
           table.removeChild(table.firstChild);
         }
-        dataSearch.forEach(element => {
+        dataSearch.forEach((element, index) => {
           const originalPrice = element.book.prices[0].originalPrice;
           const discountPrice = element.book.prices[0].discountPrice;
-          if (Array.isArray(element.book.authors)) {
-            element.book.authors.forEach(author => {
-              console.log(author); // Check the value of an individual author
-            });
-          }
+          console.log(element.book.images)
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td class="border border-slate-700 ">
-              ${element.id}
+            <td class="border border-slate-700 text-center ">
+              ${index + 1}
             </td>
-            <td class="border border-slate-700 pl-4 text-left">
-              ${element.book.title}
+            <td class="border border-slate-700 pl-4 flex  py-1 text-left">
+              <img width="80" class="object-cover" src=${element.book.images[0]} alt="">
+              <div class="ml-3">
+                ${element.book.title}
               <br>
               ${Array.isArray(element.book.authors) ? element.book.authors.map(author => `
                 <p>
-                  Author: <strong class="underline"><i>${author.name}</i></strong>
+                  Author: <strong class="underline"><i>${author.author.name}</i></strong>
                 </p>
                 <p>
-                  <small> Bio: ${author.bio}</small>
+                  <small> Bio: ${author.author.bio}</small>
                 </p>
-                `): ''}
+                `) : ''}
+              </div>
             </td>
             <td class="border border-slate-700  w-20 uppercase">
               ${element.promotionType}

@@ -107,11 +107,11 @@
             table.removeChild(table.firstChild);
           }
 
-          dataSearch.forEach(element => {
+          dataSearch.forEach((element, index) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td class="border border-slate-700 ">
-                ${element.id}
+                ${index + 1}
               </td>
               <td class="border border-slate-700  pl-4 text-left">
                 ${element.title}

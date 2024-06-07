@@ -212,7 +212,7 @@ const Cart = () => {
                             <FaMinus />
                           </button>
                           <input
-                            className="text-center w-10 shrink-0 border-0 bg-transparent text-sm font-medium text-gray-900 focus:outline-none focus:ring-0"
+                            className="text-center w-10 shrink-0  bg-transparent text-sm font-medium border mx-1 text-gray-900 focus:outline-none focus:ring-0"
                             value={quantities[item.id]?.quantity || ''}
                             onChange={(e) => {
                               if (

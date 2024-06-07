@@ -6,6 +6,7 @@
         <th class="border border-slate-700">book</th>
         <th class="border border-slate-700">user</th>
         <th class="border border-slate-700">rating</th>
+        <th class="border border-slate-700">status</th>
         <th class="border border-slate-700">comment</th>
         <th class="border border-slate-700">action</th>
       </tr>
@@ -25,6 +26,9 @@
           <td class="border border-slate-700">
             <%= item.rating %><i class="fa-solid fa-star text-yellow-500"></i>
           </td>
+          <td class="border border-slate-700">
+            <%= item.status ? "Enable": "Disable" %>
+          </td>
           <td class="border border-slate-700 text-left pl-3">
             <p>
               <strong><%= item.title %></strong>
@@ -33,11 +37,35 @@
               <%= item.content %>
             </p>
           </td>
-          <td class="font-bold border border-slate-700">
-            <a href="/reviews/hidden/<%= item.id %>" class="text-red-500 hover:text-red-800">Hidden</a> | <a href="/reviews/show/<%= item.id %>" class="text-blue-500 hover:text-blue-800">Show</a>
+          <td class="font-bold border border-slate-700" id="edit">
+            <span class="hidden"><%= item.id %></span>
+            <button id="hidden" class="text-red-500 hover:text-red-800" value="false">Hidden</button> | <button class="text-blue-500 hover:text-blue-800" id="show" value="true">Show</button>
           </td>
         </tr>
         <% }); %>
     </tbody>
   </table>
 </div>
+
+<script>
+  document.querySelectorAll('#edit button').forEach((button) => {
+    button.addEventListener('click', (e) => {
+      let id = button.parentElement.querySelector('span').textContent;
+      console.log(`ID: ${id}`);
+      console.log(`Button Value: ${button.value}`);
+      const status = button.value === 'true' ? true: false;
+      fetch(`/edit/reviews/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status:status  }),
+      })
+        .then((res) => {
+          alert('Updated')
+          window.location.reload();
+        })
+
+    });
+  });
+</script>

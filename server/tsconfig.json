@@ -24,7 +24,6 @@
       "@app/cache": ["libs/cache/src"],
       "@app/cache/*": ["libs/cache/src/*"],
       "@app/auth/*": ["apps/auth/src/*"],
-      "@app/auth": ["apps/auth/src"],
       "@app/author/*": ["apps/author/src/*"],
       "@app/author": ["apps/author/src"],
       "@app/orders/*": ["apps/orders/src/*"],

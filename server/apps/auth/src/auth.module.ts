@@ -1,8 +1,8 @@
 import { CommonModule, PrismaModule } from '@app/common';
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { UserModule } from 'apps/user/src/user.module';
 import { AuthService } from './auth.service';
+import { UserModule } from 'apps/user/src/user.module';
 @Module({
   providers: [AuthService],
   imports: [

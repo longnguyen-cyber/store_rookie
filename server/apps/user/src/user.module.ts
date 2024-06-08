@@ -5,7 +5,6 @@ import { BullModule } from '@nestjs/bull';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { AuthModule } from 'apps/auth/src/auth.module';
 import { UserCheck } from './user.check';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
@@ -13,6 +12,7 @@ import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { MailerModule, HandlebarsAdapter } from '@nest-modules/mailer';
 import { join } from 'path';
+import { AuthModule } from '@app/auth/auth.module';
 @Module({
   imports: [
     PrismaModule,

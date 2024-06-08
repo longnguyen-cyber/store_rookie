@@ -119,26 +119,29 @@ export class OrderRepository {
     });
 
     if (!order) {
-      throw new Error('Order not found');
+      return null;
     }
 
-    const items = await Promise.all(
-      order.items.map(async (item) => {
-        const bookPrice = await this.prisma.bookPrice.findUnique({
-          where: {
-            bookId: item.bookId,
-            id: item.priceId,
-          },
-        });
-        return {
-          ...item,
-          book: {
-            ...item.book,
-            prices: [bookPrice],
-          },
-        };
-      }),
-    );
+    const items =
+      order.items.length > 0
+        ? await Promise.all(
+            order.items.map(async (item) => {
+              const bookPrice = await this.prisma.bookPrice.findUnique({
+                where: {
+                  bookId: item.bookId,
+                  id: item.priceId,
+                },
+              });
+              return {
+                ...item,
+                book: {
+                  ...item.book,
+                  prices: [bookPrice],
+                },
+              };
+            }),
+          )
+        : [];
 
     const total = items.reduce((acc, item) => {
       if (item.book.prices[0] && item.book.prices[0].discountPrice) {

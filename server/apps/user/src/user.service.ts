@@ -3,12 +3,12 @@ import { CommonService, HttpExceptionCustom } from '@app/common';
 import { LoginInput } from '@app/common/user';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from 'apps/auth/src/auth.service';
 import { Cache } from 'cache-manager';
 import { UserCheck } from './user.check';
 import { UserRepository } from './user.repository';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue as QueueEmail } from 'bull';
+import { AuthService } from '@app/auth/auth.service';
 
 @Injectable()
 export class UserService {

@@ -197,23 +197,25 @@ export class CartRepository {
       });
     }
 
-    const items = await Promise.all(
-      cart.items.map(async (item) => {
-        const bookPrice = await this.prisma.bookPrice.findUnique({
-          where: {
-            bookId: item.bookId,
-            id: item.priceId,
-          },
-        });
-        return {
-          ...item,
-          book: {
-            ...item.book,
-            prices: [bookPrice],
-          },
-        };
-      }),
-    );
+    const items = cart.items
+      ? await Promise.all(
+          cart.items.map(async (item) => {
+            const bookPrice = await this.prisma.bookPrice.findUnique({
+              where: {
+                bookId: item.bookId,
+                id: item.priceId,
+              },
+            });
+            return {
+              ...item,
+              book: {
+                ...item.book,
+                prices: [bookPrice],
+              },
+            };
+          }),
+        )
+      : [];
     const total = items.reduce((acc, item) => {
       if (item.book.prices[0] && item.book.prices[0].discountPrice) {
         return acc + item.book.prices[0].discountPrice * item.quantity;

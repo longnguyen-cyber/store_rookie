@@ -140,21 +140,6 @@ export class BookRepository {
     return books;
   }
 
-  async findAll() {
-    const books = await this.prisma.book.findMany({
-      include: {
-        prices: true,
-        category: true,
-        publishers: {
-          select: {
-            publisher: true,
-          },
-        },
-      },
-    });
-    return books;
-  }
-
   async createBookPricePromotion(data: any) {
     const bookPrice = await this.prisma.bookPrice.create({
       data: {
@@ -188,7 +173,6 @@ export class BookRepository {
   }
 
   async update(id: string, data: any) {
-    console.log(data);
     const latestPrice = await this.prisma.bookPrice.findFirst({
       where: {
         bookId: id,
@@ -381,21 +365,23 @@ export class BookRepository {
     }
   }
 
-  private async countBook(whereCondition: any) {
+  async countBook(whereCondition: any) {
     return await this.prisma.book.count({
       where: whereCondition,
     });
   }
 
   private getLatestPrice(books: any) {
-    const final = books.map((book) => {
-      const lastedPrice = book.prices.find((p) => p.endDate === null);
-      return {
-        ...book,
-        prices: [lastedPrice],
-        createdAt: lastedPrice.createdAt,
-      };
-    });
+    const final =
+      books && Array.isArray(books)
+        ? books.map((book) => {
+            const lastedPrice = book.prices.find((p) => p.endDate === null);
+            return {
+              ...book,
+              prices: [lastedPrice],
+            };
+          })
+        : [];
 
     return final;
   }

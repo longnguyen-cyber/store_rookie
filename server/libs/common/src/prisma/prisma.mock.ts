@@ -1,4 +1,5 @@
-// import * as jest from 'jest-mock'; enable this line if you want to run dev
+import * as jest from 'jest-mock';
+// enable this line if you want to run dev
 
 export const PrismaMock = {
   cart: {
@@ -32,6 +33,7 @@ export const PrismaMock = {
     findUnique: jest.fn(),
     update: jest.fn(),
     findFirst: jest.fn(),
+    deleteMany: jest.fn(),
   },
   author: {
     findMany: jest.fn(),
@@ -81,6 +83,10 @@ export const PrismaMock = {
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+  },
+  user: {
+    findUnique: jest.fn(),
+    create: jest.fn(),
   },
 
   order: {

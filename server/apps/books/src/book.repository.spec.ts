@@ -46,34 +46,6 @@ describe('BookRepository', () => {
     });
   });
 
-  // async findOne(id: string) {
-  //   const book = await this.prisma.book.findUnique({
-  //     where: {
-  //       id: id,
-  //     },
-  //     include: {
-  //       authors: {
-  //         select: {
-  //           author: {
-  //             select: {
-  //               id: true,
-  //               name: true,
-  //             },
-  //           },
-  //         },
-  //       },
-  //       category: true,
-  //       prices: true,
-  //       publishers: {
-  //         select: {
-  //           publisher: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  //   return book;
-  // }
-
   describe('find one book', () => {
     it('should return one book', async () => {
       const result = {
@@ -115,40 +87,6 @@ describe('BookRepository', () => {
       expect(await repo.findOne('1')).toBe(null);
     });
   });
-
-  // async create(data: any) {
-  //   const book = await this.prisma.book.create({
-  //     data: {
-  //       category: {
-  //         connect: {
-  //           id: data.category,
-  //         },
-  //       },
-  //       publishers: {
-  //         create: {
-  //           publisherId: data.publisher,
-  //         },
-  //       },
-  //       authors: {
-  //         create: {
-  //           authorId: data.author,
-  //         },
-  //       },
-  //       ratings: [0, 0, 0, 0, 0],
-  //       title: data.title,
-  //       description: data.description,
-  //       prices: {
-  //         create: {
-  //           originalPrice: data.originalPrice,
-  //           startDate: new Date(),
-  //           discountPrice: 0,
-  //         },
-  //       },
-  //       images: data.images,
-  //     },
-  //   });
-  //   return book;
-  // }
 
   describe('create book', () => {
     it('should create a book', async () => {
@@ -254,32 +192,6 @@ describe('BookRepository', () => {
       expect(await repo.update('1', {})).toBe(null);
     });
   });
-
-  // async delete(id: string) {
-  //   await this.prisma.bookPrice.deleteMany({
-  //     where: {
-  //       bookId: id,
-  //     },
-  //   });
-  //   await this.prisma.bookAuthor.deleteMany({
-  //     where: {
-  //       bookId: id,
-  //     },
-  //   });
-
-  //   await this.prisma.bookPublisher.deleteMany({
-  //     where: {
-  //       bookId: id,
-  //     },
-  //   });
-
-  //   const book = await this.prisma.book.delete({
-  //     where: {
-  //       id: id,
-  //     },
-  //   });
-  //   return book;
-  // }
 
   describe('delete book', () => {
     it('should delete a book', async () => {
@@ -406,7 +318,6 @@ describe('BookRepository', () => {
     it('should return books with filter rating', async () => {
       const count = 1;
       jest.spyOn(repo, 'countBook').mockResolvedValue(count);
-      // Ensure the mock data is correctly set up
       const result = [
         {
           id: '1',

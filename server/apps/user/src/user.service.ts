@@ -1,14 +1,13 @@
+import { AuthService } from '@app/auth/auth.service';
 import { CACHE_SERVICE } from '@app/cache';
 import { CommonService, HttpExceptionCustom } from '@app/common';
 import { LoginInput } from '@app/common/user';
+import { InjectQueue } from '@nestjs/bull';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Queue as QueueEmail } from 'bull';
 import { Cache } from 'cache-manager';
 import { UserCheck } from './user.check';
 import { UserRepository } from './user.repository';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue as QueueEmail } from 'bull';
-import { AuthService } from '@app/auth/auth.service';
 
 @Injectable()
 export class UserService {
@@ -17,13 +16,13 @@ export class UserService {
     private userCheck: UserCheck,
     private authService: AuthService,
     @Inject(CACHE_SERVICE) private cacheManager: Cache,
-    private readonly configService: ConfigService,
     @InjectQueue('queue')
     private readonly mailQueue: QueueEmail,
     private readonly commonService: CommonService,
   ) {}
 
   private readonly LOGIN_EXPIRED = 60 * 60 * 24 * 30; // 30 days
+  private readonly REGISTER_EXPIRED = 60 * 15; // 15 minutes
 
   async login({ email, password }: any): Promise<any> {
     const user = await this.checkLoginData(email.trim(), password);
@@ -51,7 +50,7 @@ export class UserService {
     const accessToken = this.authService.generateJWTRegister(email); //expires in 15 minutes
     if (userClean) {
       this.cacheManager.set(accessToken, JSON.stringify(userClean), {
-        ttl: this.configService.get<number>('REGISTER_2FA_EXPIRED'),
+        ttl: this.REGISTER_EXPIRED,
       }); //15 minutes for verify email register
       await this.mailQueue.add(
         'register',
@@ -108,10 +107,7 @@ export class UserService {
     return true;
   }
 
-  private async checkLoginData(
-    email: string,
-    password: string,
-  ): Promise<LoginInput> {
+  async checkLoginData(email: string, password: string): Promise<LoginInput> {
     try {
       await this.checkEmailExist(email);
 

@@ -199,7 +199,6 @@ export class OrderRepository {
         ...data,
       },
     });
-    console.log('update order', order);
     return order;
   }
 
@@ -212,7 +211,7 @@ export class OrderRepository {
     return order;
   }
 
-  private async findCart(id: string, type: Role) {
+  async findCart(id: string, type: Role) {
     let cart = null;
     if (type === Role.User) {
       cart = await this.prisma.cart.findFirst({

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrderRepository } from './order.repository';
-import { PrismaMock, PrismaService } from '@app/common';
+import { PrismaMock, PrismaService, Role } from '@app/common';
 
 describe('OrderRepository', () => {
   let repo: OrderRepository;
@@ -87,38 +87,47 @@ describe('OrderRepository', () => {
     });
   });
 
-  // async create(data: any, guestId: string) {
-  //   const order = await this.prisma.order.create({
-  //     data: {
-  //       ...data,
-  //       status: ORDER_STATUS.COMPLETED,
-  //     },
-  //   });
-  //   //update info guest->user cart after order
-  //   const cart = await this.findCart(guestId, Role.GUEST);
-  //   if (cart.userId == null) {
-  //     await this.prisma.cart.update({
-  //       where: {
-  //         id: cart.id,
-  //       },
-  //       data: {
-  //         userId: data.user.connect.id,
-  //       },
-  //     });
-  //     console.log('update info guest->user cart after order');
-  //   }
+  describe('update', () => {
+    it('should update an order', async () => {
+      const result = {
+        id: '1',
+        userId: 'user1',
+        orderDate: new Date(),
+        status: 'Pending',
+        payment: 'cash',
+        isPayment: false,
+        address: 'Test Address',
+        shipping: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+      jest.spyOn(prisma.order, 'update').mockResolvedValue(result);
 
-  //   if (order.status === ORDER_STATUS.COMPLETED) {
-  //     //detete cart item after order
-  //     await this.prisma.cartItem.deleteMany({
-  //       where: {
-  //         cartId: cart.id,
-  //       },
-  //     });
-  //     console.log('delete cart item after order');
-  //   }
-  //   return order;
-  // }
+      expect(await repo.update('1', result)).toStrictEqual(result);
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete an order', async () => {
+      const result = {
+        id: '1',
+        userId: 'user1',
+        orderDate: new Date(),
+        status: 'Pending',
+        payment: 'cash',
+        isPayment: false,
+        address: 'Test Address',
+        shipping: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: new Date(),
+      };
+      jest.spyOn(prisma.order, 'delete').mockResolvedValue(result);
+
+      expect(await repo.delete('1')).toStrictEqual(result);
+    });
+  });
 
   describe('create', () => {
     it('should create an order', async () => {
@@ -137,9 +146,41 @@ describe('OrderRepository', () => {
         updatedAt: new Date(),
         deletedAt: null,
       };
+
+      const data = {
+        ...orderData,
+        status: 'completed',
+        user: {
+          connect: {
+            id: 'user1',
+          },
+        },
+      };
+
+      const mockCart = {
+        id: 'cart1',
+        userId: null,
+      };
+
       jest.spyOn(prisma.order, 'create').mockResolvedValue(orderData);
-      const createdOrder = await repo.create(orderData, 'guest1');
+      jest.spyOn(repo, 'findCart').mockResolvedValue(mockCart);
+      jest.spyOn(prisma.cart, 'update');
+      jest.spyOn(prisma.cartItem, 'deleteMany').mockResolvedValue({ count: 1 });
+
+      const createdOrder = await repo.create(data, 'guest1');
+
       expect(createdOrder).toEqual(orderData);
+      expect(prisma.order.create).toHaveBeenCalledWith({
+        data: {
+          ...data,
+          status: 'completed',
+        },
+      });
+      expect(repo.findCart).toHaveBeenCalledWith('guest1', Role.GUEST);
+      expect(prisma.cart.update).toHaveBeenCalledWith({
+        where: { id: mockCart.id },
+        data: { userId: data.user.connect.id },
+      });
     });
   });
 });

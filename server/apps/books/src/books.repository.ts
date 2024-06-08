@@ -1,40 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaService, QUERY_SORT } from '@app/common';
+import { FilterBookDto } from '@app/common/book';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class BookRepository {
   private readonly TAKE = 4;
+  private readonly RATING_RECOMMEND = 4;
   constructor(private readonly prisma: PrismaService) {}
-
-  async findAll(skip: number, type: QUERY_SORT) {
-    let books;
-    switch (type) {
-      case QUERY_SORT.ASC:
-        books = await this.sortByPriceASC(skip);
-        break;
-      case QUERY_SORT.DESC:
-        books = await this.sortByPriceDESC(skip);
-        break;
-      case QUERY_SORT.SALE:
-        books = await this.sortByPromotion(skip);
-      case QUERY_SORT.POPULAR:
-        books = await this.sortByPopular(skip);
-      default:
-        break;
-    }
-
-    const booksMap = (books as Array<any>).map((book) =>
-      this.convertRecordToBook(book),
-    );
-
-    const total = await this.prisma.book.count();
-
-    return {
-      books: booksMap,
-      total,
-    };
-  }
 
   async findAllAdmin() {
     const books = await this.prisma.book.findMany({
@@ -51,7 +24,7 @@ export class BookRepository {
     return books;
   }
 
-  async getBooksForCron() {
+  async getBooksForCronRating() {
     const books = await this.prisma.book.findMany({
       include: {
         reviews: true,
@@ -59,6 +32,32 @@ export class BookRepository {
     });
 
     return books.filter((item) => item.reviews.length > 0);
+  }
+  async getBooksForCronPrice() {
+    const promotionOfBooks = await this.prisma.promotion.findMany({
+      include: {
+        book: {
+          include: {
+            prices: true,
+          },
+        },
+      },
+    });
+
+    const books = await this.prisma.book.findMany({});
+    const booksWithPromotion = promotionOfBooks.filter((promotion) =>
+      books.some((book) => book.id === promotion.bookId),
+    );
+
+    return booksWithPromotion.map((item) => {
+      const lastedPrice = item.book.prices.find((p) => p.endDate === null);
+      delete item.book.prices;
+      return {
+        ...item,
+        ...item.book,
+        ...lastedPrice,
+      };
+    });
   }
 
   async findOne(id: string) {
@@ -127,7 +126,7 @@ export class BookRepository {
     const books = await this.prisma.book.findMany({
       where: {
         rating: {
-          gte: 4,
+          gte: this.RATING_RECOMMEND,
         },
       },
       orderBy: {
@@ -141,7 +140,7 @@ export class BookRepository {
     return books;
   }
 
-  async createBookPrice(data: any) {
+  async createBookPricePromotion(data: any) {
     const bookPrice = await this.prisma.bookPrice.create({
       data: {
         book: {
@@ -174,6 +173,32 @@ export class BookRepository {
   }
 
   async update(id: string, data: any) {
+    const latestPrice = await this.prisma.bookPrice.findFirst({
+      where: {
+        bookId: id,
+        endDate: null,
+      },
+    });
+
+    if (latestPrice) {
+      await this.prisma.bookPrice.update({
+        where: {
+          id: latestPrice.id,
+        },
+        data: {
+          originalPrice: data.prices,
+        },
+      });
+    } else {
+      await this.createBookPrice(id, data);
+    }
+
+    delete data.prices;
+    delete data.publishers;
+    delete data.publisher;
+    delete data.category;
+    delete data.author;
+
     const book = await this.prisma.book.update({
       where: {
         id: id,
@@ -185,7 +210,40 @@ export class BookRepository {
     return book;
   }
 
+  async createBookPrice(id: string, data: any) {
+    const bookPrice = await this.prisma.bookPrice.create({
+      data: {
+        book: {
+          connect: {
+            id: id,
+          },
+        },
+        originalPrice: data.originalPrice,
+        discountPrice: 0,
+        startDate: new Date(),
+      },
+    });
+    return bookPrice;
+  }
+
   async delete(id: string) {
+    await this.prisma.bookPrice.deleteMany({
+      where: {
+        bookId: id,
+      },
+    });
+    await this.prisma.bookAuthor.deleteMany({
+      where: {
+        bookId: id,
+      },
+    });
+
+    await this.prisma.bookPublisher.deleteMany({
+      where: {
+        bookId: id,
+      },
+    });
+
     const book = await this.prisma.book.delete({
       where: {
         id: id,
@@ -214,585 +272,118 @@ export class BookRepository {
     return books;
   }
 
-  private async sortByPriceASC(skip: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        books
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    order by last_prices.original_price asc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
+  async findByFilter(filter: FilterBookDto) {
+    const skip = filter.skip ? filter.skip : 0;
 
-  private async sortByPriceDESC(skip: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        books
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    order by last_prices.original_price desc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
+    const whereCondition: any = {
+      AND: [],
+    };
 
-  private async sortByPromotion(skip: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        books.*,
-        last_prices.*
-    FROM
-        books
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = books.book_id
-    LEFT JOIN
-        (
-            SELECT p.*
-            FROM promotions p
-            WHERE p.created_at = (
-                SELECT MAX(created_at)
-                FROM promotions p2
-                WHERE p2.book_id = p.book_id
-            )
-        ) AS promotion_latest ON promotion_latest.book_id = books.book_id
-    WHERE
-        promotion_latest.promotion_id IS NOT null
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
+    if (filter.sortByEnum) {
+      switch (filter.sortByEnum) {
+        case QUERY_SORT.SALE:
+          whereCondition.AND.push({
+            promotions: {
+              endDate: {
+                gte: new Date(),
+              },
+            },
+          });
+          break;
+        case QUERY_SORT.POPULAR:
+          whereCondition.AND.push({
+            orderItems: {
+              some: {
+                order: {
+                  status: 'Completed',
+                },
+              },
+            },
+          });
+          break;
+        default:
+          whereCondition.AND.push({});
+          break;
+      }
+    }
 
-  private async sortByPopular(skip: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        b.*,
-        last_prices.*,
-        SUM(oi.quantity) as quantitySale
-    FROM
-        orders o
-    LEFT JOIN
-        order_items oi ON o.order_id = oi.order_id
-    LEFT JOIN
-        books b ON b.book_id = oi.book_id
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = b.book_id
-    LEFT JOIN
-        book_authors ba ON ba.book_id = b.book_id
-    WHERE
-        o.status = 'Completed'
-    GROUP BY
-        b.book_id,
-        last_prices.price_id,
-        last_prices.book_id,
-        last_prices.start_date,
-        last_prices.end_date,
-        last_prices.original_price,
-        last_prices.discount_price,
-        last_prices.created_at,
-        last_prices.updated_at,
-        last_prices.deleted_at
-    order by quantitySale desc
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
+    if (filter.rating && filter.rating.length > 0) {
+      if (filter.rating.length === 1) {
+        const [min] = filter.rating.map(Number);
+        whereCondition.AND.push({ rating: { gte: min, lt: min + 1 } });
+      } else {
+        const [min, max] = filter.rating.map(Number).sort((a, b) => a - b);
+        whereCondition.AND.push({ rating: { gte: min, lt: max } });
+      }
+    }
 
-  private async sortByPriceASCAuthor(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        book_authors
-    left JOIN
-        books ON book_authors.book_id = books.book_id
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    WHERE
-        book_authors.author_id = ${id}
-    order by last_prices.original_price asc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
+    if (filter.category && filter.category.length > 0) {
+      whereCondition.AND.push({ categoryId: { in: filter.category } });
+    }
 
-  private async sortByPriceDESCAuthor(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        book_authors
-    left JOIN
-        books ON book_authors.book_id = books.book_id
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    WHERE
-        book_authors.author_id = ${id}
-    order by last_prices.original_price desc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
-
-  private async sortByPromotionAuthor(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        books.*,
-        last_prices.*
-    FROM
-        book_authors
-    LEFT JOIN
-        books ON book_authors.book_id = books.book_id
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = books.book_id
-    LEFT JOIN
-        (
-            SELECT p.*
-            FROM promotions p
-            WHERE p.created_at = (
-                SELECT MAX(created_at)
-                FROM promotions p2
-                WHERE p2.book_id = p.book_id
-            )
-        ) AS promotion_latest ON promotion_latest.book_id = books.book_id
-    WHERE
-        book_authors.author_id = ${id}
-        and promotion_latest.promotion_id IS NOT null
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
-
-  private async sortByPopularOfAuthor(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        b.*,
-        last_prices.*,
-        SUM(oi.quantity) as quantitySale
-    FROM
-        orders o
-    LEFT JOIN
-        order_items oi ON o.order_id = oi.order_id
-    LEFT JOIN
-        books b ON b.book_id = oi.book_id
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = b.book_id
-    LEFT JOIN
-        book_authors ba ON ba.book_id = b.book_id
-    WHERE
-        o.status = 'Completed'
-        AND ba.author_id = ${id}
-    GROUP BY
-        b.book_id,
-        last_prices.price_id,
-        last_prices.book_id,
-        last_prices.start_date,
-        last_prices.end_date,
-        last_prices.original_price,
-        last_prices.discount_price,
-        last_prices.created_at,
-        last_prices.updated_at,
-        last_prices.deleted_at
-    order by quantitySale desc
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
-
-  private async sortByPriceASCRating(skip: number, rating: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        books
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    WHERE
-        books.rating >= ${rating} and books.rating < ${rating + 1}
-    order by last_prices.original_price asc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
-
-  private async sortByPriceDESCRating(skip: number, rating: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        books
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    WHERE
-        books.rating >= ${rating} and books.rating < ${rating + 1}
-    order by last_prices.original_price desc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
-
-  private async sortByPromotionRating(skip: number, rating: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        books.*,
-        last_prices.*
-    FROM
-        books
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = books.book_id
-    LEFT JOIN
-        (
-            SELECT p.*
-            FROM promotions p
-            WHERE p.created_at = (
-                SELECT MAX(created_at)
-                FROM promotions p2
-                WHERE p2.book_id = p.book_id
-            )
-        ) AS promotion_latest ON promotion_latest.book_id = books.book_id
-    WHERE
-    books.rating >= ${rating} and books.rating < ${rating + 1}
-        and promotion_latest.promotion_id IS NOT null
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
-
-  private async sortByPopularRating(skip: number, rating: number) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        b.*,
-        last_prices.*,
-        SUM(oi.quantity) as quantitySale
-    FROM
-        orders o
-    LEFT JOIN
-        order_items oi ON o.order_id = oi.order_id
-    LEFT JOIN
-        books b ON b.book_id = oi.book_id
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = b.book_id
-    LEFT JOIN
-        book_authors ba ON ba.book_id = b.book_id
-    WHERE
-        o.status = 'Completed'
-        AND b.rating >= ${rating} and b.rating < ${rating + 1}
-
-    GROUP BY
-        b.book_id,
-        last_prices.price_id,
-        last_prices.book_id,
-        last_prices.start_date,
-        last_prices.end_date,
-        last_prices.original_price,
-        last_prices.discount_price,
-        last_prices.created_at,
-        last_prices.updated_at,
-        last_prices.deleted_at
-    order by quantitySale desc
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
-
-  private async sortByPriceASCOfCategory(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        book_authors
-    left JOIN
-        books ON book_authors.book_id = books.book_id
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    WHERE
-        book_authors.author_id = ${id}
-    order by last_prices.original_price asc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
-
-  private async sortByPriceDESCOfCategory(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-    books.*,
-    last_prices.*
-    FROM
-        book_authors
-    left JOIN
-        books ON book_authors.book_id = books.book_id
-    left join
-      (
-    		select * from book_prices bp
-        where bp.end_date is null
-      ) as last_prices on last_prices.book_id = books.book_id
-    WHERE
-        book_authors.author_id = ${id}
-    order by last_prices.original_price desc
-    limit ${this.TAKE}
-    offset ${skip};`;
-    return books;
-  }
-
-  private async sortByPromotionOfCategory(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        books.*,
-        last_prices.*
-    FROM
-        book_authors
-    LEFT JOIN
-        books ON book_authors.book_id = books.book_id
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = books.book_id
-    LEFT JOIN
-        (
-            SELECT p.*
-            FROM promotions p
-            WHERE p.created_at = (
-                SELECT MAX(created_at)
-                FROM promotions p2
-                WHERE p2.book_id = p.book_id
-            )
-        ) AS promotion_latest ON promotion_latest.book_id = books.book_id
-    WHERE
-        book_authors.author_id = ${id}
-        and promotion_latest.promotion_id IS NOT null
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
-  private async sortByPopularOfCategory(skip: number, id: string) {
-    const books = await this.prisma.$queryRaw`
-    SELECT
-        b.*,
-        last_prices.*,
-        SUM(oi.quantity) as quantitySale
-    FROM
-        orders o
-    LEFT JOIN
-        order_items oi ON o.order_id = oi.order_id
-    LEFT JOIN
-        books b ON b.book_id = oi.book_id
-    LEFT JOIN
-        (
-            SELECT * FROM book_prices bp
-            WHERE bp.end_date IS NULL
-        ) AS last_prices ON last_prices.book_id = b.book_id
-    LEFT JOIN
-        categories c on c.category_id = b.category_id
-    WHERE
-        o.status = 'Completed'
-        AND c.category_id  = ${id}
-    GROUP BY
-        b.book_id,
-        last_prices.price_id,
-        last_prices.book_id,
-        last_prices.start_date,
-        last_prices.end_date,
-        last_prices.original_price,
-        last_prices.discount_price,
-        last_prices.created_at,
-        last_prices.updated_at,
-        last_prices.deleted_at
-    order by quantitySale desc
-    LIMIT ${this.TAKE}
-    OFFSET ${skip};`;
-    return books;
-  }
-
-  private convertRecordToBook(record: any) {
-    return {
-      id: record.book_id,
-      title: record.title,
-      description: record.description,
-      categoryId: record.category_id,
-      rating: record.rating,
-      ratings: record.ratings,
-      images: record.images,
-      quantity: record.quantity,
-      createdAt: record.created_at,
-      updatedAt: record.updated_at,
-      deletedAt: record.deleted_at,
-      prices: [
-        {
-          id: record.price_id,
-          bookId: record.book_id,
-          originalPrice: record.original_price,
-          discountPrice: record.discount_price,
-          startDate: record.start_date,
-          endDate: record.end_date,
-          createdAt: record.created_at,
-          updatedAt: record.updated_at,
-          deletedAt: record.deleted_at,
+    if (filter.author && filter.author.length > 0) {
+      whereCondition.AND.push({
+        authors: { some: { authorId: { in: filter.author } } },
+      });
+    }
+    const [list, total] = await Promise.all([
+      await this.prisma.book.findMany({
+        skip,
+        take: this.TAKE,
+        where: whereCondition,
+        include: {
+          prices: true,
+          promotions: true,
         },
-      ],
-    };
+      }),
+      await this.countBook(whereCondition),
+    ]);
+    if (
+      filter.sortByEnum === QUERY_SORT.ASC ||
+      filter.sortByEnum === QUERY_SORT.DESC
+    ) {
+      const final = this.getLatestPrice(list);
+      final
+        .sort((a, b) => {
+          if (filter.sortByEnum === QUERY_SORT.ASC) {
+            return a.prices[0].originalPrice - b.prices[0].originalPrice;
+          } else {
+            return b.prices[0].originalPrice - a.prices[0].originalPrice;
+          }
+        })
+        .slice(skip, skip + this.TAKE);
+
+      return {
+        books: final,
+        total: total,
+      };
+    } else {
+      return {
+        books: this.getLatestPrice(list),
+        total,
+      };
+    }
   }
 
-  async getBookByAuthor(author_id: string, skip: number, type: QUERY_SORT) {
-    let books;
-
-    switch (type) {
-      case QUERY_SORT.ASC:
-        books = await this.sortByPriceASCAuthor(skip, author_id);
-        break;
-      case QUERY_SORT.DESC:
-        books = await this.sortByPriceDESCAuthor(skip, author_id);
-        break;
-      case QUERY_SORT.SALE:
-        books = await this.sortByPromotionAuthor(skip, author_id);
-      case QUERY_SORT.POPULAR:
-        books = await this.sortByPopularOfAuthor(skip, author_id);
-      default:
-        break;
-    }
-    const mappedBooks = (books as Array<any>).map((book) =>
-      this.convertRecordToBook(book),
-    );
-
-    const total = await this.prisma.author.findFirst({
-      where: {
-        id: author_id,
-      },
-      select: {
-        books: true,
-      },
+  async countBook(whereCondition: any) {
+    return await this.prisma.book.count({
+      where: whereCondition,
     });
-    return {
-      books: mappedBooks,
-      total: total.books.length,
-    };
   }
-  async getBookByCategory(category: string, skip: number, type: QUERY_SORT) {
-    let books;
-    switch (type) {
-      case QUERY_SORT.ASC:
-        books = await this.sortByPriceASCOfCategory(skip, category);
-        break;
-      case QUERY_SORT.DESC:
-        books = await this.sortByPriceDESCOfCategory(skip, category);
-        break;
-      case QUERY_SORT.SALE:
-        books = await this.sortByPromotionOfCategory(skip, category);
-      case QUERY_SORT.POPULAR:
-        books = await this.sortByPopularOfCategory(skip, category);
-      default:
-        break;
-    }
 
-    const booksOfCategory = (books as Array<any>).map((book) =>
-      this.convertRecordToBook(book),
-    );
+  private getLatestPrice(books: any) {
+    const final =
+      books && Array.isArray(books)
+        ? books.map((book) => {
+            const lastedPrice = book.prices.find((p) => p.endDate === null);
+            return {
+              ...book,
+              prices: [lastedPrice],
+            };
+          })
+        : [];
 
-    const total = await this.prisma.category.findFirst({
-      where: {
-        id: category,
-      },
-      select: {
-        books: true,
-      },
-    });
-    return {
-      books: booksOfCategory,
-      total: total.books.length,
-    };
-  }
-  async getBookByRating(rating: number, skip: number, type: QUERY_SORT) {
-    let books;
-    switch (type) {
-      case QUERY_SORT.ASC:
-        books = await this.sortByPriceASCRating(
-          skip,
-          rating === 5 ? rating + 1 : rating,
-        );
-        break;
-      case QUERY_SORT.DESC:
-        books = await this.sortByPriceDESCRating(
-          skip,
-          rating === 5 ? rating + 1 : rating,
-        );
-        break;
-      case QUERY_SORT.SALE:
-        books = await this.sortByPromotionRating(
-          skip,
-          rating === 5 ? rating + 1 : rating,
-        );
-        break;
-      case QUERY_SORT.POPULAR:
-        books = await this.sortByPopularRating(
-          skip,
-          rating === 5 ? rating + 1 : rating,
-        );
-      default:
-        break;
-    }
-
-    const booksOfRating = (books as Array<any>).map((book) =>
-      this.convertRecordToBook(book),
-    );
-
-    const total = await this.prisma.book.count();
-
-    return {
-      books: booksOfRating,
-      total,
-    };
+    return final;
   }
 
   async searchByTitle(q: string) {

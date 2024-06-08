@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@app/common';
+import { PrismaMock, PrismaService } from '@app/common';
 import { PromotionRepository } from './promotions.repository';
 
 describe('PromotionRepository', () => {
@@ -12,16 +12,7 @@ describe('PromotionRepository', () => {
         PromotionRepository,
         {
           provide: PrismaService,
-          useValue: {
-            promotion: {
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-              search: jest.fn(),
-            },
-          },
+          useValue: PrismaMock,
         },
       ],
     }).compile();

@@ -1,8 +1,8 @@
-import { QUERY_SORT } from '@app/common';
+import { FilterBookDto } from '@app/common/book';
+import { OrderService } from '@app/orders/order.service';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { BookRepository } from './books.repository';
-import { OrderService } from '@app/orders/order.service';
 
 @Injectable()
 export class BookService {
@@ -14,8 +14,8 @@ export class BookService {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
     name: 'update book rating',
   })
-  async handleCron() {
-    const books = await this.bookRepository.getBooksForCron();
+  async handleCronRating() {
+    const books = await this.bookRepository.getBooksForCronRating();
     books.forEach((item) => {
       const sumReviewOfBook = item.reviews.length;
       const totalStar = item.reviews.reduce((acc, cur) => acc + cur.rating, 0);
@@ -33,30 +33,29 @@ export class BookService {
     });
   }
 
-  async findAll(skip?: number, query?: QUERY_SORT) {
-    if (skip !== undefined) {
-      const books = await this.bookRepository.findAll(skip, query);
-      return {
-        books: books.books,
-        total: books.total,
-      };
-    } else {
-      const books = await this.bookRepository.findAllAdmin();
-      const final = books.map((book) => {
-        const lastedPrice = book.prices.find((p) => p.endDate === null);
-        return {
-          ...book,
-          prices: [lastedPrice],
-          createdAt: lastedPrice.createdAt,
-        };
-      });
-
-      return final;
-    }
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+    name: 'update book price',
+  })
+  async handleCronPrice() {
+    const books = await this.bookRepository.getBooksForCronPrice();
+    //check with new Date
+    const currentDate = new Date();
+    books.forEach((item) => {
+      if (item.endDate < currentDate) {
+        this.bookRepository.createBookPrice(item.bookId, {
+          originalPrice: item.originalPrice,
+        });
+      }
+    });
   }
 
-  async createBookPrice(data: any) {
-    const price = await this.bookRepository.createBookPrice(data);
+  async findAll() {
+    const books = await this.bookRepository.findAllAdmin();
+    return books;
+  }
+
+  async createBookPricePromotion(data: any) {
+    const price = await this.bookRepository.createBookPricePromotion(data);
     return price;
   }
 
@@ -93,33 +92,8 @@ export class BookService {
   }
 
   //shop page
-  async getBookByRating(star: number, type: QUERY_SORT, skip: number) {
-    const books = await this.bookRepository.getBookByRating(star, skip, type);
-    return {
-      books: books.books,
-      total: books.total,
-    };
-  }
-
-  async getBookByAuthor(author_id: string, type: QUERY_SORT, skip: number) {
-    const books = await this.bookRepository.getBookByAuthor(
-      author_id,
-      skip,
-      type,
-    );
-    return {
-      books: books.books,
-      total: books.total,
-    };
-  }
-
-  async getBookByCategory(category_id: string, type: QUERY_SORT, skip: number) {
-    const books = await this.bookRepository.getBookByCategory(
-      category_id,
-      skip,
-      type,
-    );
-
+  async booksFilter(filter: FilterBookDto) {
+    const books = await this.bookRepository.findByFilter(filter);
     return {
       books: books.books,
       total: books.total,

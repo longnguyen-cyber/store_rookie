@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@app/common';
+import { PrismaMock, PrismaService } from '@app/common';
 import { ReviewRepository } from './reviews.repository';
 
 describe('ReviewRepository', () => {
@@ -12,15 +12,7 @@ describe('ReviewRepository', () => {
         ReviewRepository,
         {
           provide: PrismaService,
-          useValue: {
-            review: {
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
+          useValue: PrismaMock,
         },
       ],
     }).compile();

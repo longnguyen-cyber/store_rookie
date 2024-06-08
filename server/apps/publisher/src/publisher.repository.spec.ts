@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@app/common';
+import { PrismaMock, PrismaService } from '@app/common';
 import { PublisherRepository } from './publisher.repository';
 
 describe('PublisherRepository', () => {
@@ -12,16 +12,7 @@ describe('PublisherRepository', () => {
         PublisherRepository,
         {
           provide: PrismaService,
-          useValue: {
-            publisher: {
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-              search: jest.fn(),
-            },
-          },
+          useValue: PrismaMock,
         },
       ],
     }).compile();

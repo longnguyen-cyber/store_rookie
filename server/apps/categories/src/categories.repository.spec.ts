@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesRepository } from './categories.repository';
-import { PrismaService } from '@app/common';
+import { PrismaMock, PrismaService } from '@app/common';
 
 describe('CategoriesRepository', () => {
   let repo: CategoriesRepository;
@@ -12,16 +12,7 @@ describe('CategoriesRepository', () => {
         CategoriesRepository,
         {
           provide: PrismaService,
-          useValue: {
-            category: {
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-              search: jest.fn(),
-            },
-          },
+          useValue: PrismaMock,
         },
       ],
     }).compile();

@@ -1,5 +1,6 @@
 import { PrismaService, Role } from '@app/common';
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class CartRepository {
@@ -182,25 +183,39 @@ export class CartRepository {
         },
       },
     });
+
     if (!cart) return [];
 
-    const items = await Promise.all(
-      cart.items.map(async (item) => {
-        const bookPrice = await this.prisma.bookPrice.findUnique({
-          where: {
-            bookId: item.bookId,
-            id: item.priceId,
-          },
-        });
-        return {
-          ...item,
-          book: {
-            ...item.book,
-            prices: [bookPrice],
-          },
-        };
-      }),
-    );
+    if (!cart.guestId) {
+      await this.prisma.cart.update({
+        where: {
+          id: cart.id,
+        },
+        data: {
+          guestId: uuidv4(),
+        },
+      });
+    }
+
+    const items = cart.items
+      ? await Promise.all(
+          cart.items.map(async (item) => {
+            const bookPrice = await this.prisma.bookPrice.findUnique({
+              where: {
+                bookId: item.bookId,
+                id: item.priceId,
+              },
+            });
+            return {
+              ...item,
+              book: {
+                ...item.book,
+                prices: [bookPrice],
+              },
+            };
+          }),
+        )
+      : [];
     const total = items.reduce((acc, item) => {
       if (item.book.prices[0] && item.book.prices[0].discountPrice) {
         return acc + item.book.prices[0].discountPrice * item.quantity;
